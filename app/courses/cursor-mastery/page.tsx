@@ -128,7 +128,7 @@ function RacingSection() {
             className="h-10 w-auto object-contain"
           />
           <motion.span 
-            className="text-xs text-muted-foreground whitespace-nowrap bg-background/80 px-2 py-0.5 rounded"
+            className="hidden md:inline text-xs text-muted-foreground whitespace-nowrap bg-background/80 px-2 py-0.5 rounded"
             style={{ opacity: typingOpacity }}
           >
             Still typing...
@@ -159,8 +159,8 @@ function RacingSection() {
           </div>
         </motion.div>
         
-        {/* Progress indicators */}
-        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex items-center gap-4 text-[10px] text-muted-foreground">
+        {/* Progress indicators - hidden on mobile for less clutter */}
+        <div className="hidden md:flex absolute bottom-1 left-1/2 -translate-x-1/2 items-center gap-4 text-[10px] text-muted-foreground">
           <motion.span style={{ opacity: textOpacity }}>
             Same task. Same starting point.
           </motion.span>
