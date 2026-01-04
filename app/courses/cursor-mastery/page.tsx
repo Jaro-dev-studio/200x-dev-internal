@@ -1430,7 +1430,7 @@ export default function LandingPage() {
                   { content: <>Leading a team of 40+ senior software engineers at OpenAI</> },
                   { content: <>Founded <a href="https://jaro.dev" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Jaro.dev</a>, a 7-figure software agency</> },
                   { content: <>Previously at JPMorgan Chase & Deutsche Bank</> },
-                  { content: <>Top 0.1% by contributions on <a href="https://github.com/jarostaz" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">GitHub</a></> },
+                  { content: <>Top 1% by contributions on <a href="https://github.com/jarostaz" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">GitHub</a></> },
                   { content: <>Engineers using these techniques earn $200-500K+ per year</> },
                 ].map((item, i) => (
                   <motion.li
