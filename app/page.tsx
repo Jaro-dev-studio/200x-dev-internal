@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
+import Image from "next/image";
 import {
   ArrowRight,
   Play,
@@ -9,7 +10,6 @@ import {
   X,
   Github,
   Twitter,
-  ExternalLink,
   Plus,
 } from "lucide-react";
 
@@ -88,78 +88,179 @@ function ParallaxSection({
   );
 }
 
-// Course modules data
-const courseModules = [
+// Course curriculum data
+const courseSections = [
   {
     number: "01",
-    title: "Cursor 2.0 Foundations",
+    title: "Course Intro & Agentic Mindset",
     lessons: [
-      "Initial Settings & Security",
-      "Blocking External File Access",
-      "Model Selection Strategy",
+      { title: "Welcome & What You'll Achieve", points: ["This is not about 'AI helping you code'", "This is about delegating outcomes", "You stop typing - you start directing"] },
+      { title: "The Prime Directive: Make It Do Everything", points: ["If you can describe it, you should not be doing it", "You are: Spec writer, Reviewer, Architect", "Discomfort = leverage"] },
+      { title: "It Can Do Far More Than You Think", points: ["Testing API connections", "One-off API calls", "Backfills and migrations", "Debugging production issues", "Generating tooling"] },
+      { title: "Errors Are Inputs", points: ["Copy entire errors", "Paste into agent", "Ask for: Root cause, Fix, Prevention"] },
+      { title: "Logging for AI Debugging", points: ["Logs are for future agents", "Add context-rich, structured logging", "Always ask agents to add logs"] },
+      { title: "When AI Is Bad", points: ["Large-scale refactors", "Find-and-replace across complex systems", "Better approach: Extract requirements, Rebuild clean from scratch"] },
     ],
   },
   {
     number: "02",
-    title: "Multi-Agent Orchestration",
+    title: "Core Concepts of Agentic Development",
     lessons: [
-      "Running Parallel Agents",
-      "Conflict Prevention",
-      "Context Isolation",
+      { title: "You Are the Orchestrator", points: ["Review code like an editor", "You don't micromanage - you verify"] },
+      { title: "Context Is King", points: ["One-shot prompts are faster than iteration", "Give full constraints upfront"] },
+      { title: "Parallelization Strategy", points: ["One Plan Mode tab", "One Execution Agent", "Multiple execution agents for non-conflicting tasks"] },
+      { title: "Agent Isolation (Critical)", points: ["Agents do not share context", "They operate on the same codebase", "Danger: Overwriting files, Conflicting assumptions", "Rule: Avoid overlapping files"] },
     ],
   },
   {
     number: "03",
-    title: "Cursor Rules Mastery",
+    title: "Cursor Settings & Setup (Cursor 2.0)",
     lessons: [
-      "User Rules vs Project Rules",
-      "Summative Rule Systems",
-      "Enterprise Rule Libraries",
+      { title: "Layout Setup", points: ["Optional VSCode-style layout", "Import VSCode settings"] },
+      { title: "Privacy & Security", points: ["Enable privacy mode", "Block access outside repository", "Keep agents scoped"] },
+      { title: "Messaging & Automation", points: ["Queue messages (send after current)", "Browser automation off", "Web search on"] },
     ],
   },
   {
     number: "04",
-    title: "Token Optimization",
+    title: "Codebase Context",
     lessons: [
-      "MaxMode for Planning Only",
-      "Context Management",
-      "Claude 4.5 Opus Workflows",
+      { title: "Codebase Indexing", points: ["Index entire repository", "Why this massively improves output"] },
+      { title: "Ignore Files", points: ["Exclude irrelevant folders", "Keep context clean"] },
+      { title: "Adding Custom Docs", points: ["Add internal documentation", "Teach the agent your system"] },
     ],
   },
   {
     number: "05",
-    title: "Advanced Techniques",
+    title: "User Rules & Project Rules",
     lessons: [
-      "Image Feedback for UI",
-      "Command Automation",
-      "Keyboard Shortcuts",
+      { title: "CursorRules Explained", points: ["User rules vs project rules", "Rules are additive, not overriding"] },
+      { title: "Real Rules I Use", points: ["Full walkthrough", "Exact rules used in studio.jaro.dev"] },
+      { title: "Modes Policy", points: ["Max Mode for planning", "Normal Mode for execution"] },
     ],
   },
   {
     number: "06",
-    title: "Production Workflows",
+    title: "Cursor Modes",
     lessons: [
-      "Checkpoints & Staging",
-      "Safe Reverts",
-      "Chaining Commands",
+      { title: "Mode Overview", points: ["Agent Mode - execution", "Plan Mode - architecture", "Ask Mode - questions", "Debug Mode - fixing issues", "Practical examples for each"] },
+    ],
+  },
+  {
+    number: "07",
+    title: "Token Optimization (Important)",
+    lessons: [
+      { title: "Context Is Expensive", points: ["Context is sent with every prompt", "Long chats = wasted tokens"] },
+      { title: "Golden Rule", points: ["New task = new agent tab", "Prevents summarization", "Preserves accuracy", "Saves tokens"] },
+      { title: "Models & Recommendation", points: ["Explanation of modes and models", "Recommended: Claude 4.5 Opus", "Max Mode only for planning"] },
+    ],
+  },
+  {
+    number: "08",
+    title: "Planning as a First-Class Artifact",
+    lessons: [
+      { title: "Planning Strategy", points: ["Planning before execution", "Add plans directly to repo", "Jacob Evans-style planning", "Agents execute against plans"] },
+    ],
+  },
+  {
+    number: "09",
+    title: "Staging & Checkpoints",
+    lessons: [
+      { title: "Clean Git History", points: ["Move to staging once stable", "Avoid messy commits"] },
+      { title: "Critical Warning", points: ["Do not manually edit files agents are editing", "Do not use undo (Ctrl/Cmd + Z)"] },
+      { title: "Proper Workflow", points: ["Queue commands", "Chain instructions", "Let agents finish fully"] },
+    ],
+  },
+  {
+    number: "10",
+    title: "Execution Modes",
+    lessons: [
+      { title: "Execution Options", points: ["Run everything", "Ask every time", "Sandbox execution"] },
+    ],
+  },
+  {
+    number: "11",
+    title: "Sandbox Configuration",
+    lessons: [
+      { title: "Sandbox Setup", points: ["Enable 'Run in Sandbox'", "Configure allowlist", "Control network access"] },
+    ],
+  },
+  {
+    number: "12",
+    title: "Worktrees",
+    lessons: [
+      { title: "Branch Management", points: ["Multiple branches simultaneously", "Feature isolation", "Zero context switching"] },
+    ],
+  },
+  {
+    number: "13",
+    title: "Keyboard Shortcuts",
+    lessons: [
+      { title: "Essential Shortcuts", points: ["Open chat", "Inject code / terminal", "Cursor settings", "Voice mode"] },
+      { title: "Terminal: Cmd + K", points: ["Generate terminal commands", "Kill ports", "Curl requests"] },
+    ],
+  },
+  {
+    number: "14",
+    title: "Prompting & Communication Mastery",
+    lessons: [
+      { title: "Research First", points: ["Always inspect codebase before prompting"] },
+      { title: "Communication Principles", points: ["Inverse pyramid", "Purpose-driven prompts", "Conciseness", "Right level of technical detail", "Be specific only when required"] },
+      { title: "Prompting as Specification", points: ["Constraints first", "Clear end goals"] },
+    ],
+  },
+  {
+    number: "15",
+    title: "Agentic Test-Driven Development",
+    lessons: [
+      { title: "Testing Strategy", points: ["Backend-focused tests", "Unit & integration tests", "Agents write tests alongside code"] },
+    ],
+  },
+  {
+    number: "16",
+    title: "MCP Servers",
+    lessons: [
+      { title: "MCP Overview", points: ["What MCP is", "Why it matters", "Build MCP for studio.jaro.dev"] },
+    ],
+  },
+  {
+    number: "17",
+    title: "UI Feedback with Images",
+    lessons: [
+      { title: "Visual Iteration", points: ["Upload UI screenshots into Cursor", "Get AI feedback on UX & layout", "Iterate visually, not just in code"] },
+    ],
+  },
+  {
+    number: "18",
+    title: "Commands & Automation Demos",
+    lessons: [
+      { title: "Automation", points: ["Cursor command deep links", "Demo: cleanup command", "Delete empty folders", "Remove unused files", "Fully automated hygiene"] },
+    ],
+  },
+  {
+    number: "19",
+    title: "Complete Application Build (Bonus)",
+    lessons: [
+      { title: "Build from Scratch", points: ["Analytics tool", "Pixel", "Dashboard", "Landing page", "MCP server", "Full source code included"] },
     ],
   },
 ];
 
 // Value stack items
 const valueStack = [
-  { title: "Complete Agentic Development System", desc: "The full methodology used by OpenAI engineers daily", value: 2997 },
-  { title: "Multi-Agent Orchestration Mastery", desc: "Run multiple AI agents on the same codebase without conflicts", value: 1997 },
-  { title: "Token Optimization Strategies", desc: "Save thousands in API costs with Claude 4.5 Opus techniques", value: 997 },
-  { title: "Production-Ready Cursor Rules Library", desc: "Pre-built rules files used in enterprise environments", value: 497 },
-  { title: "Voice-to-Code Development Module", desc: "Build features by speaking - the ultimate leverage", value: 797 },
-  { title: "Real-World Project Build-Along", desc: "Complete app from idea to deployed in hours, not weeks", value: 1497 },
-  { title: "Lifetime Updates + 2026 Cursor 2.0 Content", desc: "Stay current as Cursor evolves - never fall behind", value: 997 },
+  // Emotional/Outcome items
+  { title: "10x Productivity Multiplier", desc: "Ship in hours what takes others weeks. Your output becomes your unfair advantage.", value: 50000, isOutcome: true },
+  { title: "Career Security in the AI Economy", desc: "Never worry about being replaced. Become the engineer companies fight to keep.", value: 50000, isOutcome: true },
+  { title: "First-Year Salary Increase Potential", desc: "Top AI-native engineers command $100-200K more. This is your leverage.", value: 30000, isOutcome: true },
+  { title: "Side Project Freedom", desc: "Finally ship those ideas gathering dust. Build your SaaS, app, or startup in a weekend.", value: 25000, isOutcome: true },
+  // Course components
+  { title: "Complete Agentic Development System", desc: "The full methodology used by OpenAI engineers daily", value: 2997, isOutcome: true },
+  { title: "Production-Ready Cursor Rules Library", desc: "Pre-built rules files used in enterprise environments", value: 3000, isOutcome: true },
+  { title: "Lifetime Updates + All Future Content", desc: "Stay current as Cursor evolves - never fall behind again", value: 997, isOutcome: true },
 ];
 
 // Prerequisites
 const prerequisites = [
-  "Familiar with Git and version control",
   "Built or contributed to production applications",
   "Mid-to-senior level engineering experience",
   "Used AI tools like ChatGPT, Claude, or Copilot",
@@ -168,12 +269,15 @@ const prerequisites = [
 
 // Products data
 const products = [
-  { name: "RealGreatDevs", desc: "2M+ software engineer platform", hasLink: true, url: "https://realgreatdevs.com" },
-  { name: "Studio.jaro.dev", desc: "AI chat, agent integrations, meeting summaries to tasks, team management with RBAC", hasLink: true, url: "https://studio.jaro.dev" },
-  { name: "8 Apps at OpenAI", desc: "8 production applications shipped in 8 consecutive weeks", hasLink: false },
-  { name: "PivotalOS", desc: "Complete operating system for businesses", hasLink: false },
-  { name: "BusinessOS", desc: "Animated landing page", hasLink: true, url: "https://businessos.com" },
-  { name: "Apfol", desc: "Portfolio landing page", hasLink: false },
+  { name: "This Landing Page", desc: "You're looking at it. Built entirely with Cursor 2.0 and the techniques taught in this course.", isHighlighted: true, gif: "/previews/landing-page.gif" },
+  { name: "RealGreatDevs", desc: "Platform with 2M+ software engineers", gif: "/previews/realgreatdevs.gif" },
+  { name: "Studio.jaro.dev", desc: "Our internal platform at Jaro.dev, used to manage $1M/yr worth of projects", gif: "/previews/studio.gif" },
+  { name: "BusinessOS", desc: "A platform to run your business on autopilot, beautiful GSAP powered landing page", gif: "/previews/businessos.gif" },
+  { name: "Pivotal", desc: "Google ads automation platform for clinics", gif: "/previews/pivotal.gif" },
+  { name: "Raise", desc: "Investment platform of the future, integrating with government portals", gif: "/previews/raise.gif" },
+  { name: "ReviveDeadLinks", desc: "Bootstrapped SaaS profitable within 7 days", gif: "/previews/revivedeadlinks.gif" },
+  { name: "Devthusiast", desc: "AI Newsletter read by thousands of software engineers", gif: "/previews/devthusiast.gif" },
+  { name: "QwikLocker", desc: "Amazon Locker but for any ecommerce brand", gif: "/previews/qwiklocker.gif" },
 ];
 
 // Bonuses data
@@ -194,7 +298,7 @@ const faqData = [
   },
   {
     q: "Can my employer pay for this?",
-    a: "Yes. I provide an invoice and a template email for requesting reimbursement. Most companies approve professional development under $500 instantly.",
+    a: "Yes. I provide an invoice and a template email for requesting reimbursement.",
   },
   {
     q: "How do the 5 Slack questions work?",
@@ -290,6 +394,7 @@ export default function LandingPage() {
   const faqOpacity = useTransform(faqProgress, [0, 0.3], [0, 1]);
   
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+  const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
 
   return (
     <main className="min-h-screen bg-background text-foreground overflow-x-hidden noise-overlay">
@@ -547,9 +652,9 @@ export default function LandingPage() {
               <span className="font-serif italic text-destructive">You Will Be Left Behind</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              The AI economy is coming. Millions of jobs will be eliminated. This is not fear-mongering - this is what I see happening at OpenAI every day.
+              The AI economy is coming. Millions of jobs will be eliminated. This is not fear-mongering, it's a fact.
             </p>
-          </motion.div>
+            </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-16">
             <motion.div
@@ -565,50 +670,50 @@ export default function LandingPage() {
               </p>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
               transition={{ delay: 0.15 }}
               className="p-8 border border-destructive/20 bg-background"
-            >
+                >
               <h3 className="text-lg font-medium font-sans mb-3">You&apos;re Being Outpaced</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-sm leading-relaxed">
                 Junior developers with AI skills are shipping faster than senior engineers without them. The hierarchy is being rewritten. Your experience becomes a liability, not an asset.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="p-8 border border-destructive/20 bg-background"
-            >
-              <h3 className="text-lg font-medium font-sans mb-3">Wasting 80% of Your Time</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Every hour you spend manually coding is an hour someone else is using to build 10x more. The gap widens daily. Your learning curve is their shipping speed.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.25 }}
-              className="p-8 border border-destructive/20 bg-background"
-            >
-              <h3 className="text-lg font-medium font-sans mb-3">Missing $100K+ Opportunities</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Top AI-native engineers at companies like OpenAI earn $300-500K+. These roles won&apos;t exist in 2 years - they&apos;ll be table stakes, not differentiators.
-              </p>
-            </motion.div>
-          </div>
+                  </p>
+          </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 }}
+              className="p-8 border border-destructive/20 bg-background"
+                >
+              <h3 className="text-lg font-medium font-sans mb-3">Wasting 80% of Your Time</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                Every hour you spend manually coding is an hour someone else is using to build 10x more. The gap widens daily. Your learning curve is their shipping speed.
+                  </p>
+          </motion.div>
+
+          <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+              transition={{ delay: 0.25 }}
+              className="p-8 border border-destructive/20 bg-background"
+                >
+              <h3 className="text-lg font-medium font-sans mb-3">Missing $200K+ Opportunities</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                Top AI-native engineers at companies like OpenAI earn $200-500K+. These roles won&apos;t exist in 2 years, everyone will be using agentic development by default.
+                  </p>
+                </motion.div>
+          </div>
+
+                <motion.div
+            initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
             transition={{ delay: 0.3 }}
             className="border border-destructive/30 bg-background p-8 md:p-12"
           >
@@ -620,7 +725,7 @@ export default function LandingPage() {
                 "Miss out on $100K+ salary increases",
                 "Spend years doing what others do in days",
                 "Become obsolete in your own field",
-                "Struggle to find work in 2-3 years"
+                "Struggle to find work in 1-2 years"
               ].map((item, i) => (
                 <motion.div
                   key={i}
@@ -645,7 +750,7 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+              viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
@@ -662,58 +767,58 @@ export default function LandingPage() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-16">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
               transition={{ delay: 0.1 }}
               className="p-8 border border-accent/20 bg-accent/5"
-            >
+                >
               <h3 className="text-lg font-medium font-sans mb-3">10x Your Output Immediately</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-sm leading-relaxed">
                 Ship in hours what used to take weeks. Build complete applications in a single sitting. The backlog of ideas you&apos;ve been meaning to build finally gets built.
-              </p>
-            </motion.div>
+                  </p>
+                </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
               transition={{ delay: 0.15 }}
               className="p-8 border border-accent/20 bg-accent/5"
-            >
+                >
               <h3 className="text-lg font-medium font-sans mb-3">Future-Proof Your Career</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-sm leading-relaxed">
                 Become one of the engineers who thrives in the AI economy instead of being replaced by it. When layoffs come, they don&apos;t cut the person shipping 10x.
-              </p>
-            </motion.div>
+                  </p>
+                </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
               transition={{ delay: 0.2 }}
               className="p-8 border border-accent/20 bg-accent/5"
-            >
+                >
               <h3 className="text-lg font-medium font-sans mb-3">Think It, Build It</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-sm leading-relaxed">
                 Any software idea you can imagine can be reality in minutes. The highest leverage a human has ever had. You&apos;re not competing with AI - you&apos;re commanding it.
-              </p>
-            </motion.div>
+                  </p>
+                </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
               transition={{ delay: 0.25 }}
               className="p-8 border border-accent/20 bg-accent/5"
-            >
+                >
               <h3 className="text-lg font-medium font-sans mb-3">Join the Top 1%</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-sm leading-relaxed">
                 Get the exact skills that OpenAI, Google, and top startups are desperately hiring for. The exact prompts and workflows that took 40+ engineers months to refine.
-              </p>
-            </motion.div>
-          </div>
+                  </p>
+                </motion.div>
+              </div>
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -742,9 +847,9 @@ export default function LandingPage() {
                 >
                   <Check className="w-4 h-4 text-accent shrink-0" />
                   <span className="text-sm text-foreground">{item}</span>
-                </motion.div>
+            </motion.div>
               ))}
-            </div>
+              </div>
           </motion.div>
 
           {/* Bottom CTA */}
@@ -756,8 +861,8 @@ export default function LandingPage() {
             className="mt-16 text-center"
           >
             <p className="text-xl md:text-2xl font-medium font-sans mb-8">
-              The question isn&apos;t whether you can afford $497.
-              <br />
+              The question isn&apos;t whether you can afford $999.
+                  <br />
               <span className="text-muted-foreground">It&apos;s whether you can afford to be left behind.</span>
             </p>
             <a
@@ -792,15 +897,35 @@ export default function LandingPage() {
               
               <div className="flex items-center gap-4 mb-8">
               <motion.div
-                  className="w-16 h-16 bg-accent text-accent-foreground flex items-center justify-center text-2xl font-serif"
+                  className="w-16 h-16 rounded-full overflow-hidden"
                   whileHover={{ scale: 1.1, rotate: 5 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  J
+                  <Image 
+                    src="/profile.jpeg" 
+                    alt="Jaro Vorobey" 
+                    width={64} 
+                    height={64} 
+                    className="w-full h-full object-cover"
+                  />
                 </motion.div>
                 <div>
-                  <p className="font-medium text-lg">Jaro</p>
-                  <p className="text-muted-foreground text-sm">Engineering Manager at OpenAI</p>
+                  <a 
+                    href="https://www.linkedin.com/in/jaro-vorobey/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="font-medium text-lg hover:text-accent transition-colors"
+                  >
+                    Jaro Vorobey
+                  </a>
+                  <p className="text-muted-foreground text-sm">
+                    Engineering Manager at{" "}
+                    <a href="https://openai.com" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">OpenAI</a>
+                  </p>
+                  <p className="text-muted-foreground text-sm">
+                    Founder of{" "}
+                    <a href="https://jaro.dev" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Jaro.dev</a>
+                  </p>
                   </div>
                 </div>
 
@@ -815,10 +940,11 @@ export default function LandingPage() {
             >
               <ul className="space-y-6 mb-10">
                 {[
-                  { text: "Leading a team of 40+ senior software engineers at OpenAI" },
-                  { text: "Previously at JPMorgan & Deutsche Bank (Fortune 500)" },
-                  { text: "Top 0.1% on GitHub" },
-                  { text: "Engineers using these techniques earn $300-500K+ per year" },
+                  { content: <>Leading a team of 40+ senior software engineers at OpenAI</> },
+                  { content: <>Founded <a href="https://jaro.dev" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Jaro.dev</a>, a 7-figure software agency</> },
+                  { content: <>Previously at JPMorgan & Deutsche Bank (Fortune 500)</> },
+                  { content: <>Top 0.1% on GitHub</> },
+                  { content: <>Engineers using these techniques earn $300-500K+ per year</> },
                 ].map((item, i) => (
                   <motion.li
                     key={i}
@@ -834,7 +960,7 @@ export default function LandingPage() {
                       viewport={{ once: true }}
                       transition={{ delay: 0.5 + i * 0.15, duration: 0.4 }}
                     />
-                    <span className="text-foreground/80">{item.text}</span>
+                    <span className="text-foreground/80">{item.content}</span>
                   </motion.li>
                     ))}
                   </ul>
@@ -871,21 +997,54 @@ export default function LandingPage() {
             {products.map((product, i) => (
           <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 40, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: i * 0.1, duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
-                whileHover={{ scale: 1.02 }}
-                onClick={() => product.hasLink && product.url && window.open(product.url, '_blank')}
-                className={`bg-background p-8 group hover:bg-muted/30 transition-colors ${product.hasLink ? 'cursor-pointer' : ''}`}
+                onMouseEnter={() => setHoveredProduct(i)}
+                onMouseLeave={() => setHoveredProduct(null)}
+                className={`relative p-8 group hover:bg-muted/30 transition-colors ${product.isHighlighted ? 'bg-accent/10 border-l-2 border-accent' : 'bg-background'}`}
               >
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="text-lg font-medium font-sans">{product.name}</h3>
-                  {product.hasLink && (
-                    <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" />
-                  )}
+                <div className="mb-4">
+                  <h3 className={`text-lg font-medium font-sans ${product.isHighlighted ? 'text-accent' : ''}`}>{product.name}</h3>
                   </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">{product.desc}</p>
+                
+                {/* GIF Preview on Hover */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ 
+                    opacity: hoveredProduct === i ? 1 : 0,
+                    y: hoveredProduct === i ? 0 : 10,
+                    scale: hoveredProduct === i ? 1 : 0.95,
+                  }}
+                  transition={{ 
+                    duration: 0.2, 
+                    ease: "easeOut",
+                    delay: hoveredProduct === i ? 0.15 : 0,
+                  }}
+                  className={`absolute left-1/2 -translate-x-1/2 bottom-full mb-4 z-50 ${hoveredProduct === i ? 'pointer-events-auto' : 'pointer-events-none'}`}
+                >
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-linear-to-t from-background/80 to-transparent rounded-lg" />
+                    <div className="w-80 h-48 bg-muted rounded-lg overflow-hidden border border-border shadow-2xl flex items-center justify-center">
+                      {product.gif ? (
+                        <Image 
+                          src={product.gif} 
+                          alt={`${product.name} preview`}
+                          width={320}
+                          height={192}
+                          className="w-full h-full object-cover"
+                          unoptimized
+                        />
+                      ) : (
+                        <span className="text-muted-foreground text-sm">Preview coming soon</span>
+                      )}
+                    </div>
+                    {/* Arrow pointing down */}
+                    <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-4 h-4 bg-muted border-r border-b border-border rotate-45" />
+                  </div>
+                </motion.div>
               </motion.div>
             ))}
         </div>
@@ -896,7 +1055,7 @@ export default function LandingPage() {
       <section ref={curriculumRef} className="py-32 px-6 border-t border-border">
             <motion.div
           style={{ y: curriculumY, opacity: curriculumOpacity }}
-          className="max-w-4xl mx-auto"
+          className="max-w-3xl mx-auto"
         >
           <p className="text-xs tracking-[0.3em] text-muted-foreground uppercase mb-8">
             Course Curriculum
@@ -907,40 +1066,105 @@ export default function LandingPage() {
           </h2>
           
           <p className="text-muted-foreground text-lg mb-16">
-            A complete system for AI-native development with Cursor 2.0
+            19 sections. 50+ lessons. A complete system for AI-native development.
           </p>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {courseModules.map((module, i) => (
+          <div className="space-y-8">
+            {courseSections.map((section, i) => (
             <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-30px" }}
-                transition={{ delay: i * 0.08, duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
-                className="p-6 border border-border hover:border-accent/30 transition-colors"
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5 }}
+                className="border-l-2 border-accent/30 pl-6"
               >
-                <div className="flex items-start gap-4 mb-4">
-                  <span className="text-2xl font-light text-accent">
-                    {module.number}
-                  </span>
-                  <h3 className="text-lg font-medium font-sans">{module.title}</h3>
+                <div className="flex items-baseline gap-3 mb-6">
+                  <span className="text-xs tracking-[0.2em] text-accent uppercase font-medium">
+                    Section {section.number}
+                    </span>
+                  <span className="text-muted-foreground/30">-</span>
+                  <h3 className="text-xl font-medium font-sans">{section.title}</h3>
                 </div>
-                <ul className="space-y-2 pl-10">
-                  {module.lessons.map((lesson, j) => (
-                    <li 
-                      key={j} 
-                      className="flex items-center gap-3 text-sm text-muted-foreground"
-                    >
-                      <span className="w-1 h-1 bg-accent/50" />
-                      {lesson}
-                    </li>
+                
+                <div className="space-y-4">
+                  {section.lessons.map((lesson, j) => (
+                    <div key={j} className="pl-4">
+                      <p className="text-sm font-medium text-foreground mb-2">
+                        {section.number}.{j + 1} {lesson.title}
+                      </p>
+                      <ul className="space-y-1 pl-4">
+                        {lesson.points.map((point, k) => (
+                          <li 
+                            key={k} 
+                            className="flex items-start gap-2 text-sm text-muted-foreground"
+                          >
+                            <span className="w-1 h-1 bg-muted-foreground/50 mt-2 shrink-0" />
+                            {point}
+                          </li>
+                    ))}
+                  </ul>
+                    </div>
                   ))}
-                </ul>
+                </div>
           </motion.div>
             ))}
         </div>
         </motion.div>
+      </section>
+
+      {/* Course Promise Section */}
+      <section className="py-32 px-6 border-t border-border">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <p className="text-xs tracking-[0.3em] text-accent uppercase mb-6">
+              Course Promise
+            </p>
+            <h2 className="text-4xl md:text-5xl font-medium tracking-tight font-sans mb-6">
+              By the End of This Course, <br />
+              <span className="font-serif italic text-accent">You Will Be Able To:</span>
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-12">
+            {[
+              "Build entire production applications with AI agents",
+              "Delegate nearly all execution to Cursor agents",
+              "Parallelize development like a team - as a solo engineer",
+              "Debug faster than you ever thought possible",
+              "Turn any software idea into a live product",
+              "Stay relevant, employable, and dominant in the AI economy",
+            ].map((promise, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                className="flex items-start gap-4 p-6 border border-border hover:border-accent/30 transition-colors"
+              >
+                <Check className="w-5 h-5 text-accent mt-0.5 shrink-0" />
+                <span className="text-foreground">{promise}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.6 }}
+            className="text-center text-xl font-medium font-sans"
+          >
+            This is <span className="text-accent">top-echelon AI engineering</span>, not prompt hacking.
+          </motion.p>
+        </div>
       </section>
 
       {/* Value Stack Section */}
@@ -965,40 +1189,74 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{ delay: i * 0.08, duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
-                className="flex items-start justify-between py-6 border-b border-border"
+                className={`flex items-start justify-between py-6 border-b border-border ${item.isOutcome ? 'bg-accent/5 -mx-4 px-4' : ''}`}
               >
                 <div className="flex items-start gap-4 flex-1 pr-8">
-                  <Check className="w-5 h-5 text-accent mt-0.5 shrink-0" />
+                  <Check className={`w-5 h-5 mt-0.5 shrink-0 ${item.isOutcome ? 'text-accent' : 'text-muted-foreground'}`} />
                   <div>
-                    <h3 className="text-lg font-medium mb-1 font-sans">{item.title}</h3>
+                    <h3 className={`text-lg font-medium mb-1 font-sans ${item.isOutcome ? 'text-foreground' : ''}`}>{item.title}</h3>
                     <p className="text-sm text-muted-foreground">{item.desc}</p>
-                  </div>
+                </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <span className="text-lg font-medium text-muted-foreground">${item.value.toLocaleString()} <span className="text-sm font-normal">value</span></span>
+                  <span className={`font-medium ${item.isOutcome ? 'text-xl text-accent' : 'text-lg text-muted-foreground'}`}>
+                    ${item.value.toLocaleString()} <span className="text-sm font-normal">value</span>
+                  </span>
                 </div>
                 </motion.div>
               ))}
           </div>
 
-          <motion.div
+                <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+                  viewport={{ once: true }}
             transition={{ delay: 0.5 }}
             className="mt-12 p-8 border border-accent bg-accent/5"
           >
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Total Value:</p>
-                <p className="text-3xl font-medium font-sans line-through text-muted-foreground">$9,779</p>
-              </div>
-              <div className="md:text-right">
-                <p className="text-sm text-accent mb-1">Your Price Today:</p>
-                <p className="text-4xl font-medium font-sans text-accent">$999</p>
-                <p className="text-sm text-muted-foreground mt-1">Save 89% Today</p>
-              </div>
-            </div>
+            <div className="text-center mb-8">
+              <p className="text-xs tracking-[0.2em] text-muted-foreground uppercase mb-2">Total Value:</p>
+              <motion.div 
+                className="relative inline-block mb-6"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+              >
+                <span className="text-4xl md:text-5xl font-medium font-sans text-muted-foreground/60">$161,994</span>
+                <motion.div 
+                  className="absolute left-0 top-1/2 h-[3px] bg-destructive"
+                  variants={{
+                    hidden: { width: "0%", x: "-10%" },
+                    visible: { width: "120%", x: "-10%" }
+                  }}
+                  transition={{ 
+                    duration: 0.8, 
+                    delay: 0.3,
+                    ease: [0.33, 1, 0.68, 1]
+                  }}
+                />
+              </motion.div>
+              <div className="w-16 h-px bg-accent/30 mx-auto mb-6" />
+              <p className="text-xs tracking-[0.2em] text-accent uppercase mb-2">Your Price Today:</p>
+              <motion.p 
+                className="text-6xl md:text-7xl font-medium font-sans text-accent"
+                initial={{ scale: 0.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.8, duration: 0.5, type: "spring", stiffness: 200 }}
+              >
+                $999
+              </motion.p>
+              <motion.p 
+                className="inline-block mt-4 px-4 py-1.5 bg-accent/20 text-accent text-sm font-medium"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 1.1, duration: 0.4 }}
+              >
+                Save 99% Today
+              </motion.p>
+          </div>
             <a
               href="#pricing"
               className="group flex items-center justify-center gap-3 w-full py-4 bg-accent text-accent-foreground text-sm font-medium tracking-wide hover:bg-accent/90 transition-colors"
@@ -1013,7 +1271,7 @@ export default function LandingPage() {
       {/* Is This For You Section */}
       <section className="py-32 px-6 border-t border-border">
         <div className="max-w-3xl mx-auto">
-          <motion.div
+            <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -1025,7 +1283,7 @@ export default function LandingPage() {
             </p>
             <h2 className="text-4xl md:text-5xl font-medium tracking-tight font-sans mb-6">
               Is This Course <span className="font-serif italic text-accent">For You?</span>
-            </h2>
+          </h2>
             <p className="text-lg text-muted-foreground">
               This is an advanced course. You should have:
             </p>
@@ -1033,11 +1291,11 @@ export default function LandingPage() {
 
           <div className="space-y-4 mb-12">
             {prerequisites.map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+          <motion.div
+                    key={i} 
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 className="flex items-center gap-4 p-4 border border-border"
               >
@@ -1061,7 +1319,7 @@ export default function LandingPage() {
 
       {/* Pricing Section */}
       <section ref={pricingRef} id="pricing" className="py-32 px-6 border-t border-border bg-accent/5">
-            <motion.div
+          <motion.div
           style={{ scale: pricingScale, opacity: pricingOpacity, y: pricingY }}
           className="max-w-3xl mx-auto text-center"
         >
@@ -1095,7 +1353,7 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.95 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true }}
+                  viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.6 }}
             className="p-12 border-2 border-accent bg-background max-w-lg mx-auto"
           >
@@ -1104,21 +1362,21 @@ export default function LandingPage() {
               <span className="text-6xl font-medium font-sans">$999</span>
             </div>
             <p className="text-muted-foreground mb-8">One-time payment. Lifetime access. All future updates.</p>
-            
-            <motion.a
-              href="#"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              
+              <motion.a
+                href="#"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               className="group flex items-center justify-center gap-3 w-full py-5 bg-accent text-accent-foreground text-base font-medium tracking-wide hover:bg-accent/90 transition-colors mb-4"
-            >
+              >
               <span>Get Instant Access Now</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </motion.a>
+              </motion.a>
             
             <p className="text-sm text-muted-foreground">
               Secure checkout. Start learning in minutes.
             </p>
-          </motion.div>
+            </motion.div>
 
           <motion.div
             initial={{ opacity: 0 }}
