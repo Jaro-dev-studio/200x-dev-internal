@@ -8,8 +8,6 @@ import {
   Play,
   Check,
   X,
-  Github,
-  Twitter,
   Plus,
   Rocket,
   Bot,
@@ -205,6 +203,7 @@ const valueStack = [
   { title: "Complete Agentic Development System", desc: "The full methodology used by OpenAI engineers daily", value: 6997, isOutcome: true },
   { title: "Production-Ready Cursor Rules Library", desc: "Pre-built rules files used in enterprise environments", value: 3000, isOutcome: true },
   { title: "Lifetime Updates + All Future Content", desc: "Stay current as Cursor evolves - never fall behind again", value: 2999, isOutcome: true },
+  { title: "5 Slack Questions with 48hr Response", desc: "Direct access to ask questions and get personalized guidance", value: 500, isOutcome: true },
 ];
 
 // Prerequisites
@@ -269,9 +268,12 @@ export default function LandingPage() {
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const heroY = useTransform(heroProgress, [0, 1], [0, 300]);
-  const heroOpacity = useTransform(heroProgress, [0, 0.6], [1, 0]);
-  const heroScale = useTransform(heroProgress, [0, 1], [1, 0.9]);
+  const heroY = useTransform(heroProgress, [0.2, 1], [0, 300]);
+  const heroOpacity = useTransform(heroProgress, [0.3, 0.9], [1, 0]);
+  const heroScale = useTransform(heroProgress, [0.2, 1], [1, 0.9]);
+  
+  // Bottom bar visibility - show after hero is scrolled
+  const bottomBarOpacity = useTransform(heroProgress, [0.4, 0.6], [0, 1]);
 
   // Who section scroll animation  
   const whoRef = useRef<HTMLDivElement>(null);
@@ -357,29 +359,21 @@ export default function LandingPage() {
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <span className="text-sm font-medium tracking-wide">200x</span>
-          <a
-            href="#pricing"
-            className="hidden md:block text-sm px-5 py-2.5 bg-foreground text-background hover:bg-foreground/90 transition-colors"
-          >
-            Get Access
-          </a>
         </div>
       </motion.nav>
 
-      {/* Mobile Bottom Bar */}
+      {/* Bottom Bar CTA - Full width on mobile, floating button on desktop */}
       <motion.div
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.8, duration: 0.5 }}
-        className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-background/95 backdrop-blur-sm border-t border-border md:hidden"
+        style={{ opacity: bottomBarOpacity }}
+        className="fixed bottom-0 left-0 right-0 md:bottom-auto md:top-5 md:left-auto md:right-6 z-50 p-4 md:p-0 bg-background/95 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none border-t border-border md:border-0"
       >
-        <a
-          href="#pricing"
-          className="flex items-center justify-center gap-2 w-full py-3.5 bg-accent text-accent-foreground text-sm font-medium tracking-wide"
-        >
+          <a
+            href="#pricing"
+          className="flex items-center justify-center gap-2 w-full md:w-auto py-3.5 md:py-3 md:px-8 bg-accent text-accent-foreground text-sm font-medium tracking-wide hover:brightness-110 transition-all md:shadow-lg md:shadow-accent/25 hover:md:shadow-xl hover:md:shadow-accent/30 hover:md:scale-105"
+          >
           <span>Get Access</span>
           <ArrowRight className="w-4 h-4" />
-        </a>
+          </a>
       </motion.div>
 
       {/* Hero Section */}
@@ -1331,7 +1325,7 @@ export default function LandingPage() {
                 whileInView="visible"
                 viewport={{ once: true }}
               >
-                <span className="text-4xl md:text-5xl font-medium font-sans text-muted-foreground/60">$167,996</span>
+                <span className="text-4xl md:text-5xl font-medium font-sans text-muted-foreground/60">$168,496</span>
                 <motion.div 
                   className="absolute left-0 top-1/2 h-[3px] bg-destructive"
                   variants={{
@@ -1549,25 +1543,8 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           <span className="text-sm font-medium tracking-wide">200x</span>
           
-          <div className="flex items-center gap-6">
-              <motion.a
-              href="#" 
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              whileHover={{ scale: 1.2, rotate: 5 }}
-            >
-              <Twitter className="w-5 h-5" />
-              </motion.a>
-            <motion.a 
-              href="#" 
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              whileHover={{ scale: 1.2, rotate: -5 }}
-            >
-              <Github className="w-5 h-5" />
-            </motion.a>
-          </div>
-          
           <p className="text-sm text-muted-foreground">
-            2025 Cursor Mastery. All rights reserved.
+            {new Date().getFullYear()} 200x. All rights reserved.
           </p>
         </div>
       </motion.footer>
