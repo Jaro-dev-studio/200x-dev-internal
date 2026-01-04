@@ -903,14 +903,40 @@ export default function LandingPage() {
             Products I Built Using <span className="font-serif italic text-accent">This System</span>
               </h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
+          <motion.div 
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-border"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.08,
+                  delayChildren: 0.1,
+                }
+              }
+            }}
+          >
             {products.map((product, i) => (
           <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: i * 0.1, duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
+                variants={{
+                  hidden: { 
+                    opacity: 0, 
+                    scale: 0.9,
+                    y: 30,
+                  },
+                  visible: { 
+                    opacity: 1, 
+                    scale: 1,
+                    y: 0,
+                    transition: {
+                      duration: 0.5,
+                      ease: [0.25, 0.46, 0.45, 0.94],
+                    }
+                  }
+                }}
                 onMouseEnter={() => setHoveredProduct(i)}
                 onMouseLeave={() => setHoveredProduct(null)}
                 onMouseMove={(e) => {
@@ -989,7 +1015,7 @@ export default function LandingPage() {
                 </motion.div>
               </motion.div>
             ))}
-        </div>
+          </motion.div>
         </motion.div>
       </section>
 
