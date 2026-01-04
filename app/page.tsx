@@ -92,98 +92,78 @@ function ParallaxSection({
 const courseModules = [
   {
     number: "01",
-    title: "The Mental Model Shift",
-    before: "Treating AI like autocomplete",
-    after: "Directing AI like a team of engineers",
+    title: "Cursor 2.0 Foundations",
     lessons: [
-      "Why thinking of AI as a 'tool' kills productivity",
-      "The cognitive bottleneck theory",
-      "When AI outperforms humans (and when it doesn't)",
+      "Initial Settings & Security",
+      "Blocking External File Access",
+      "Model Selection Strategy",
     ],
   },
   {
     number: "02",
-    title: "Cursor Environment Mastery",
-    before: "Default settings, no rules, constant context loss",
-    after: "Optimized setup that maintains context across sessions",
+    title: "Multi-Agent Orchestration",
     lessons: [
-      "MCP setup and token management",
-      "Documentation integration",
-      "The cursor rules file",
-      "Worktrees for parallel work",
+      "Running Parallel Agents",
+      "Conflict Prevention",
+      "Context Isolation",
     ],
   },
   {
     number: "03",
-    title: "The Three Modes",
-    before: "Using Agent mode for everything",
-    after: "Strategic mode selection for each task type",
+    title: "Cursor Rules Mastery",
     lessons: [
-      "Agent mode: when to YOLO",
-      "Plan mode: thinking before doing",
-      "Ask mode: exploration without changes",
+      "User Rules vs Project Rules",
+      "Summative Rule Systems",
+      "Enterprise Rule Libraries",
     ],
   },
   {
     number: "04",
-    title: "Prompting as Engineering",
-    before: "Vague prompts, unpredictable outputs",
-    after: "Precise specifications, consistent results",
+    title: "Token Optimization",
     lessons: [
-      "Prompting is specification writing",
-      "Constraint-first prompting",
-      "The inverse pyramid method",
-      "Building reusable prompt primitives",
+      "MaxMode for Planning Only",
+      "Context Management",
+      "Claude 4.5 Opus Workflows",
     ],
   },
   {
     number: "05",
-    title: "The Agentic Development Loop",
-    before: "Linear, one-shot attempts",
-    after: "Iterative loops with quality gates",
+    title: "Advanced Techniques",
     lessons: [
-      "Plan -> Execute -> Critique -> Refine",
-      "Agentic Test-Driven Development",
-      "One-shot mentality",
-      "When to intervene vs let it loop",
+      "Image Feedback for UI",
+      "Command Automation",
+      "Keyboard Shortcuts",
     ],
   },
   {
     number: "06",
-    title: "Parallelization & Orchestration",
-    before: "One task at a time",
-    after: "Multiple agents working simultaneously",
+    title: "Production Workflows",
     lessons: [
-      "Running multiple agents simultaneously",
-      "Bake-offs between models",
-      "The plan/implement split",
-      "Managing multiple contexts",
+      "Checkpoints & Staging",
+      "Safe Reverts",
+      "Chaining Commands",
     ],
   },
-  {
-    number: "07",
-    title: "Checkpoints & Recovery",
-    before: "Starting over when things break",
-    after: "Instant rollback, zero lost work",
-    lessons: [
-      "The checkpoint system",
-      "Rollback strategies",
-      "Escape patterns for stuck agents",
-      "Strategic logging",
-    ],
-  },
-  {
-    number: "08",
-    title: "Real-World Case Study",
-    before: "Theory without practice",
-    after: "See exactly how it's done",
-    lessons: [
-      "Full feature implementation walkthrough",
-      "Every prompt annotated",
-      "Decision commentary",
-      "'Why I rejected X' moments",
-    ],
-  },
+];
+
+// Value stack items
+const valueStack = [
+  { title: "Complete Agentic Development System", desc: "The full methodology used by OpenAI engineers daily", value: 2997 },
+  { title: "Multi-Agent Orchestration Mastery", desc: "Run multiple AI agents on the same codebase without conflicts", value: 1997 },
+  { title: "Token Optimization Strategies", desc: "Save thousands in API costs with Claude 4.5 Opus techniques", value: 997 },
+  { title: "Production-Ready Cursor Rules Library", desc: "Pre-built rules files used in enterprise environments", value: 497 },
+  { title: "Voice-to-Code Development Module", desc: "Build features by speaking - the ultimate leverage", value: 797 },
+  { title: "Real-World Project Build-Along", desc: "Complete app from idea to deployed in hours, not weeks", value: 1497 },
+  { title: "Lifetime Updates + 2026 Cursor 2.0 Content", desc: "Stay current as Cursor evolves - never fall behind", value: 997 },
+];
+
+// Prerequisites
+const prerequisites = [
+  "Familiar with Git and version control",
+  "Built or contributed to production applications",
+  "Mid-to-senior level engineering experience",
+  "Used AI tools like ChatGPT, Claude, or Copilot",
+  "Understand prompting and context basics",
 ];
 
 // Products data
@@ -197,12 +177,6 @@ const products = [
 ];
 
 // Bonuses data
-const bonuses = [
-  { title: ".cursorrules File & Folder", desc: "My complete production configuration-rules, worktrees, sub-agents, everything", value: 197 },
-  { title: "One-Shot Prompt Library", desc: "Battle-tested prompts for building applications from scratch", value: 97 },
-  { title: "5 Slack Questions", desc: "Direct access to me. Attach screen recordings for better answers. 48hr response.", value: 250 },
-  { title: "$100 Towards 10x Engineer Course", desc: "Leave a review and get $100 credit towards my upcoming advanced course", value: 100 },
-];
 
 // FAQ data
 const faqData = [
@@ -316,7 +290,6 @@ export default function LandingPage() {
   const faqOpacity = useTransform(faqProgress, [0, 0.3], [0, 1]);
   
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
-  const [expandedModule, setExpandedModule] = useState<number | null>(0);
 
   return (
     <main className="min-h-screen bg-background text-foreground overflow-x-hidden noise-overlay">
@@ -483,13 +456,13 @@ export default function LandingPage() {
             </div>
           </motion.div>
 
-          {/* Solution */}
+          {/* What You'll Learn */}
           <ParallaxSection className="mb-24 py-16 border-y border-border" yOffset={60}>
             <p className="text-xs tracking-[0.3em] text-muted-foreground uppercase mb-8">
-              My Solution
+              This course will teach you
             </p>
             <p className="text-2xl md:text-3xl font-medium leading-relaxed max-w-4xl font-sans">
-              A complete workflow for directing AI like a team of engineers-with parallel agents, deterministic quality gates, and instant recovery when things go wrong.
+              How to orchestrate AI agents like a team of engineers-running them in parallel, enforcing quality gates, and recovering instantly when things break.
             </p>
           </ParallaxSection>
 
@@ -556,7 +529,117 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Stakes Section - Consequence Framing */}
+      {/* Risk Section - If You Don't Learn This */}
+      <section className="py-32 px-6 border-t border-border bg-destructive/5">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <p className="text-xs tracking-[0.3em] text-destructive uppercase mb-6">
+              The Warning
+            </p>
+            <h2 className="text-4xl md:text-5xl font-medium tracking-tight font-sans mb-6">
+              If You Don&apos;t Learn This, <br />
+              <span className="font-serif italic text-destructive">You Will Be Left Behind</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              The AI economy is coming. Millions of jobs will be eliminated. This is not fear-mongering - this is what I see happening at OpenAI every day.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="p-8 border border-destructive/20 bg-background"
+            >
+              <h3 className="text-lg font-medium font-sans mb-3">Your Job Is At Risk</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Millions of engineering jobs will be eliminated in the AI economy. Companies are already replacing entire teams with engineers who use AI effectively.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.15 }}
+              className="p-8 border border-destructive/20 bg-background"
+            >
+              <h3 className="text-lg font-medium font-sans mb-3">You&apos;re Being Outpaced</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Junior developers with AI skills are shipping faster than senior engineers without them. The hierarchy is being rewritten. Your experience becomes a liability, not an asset.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="p-8 border border-destructive/20 bg-background"
+            >
+              <h3 className="text-lg font-medium font-sans mb-3">Wasting 80% of Your Time</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Every hour you spend manually coding is an hour someone else is using to build 10x more. The gap widens daily. Your learning curve is their shipping speed.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.25 }}
+              className="p-8 border border-destructive/20 bg-background"
+            >
+              <h3 className="text-lg font-medium font-sans mb-3">Missing $100K+ Opportunities</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Top AI-native engineers at companies like OpenAI earn $300-500K+. These roles won&apos;t exist in 2 years - they&apos;ll be table stakes, not differentiators.
+              </p>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="border border-destructive/30 bg-background p-8 md:p-12"
+          >
+            <h3 className="text-lg font-medium font-sans mb-6 text-destructive">What Happens If You Do Nothing:</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              {[
+                "Watch junior developers get promoted over you",
+                "Lose your job to someone with AI skills",
+                "Miss out on $100K+ salary increases",
+                "Spend years doing what others do in days",
+                "Become obsolete in your own field",
+                "Struggle to find work in 2-3 years"
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4 + i * 0.05 }}
+                  className="flex items-center gap-3"
+                >
+                  <X className="w-4 h-4 text-destructive shrink-0" />
+                  <span className="text-sm text-muted-foreground">{item}</span>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Transformation Section - What You Get */}
       <section className="py-32 px-6 border-t border-border">
         <div className="max-w-5xl mx-auto">
           <motion.div
@@ -564,156 +647,124 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-20"
+            className="text-center mb-16"
           >
-            <p className="text-xs tracking-[0.3em] text-muted-foreground uppercase mb-6">
-              The Stakes
+            <p className="text-xs tracking-[0.3em] text-accent uppercase mb-6">
+              The Transformation
             </p>
             <h2 className="text-4xl md:text-5xl font-medium tracking-tight font-sans mb-6">
-              Two paths. <span className="font-serif italic text-accent">One choice.</span>
+              Imagine What You Could Build <br />
+              <span className="font-serif italic text-accent">With Superpowers</span>
             </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              For the first time in history, one person can build what used to require entire teams. Any idea. Any scale. In hours, not months.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="p-8 border border-accent/20 bg-accent/5"
+            >
+              <h3 className="text-lg font-medium font-sans mb-3">10x Your Output Immediately</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Ship in hours what used to take weeks. Build complete applications in a single sitting. The backlog of ideas you&apos;ve been meaning to build finally gets built.
+              </p>
             </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-12 md:gap-20">
-            {/* Without - Left Column */}
             <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
+              transition={{ delay: 0.15 }}
+              className="p-8 border border-accent/20 bg-accent/5"
             >
-              <p className="text-sm font-medium text-destructive mb-8 tracking-wide">Without this system:</p>
-              
-              <div className="space-y-8">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <h3 className="text-lg font-medium font-sans mb-2">You keep falling behind</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    Every week, engineers half your age ship twice as much. The gap compounds. Your experience becomes a liability, not an asset.
-                  </p>
-          </motion.div>
+              <h3 className="text-lg font-medium font-sans mb-3">Future-Proof Your Career</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Become one of the engineers who thrives in the AI economy instead of being replaced by it. When layoffs come, they don&apos;t cut the person shipping 10x.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="p-8 border border-accent/20 bg-accent/5"
+            >
+              <h3 className="text-lg font-medium font-sans mb-3">Think It, Build It</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Any software idea you can imagine can be reality in minutes. The highest leverage a human has ever had. You&apos;re not competing with AI - you&apos;re commanding it.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.25 }}
+              className="p-8 border border-accent/20 bg-accent/5"
+            >
+              <h3 className="text-lg font-medium font-sans mb-3">Join the Top 1%</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Get the exact skills that OpenAI, Google, and top startups are desperately hiring for. The exact prompts and workflows that took 40+ engineers months to refine.
+              </p>
+            </motion.div>
+          </div>
 
           <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <h3 className="text-lg font-medium font-sans mb-2">You miss the window</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    The companies hiring AI-native engineers right now are offering $300-500K packages. These roles won&apos;t exist in 2 years - they&apos;ll be table stakes, not differentiators.
-                  </p>
-          </motion.div>
-
-          <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <h3 className="text-lg font-medium font-sans mb-2">You waste months figuring it out alone</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    Every trick you discover through trial and error? Someone else learned it in an afternoon. Your learning curve is their shipping speed.
-                  </p>
-                </motion.div>
-
+            transition={{ delay: 0.3 }}
+            className="border border-accent/30 bg-accent/5 p-8 md:p-12"
+          >
+            <h3 className="text-lg font-medium font-sans mb-6 text-accent">What You Get With These Skills:</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              {[
+                "Build any software idea you can imagine",
+                "Command top 1% engineering salaries",
+                "Ship complete products in hours, not weeks",
+                "Become indispensable to any company",
+                "Start and scale your own products",
+                "Join the AI-native engineering elite"
+              ].map((item, i) => (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  key={i}
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.4 }}
+                  transition={{ delay: 0.4 + i * 0.05 }}
+                  className="flex items-center gap-3"
                 >
-                  <h3 className="text-lg font-medium font-sans mb-2">You stay replaceable</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    Junior devs + AI can now do what senior devs do manually. If your only value is knowing the codebase, you&apos;re one reorg away from a job search.
-                  </p>
+                  <Check className="w-4 h-4 text-accent shrink-0" />
+                  <span className="text-sm text-foreground">{item}</span>
                 </motion.div>
+              ))}
             </div>
           </motion.div>
-
-            {/* With - Right Column */}
-          <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-            >
-              <p className="text-sm font-medium text-accent mb-8 tracking-wide">With this system:</p>
-              
-              <div className="space-y-8">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <h3 className="text-lg font-medium font-sans mb-2">You become the multiplier</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    One senior engineer orchestrating 5 AI agents beats a team of 10. You&apos;re not competing with AI - you&apos;re commanding it.
-                  </p>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <h3 className="text-lg font-medium font-sans mb-2">You ship products, not features</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    Complete applications in days. Side projects that actually launch. The backlog of ideas you&apos;ve been meaning to build finally gets built.
-                  </p>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.5 }}
-                >
-                  <h3 className="text-lg font-medium font-sans mb-2">You skip years of trial and error</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    The exact prompts, rules, and workflows that took 40+ OpenAI engineers months to refine. Downloaded into your brain in hours.
-                  </p>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.6 }}
-                >
-                  <h3 className="text-lg font-medium font-sans mb-2">You become irreplaceable</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    When layoffs come, they don&apos;t cut the person shipping 10x. They cut everyone else. Your output is your job security.
-                  </p>
-                </motion.div>
-              </div>
-            </motion.div>
-              </div>
 
           {/* Bottom CTA */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="mt-20 text-center"
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="mt-16 text-center"
           >
             <p className="text-xl md:text-2xl font-medium font-sans mb-8">
               The question isn&apos;t whether you can afford $497.
-                  <br />
-              <span className="text-muted-foreground">It's whether you'll be able to afford anything, once the AI job drought hits.</span>
+              <br />
+              <span className="text-muted-foreground">It&apos;s whether you can afford to be left behind.</span>
             </p>
             <a
               href="#pricing"
               className="group inline-flex items-center justify-center gap-3 px-12 py-4 bg-foreground text-background text-sm font-medium tracking-wide hover:bg-foreground/90 transition-all"
             >
-              <span>Choose your path</span>
+              <span>Transform Your Career</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </a>
           </motion.div>
@@ -727,7 +778,7 @@ export default function LandingPage() {
             style={{ opacity: aboutOpacity }}
             className="text-xs tracking-[0.3em] text-muted-foreground uppercase mb-16"
             >
-            Who I Am
+            Why Should You Listen to Me?
             </motion.p>
 
           <div className="grid md:grid-cols-12 gap-12 md:gap-8">
@@ -749,20 +800,25 @@ export default function LandingPage() {
                 </motion.div>
                 <div>
                   <p className="font-medium text-lg">Jaro</p>
-                  <p className="text-muted-foreground text-sm">Founder of Jaro.dev</p>
+                  <p className="text-muted-foreground text-sm">Engineering Manager at OpenAI</p>
                   </div>
                 </div>
+
+              <p className="text-muted-foreground leading-relaxed">
+                I manage a team of 40+ engineers at OpenAI, the largest AI company in the world. We spend hundreds of thousands of dollars on these engineers, and this course is required viewing for all of them.
+              </p>
           </motion.div>
 
           <motion.div
               style={{ x: aboutRightX, opacity: aboutOpacity }}
               className="md:col-span-7 md:pt-4"
             >
-              <ul className="space-y-6">
+              <ul className="space-y-6 mb-10">
                 {[
                   { text: "Leading a team of 40+ senior software engineers at OpenAI" },
                   { text: "Previously at JPMorgan & Deutsche Bank (Fortune 500)" },
                   { text: "Top 0.1% on GitHub" },
+                  { text: "Engineers using these techniques earn $300-500K+ per year" },
                 ].map((item, i) => (
                   <motion.li
                     key={i}
@@ -782,6 +838,16 @@ export default function LandingPage() {
                   </motion.li>
                     ))}
                   </ul>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.8 }}
+                className="text-lg font-medium text-foreground border-l-2 border-accent pl-6"
+              >
+                If that&apos;s not enough to convince you this is the most valuable skill you can learn in 2026, I don&apos;t know what else would be.
+              </motion.p>
           </motion.div>
           </div>
         </div>
@@ -837,250 +903,236 @@ export default function LandingPage() {
           </p>
           
           <h2 className="text-4xl md:text-5xl font-medium tracking-tight mb-4 font-sans">
-            What You&apos;ll Learn
+            What You&apos;ll <span className="font-serif italic text-accent">Master</span>
           </h2>
           
           <p className="text-muted-foreground text-lg mb-16">
-            8 modules designed for transformation, not just information
+            A complete system for AI-native development with Cursor 2.0
           </p>
 
-          <div className="space-y-0">
+          <div className="grid md:grid-cols-2 gap-6">
             {courseModules.map((module, i) => (
             <motion.div
                 key={i}
-                initial={{ opacity: 0, x: i % 2 === 0 ? -40 : 40 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{ delay: i * 0.08, duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
-                className="border-t border-border"
+                className="p-6 border border-border hover:border-accent/30 transition-colors"
               >
-                <button
-                  onClick={() => setExpandedModule(expandedModule === i ? null : i)}
-                  className="w-full py-8 flex items-start gap-6 text-left group cursor-pointer"
-                >
-                  <motion.span 
-                    className="text-3xl font-light text-muted-foreground/30 group-hover:text-accent transition-colors"
-                    whileHover={{ scale: 1.2 }}
-                  >
-                      {module.number}
-                  </motion.span>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-medium mb-2 font-sans">{module.title}</h3>
-                    <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-                      <span className="text-muted-foreground">
-                        <span className="text-muted-foreground/50">Before:</span> {module.before}
-                    </span>
-                      <span className="text-accent">
-                        <span className="text-accent/50">After:</span> {module.after}
-                      </span>
+                <div className="flex items-start gap-4 mb-4">
+                  <span className="text-2xl font-light text-accent">
+                    {module.number}
+                  </span>
+                  <h3 className="text-lg font-medium font-sans">{module.title}</h3>
                 </div>
-                  </div>
-                  <motion.span
-                    animate={{ rotate: expandedModule === i ? 45 : 0 }}
-                    transition={{ duration: 0.3, ease: [0.33, 1, 0.68, 1] }}
-                    className="mt-2"
-                  >
-                    <Plus className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                  </motion.span>
-                </button>
-                
-                <motion.div
-                  initial={false}
-                  animate={{
-                    height: expandedModule === i ? "auto" : 0,
-                    opacity: expandedModule === i ? 1 : 0,
-                  }}
-                  transition={{ duration: 0.4, ease: [0.33, 1, 0.68, 1] }}
-                  className="overflow-hidden"
-                >
-                  <ul className="pb-8 pl-16 space-y-3">
-                    {module.lessons.map((lesson, j) => (
-                      <motion.li 
-                        key={j} 
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: expandedModule === i ? 1 : 0, x: expandedModule === i ? 0 : -20 }}
-                        transition={{ delay: j * 0.1, duration: 0.3 }}
-                        className="flex items-center gap-3 text-muted-foreground"
-                      >
-                        <span className="w-1 h-1 bg-muted-foreground/50" />
-                        {lesson}
-                      </motion.li>
-                    ))}
-                  </ul>
-            </motion.div>
+                <ul className="space-y-2 pl-10">
+                  {module.lessons.map((lesson, j) => (
+                    <li 
+                      key={j} 
+                      className="flex items-center gap-3 text-sm text-muted-foreground"
+                    >
+                      <span className="w-1 h-1 bg-accent/50" />
+                      {lesson}
+                    </li>
+                  ))}
+                </ul>
           </motion.div>
             ))}
         </div>
         </motion.div>
       </section>
 
-      {/* Bonuses Section */}
+      {/* Value Stack Section */}
       <section ref={bonusesRef} className="py-32 px-6 border-t border-border">
           <motion.div
           style={{ y: bonusesY, opacity: bonusesOpacity }}
           className="max-w-4xl mx-auto"
         >
           <p className="text-xs tracking-[0.3em] text-muted-foreground uppercase mb-8">
-            Bonuses Included
+            What You Get
           </p>
           
           <h2 className="text-4xl md:text-5xl font-medium tracking-tight mb-16 font-sans">
-            Everything You Need to <span className="font-serif italic">Succeed</span>
+            The Complete <span className="font-serif italic text-accent">Value Stack</span>
           </h2>
 
-          <div className="space-y-6">
-            {bonuses.map((bonus, i) => (
+          <div className="space-y-0">
+            {valueStack.map((item, i) => (
             <motion.div
                 key={i}
-                initial={{ opacity: 0, x: i % 2 === 0 ? -60 : 60, rotate: i % 2 === 0 ? -2 : 2 }}
-                whileInView={{ opacity: 1, x: 0, rotate: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: i * 0.12, duration: 0.7, ease: [0.33, 1, 0.68, 1] }}
-                whileHover={{ x: 10, transition: { duration: 0.2 } }}
-                className="flex items-start justify-between py-6 border-b border-border cursor-default"
+                initial={{ opacity: 0, x: -40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ delay: i * 0.08, duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
+                className="flex items-start justify-between py-6 border-b border-border"
               >
-                <div className="flex-1 pr-8">
-                  <h3 className="text-lg font-medium mb-1 font-sans">{bonus.title}</h3>
-                  <p className="text-sm text-muted-foreground">{bonus.desc}</p>
+                <div className="flex items-start gap-4 flex-1 pr-8">
+                  <Check className="w-5 h-5 text-accent mt-0.5 shrink-0" />
+                  <div>
+                    <h3 className="text-lg font-medium mb-1 font-sans">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground">{item.desc}</p>
+                  </div>
                 </div>
-                <motion.div
-                  className="text-right shrink-0"
-                  whileInView={{ scale: [0.5, 1.1, 1] }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 + i * 0.12, duration: 0.4 }}
-                >
-                  <span className="text-sm text-muted-foreground">${bonus.value} value</span>
-                </motion.div>
+                <div className="text-right shrink-0">
+                  <span className="text-lg font-medium text-muted-foreground">${item.value.toLocaleString()} <span className="text-sm font-normal">value</span></span>
+                </div>
                 </motion.div>
               ))}
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 }}
+            className="mt-12 p-8 border border-accent bg-accent/5"
+          >
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Total Value:</p>
+                <p className="text-3xl font-medium font-sans line-through text-muted-foreground">$9,779</p>
+              </div>
+              <div className="md:text-right">
+                <p className="text-sm text-accent mb-1">Your Price Today:</p>
+                <p className="text-4xl font-medium font-sans text-accent">$999</p>
+                <p className="text-sm text-muted-foreground mt-1">Save 89% Today</p>
+              </div>
+            </div>
+            <a
+              href="#pricing"
+              className="group flex items-center justify-center gap-3 w-full py-4 bg-accent text-accent-foreground text-sm font-medium tracking-wide hover:bg-accent/90 transition-colors"
+            >
+              <span>Get Instant Access</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </a>
+          </motion.div>
             </motion.div>
       </section>
 
-      {/* Pricing Section */}
-      <section ref={pricingRef} id="pricing" className="py-32 px-6 border-t border-border">
-            <motion.div
-          style={{ scale: pricingScale, opacity: pricingOpacity, y: pricingY }}
-          className="max-w-5xl mx-auto"
-        >
-          <p className="text-xs tracking-[0.3em] text-muted-foreground uppercase mb-8 text-center">
-            Pricing
-          </p>
-          
-          <h2 className="text-4xl md:text-5xl font-medium tracking-tight mb-20 text-center font-sans">
-            Get Started Today
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-            {/* Individual */}
+      {/* Is This For You Section */}
+      <section className="py-32 px-6 border-t border-border">
+        <div className="max-w-3xl mx-auto">
           <motion.div
-              initial={{ opacity: 0, y: 60, rotateX: 10 }}
-              whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }}
-              whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              className="p-10 border border-foreground"
-            >
-              <h3 className="text-2xl font-medium mb-2 font-sans">Individual</h3>
-              <div className="flex items-baseline gap-1 mb-8">
-                <motion.span 
-                  className="text-5xl font-medium font-sans"
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3, duration: 0.5, type: "spring" }}
-                >
-                  $497
-                </motion.span>
-        </div>
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-12"
+          >
+            <p className="text-xs tracking-[0.3em] text-muted-foreground uppercase mb-6">
+              Prerequisites
+            </p>
+            <h2 className="text-4xl md:text-5xl font-medium tracking-tight font-sans mb-6">
+              Is This Course <span className="font-serif italic text-accent">For You?</span>
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              This is an advanced course. You should have:
+            </p>
+          </motion.div>
 
-              <ul className="space-y-4 mb-10">
-                {[
-                  "Complete video course (8+ hours)",
-                  ".cursorrules file & folder",
-                  "One-shot prompt library",
-                  "5 Slack questions (48hr response)",
-                  "$100 towards 10x Engineer Course",
-                ].map((item, i) => (
-                  <motion.li 
-                    key={i} 
-                    className="flex items-start gap-3"
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.4 + i * 0.1, duration: 0.4 }}
-                  >
-                    <Check className="w-4 h-4 mt-1 text-accent shrink-0" />
-                    <span className="text-foreground/80 text-sm">{item}</span>
-                  </motion.li>
-                ))}
-              </ul>
-              
-              <motion.a
-                href="#"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="group flex items-center justify-center gap-3 w-full py-4 bg-foreground text-background text-sm font-medium tracking-wide hover:bg-foreground/90 transition-colors"
+          <div className="space-y-4 mb-12">
+            {prerequisites.map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="flex items-center gap-4 p-4 border border-border"
               >
-                <span>Get Instant Access</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </motion.a>
-            </motion.div>
-
-            {/* Team */}
-          <motion.div
-              initial={{ opacity: 0, y: 60, rotateX: 10 }}
-              whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: 0.15, duration: 0.8, ease: [0.33, 1, 0.68, 1] }}
-              whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              className="p-10 border border-border"
-            >
-              <h3 className="text-2xl font-medium mb-2 font-sans">Team</h3>
-              <p className="text-muted-foreground text-sm mb-4">For teams of 5 or more</p>
-              <p className="text-lg font-medium text-accent mb-8">Up to 40% discount</p>
-              
-              <ul className="space-y-4 mb-10">
-                {[
-                  "Everything in Individual",
-                  "Team onboarding call",
-                  "Shared Slack channel",
-                  "Employer invoice provided",
-                ].map((item, i) => (
-                  <motion.li 
-                    key={i} 
-                    className="flex items-start gap-3"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                    transition={{ delay: 0.55 + i * 0.1, duration: 0.4 }}
-                  >
-                    <Check className="w-4 h-4 mt-1 text-muted-foreground shrink-0" />
-                    <span className="text-muted-foreground text-sm">{item}</span>
-                  </motion.li>
-                ))}
-              </ul>
-              
-              <motion.a
-                href="#"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center justify-center gap-3 w-full py-4 border border-border text-sm font-medium tracking-wide hover:border-muted-foreground transition-colors"
-              >
-                <span>Book a Call</span>
-              </motion.a>
-            </motion.div>
+                <Check className="w-5 h-5 text-accent shrink-0" />
+                <span className="text-foreground">{item}</span>
+              </motion.div>
+            ))}
           </div>
 
-            <motion.p
+          <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            className="text-center text-muted-foreground text-sm mt-12"
+            transition={{ delay: 0.5 }}
+            className="text-center text-lg font-medium"
           >
-            If you bill $60/hr and this saves you 1 hour per day, it pays for itself in 9 days.
-            </motion.p>
+            If you check all these boxes, you&apos;re ready to become a <span className="text-accent">200x developer</span>.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section ref={pricingRef} id="pricing" className="py-32 px-6 border-t border-border bg-accent/5">
+            <motion.div
+          style={{ scale: pricingScale, opacity: pricingOpacity, y: pricingY }}
+          className="max-w-3xl mx-auto text-center"
+        >
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-4xl font-medium tracking-tight mb-4 font-sans"
+          >
+            The Question Isn&apos;t Whether You Can Afford This.
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-xl md:text-2xl font-medium text-accent mb-8 font-serif italic"
+          >
+            It&apos;s Whether You Can Afford Not To.
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground text-lg mb-16 max-w-2xl mx-auto"
+          >
+            By not learning this, you&apos;re missing out on hundreds of thousands of dollars in the next 12 months. This is the most valuable skill for software engineers in 2026.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="p-12 border-2 border-accent bg-background max-w-lg mx-auto"
+          >
+            <h3 className="text-2xl font-medium mb-6 font-sans">Join 200x Dev Now</h3>
+            <div className="flex items-baseline justify-center gap-2 mb-2">
+              <span className="text-6xl font-medium font-sans">$999</span>
+            </div>
+            <p className="text-muted-foreground mb-8">One-time payment. Lifetime access. All future updates.</p>
+            
+            <motion.a
+              href="#"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="group flex items-center justify-center gap-3 w-full py-5 bg-accent text-accent-foreground text-base font-medium tracking-wide hover:bg-accent/90 transition-colors mb-4"
+            >
+              <span>Get Instant Access Now</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </motion.a>
+            
+            <p className="text-sm text-muted-foreground">
+              Secure checkout. Start learning in minutes.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 }}
+            className="mt-12 flex items-center justify-center gap-8 text-sm text-muted-foreground"
+          >
+            <span>Lifetime Access</span>
+            <span className="w-1 h-1 bg-muted-foreground/50 rounded-full" />
+            <span>All Future Updates</span>
+            <span className="w-1 h-1 bg-muted-foreground/50 rounded-full" />
+            <span>Instant Access</span>
+          </motion.div>
           </motion.div>
       </section>
 
