@@ -359,12 +359,28 @@ export default function LandingPage() {
           <span className="text-sm font-medium tracking-wide">200x</span>
           <a
             href="#pricing"
-            className="text-sm px-5 py-2.5 bg-foreground text-background hover:bg-foreground/90 transition-colors"
+            className="hidden md:block text-sm px-5 py-2.5 bg-foreground text-background hover:bg-foreground/90 transition-colors"
           >
             Get Access
           </a>
         </div>
       </motion.nav>
+
+      {/* Mobile Bottom Bar */}
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.8, duration: 0.5 }}
+        className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-background/95 backdrop-blur-sm border-t border-border md:hidden"
+      >
+        <a
+          href="#pricing"
+          className="flex items-center justify-center gap-2 w-full py-3.5 bg-accent text-accent-foreground text-sm font-medium tracking-wide"
+        >
+          <span>Get Access</span>
+          <ArrowRight className="w-4 h-4" />
+        </a>
+      </motion.div>
 
       {/* Hero Section */}
       <motion.section
@@ -525,11 +541,11 @@ export default function LandingPage() {
                       <p className="text-base md:text-lg text-muted-foreground/80 font-mono leading-relaxed">
                         {problem.desc}
                       </p>
-                    </div>
-                  </div>
+                </div>
+            </div>
                   
                   {/* Animated accent line */}
-                  <motion.div 
+          <motion.div
                     className="absolute left-0 top-0 w-1 h-full bg-destructive/60"
                     initial={{ scaleY: 0 }}
                     whileInView={{ scaleY: 1 }}
@@ -537,7 +553,7 @@ export default function LandingPage() {
                     transition={{ delay: 0.3 + i * 0.15, duration: 0.4 }}
                     style={{ transformOrigin: "top" }}
                   />
-              </motion.div>
+            </motion.div>
             ))}
             </div>
           </motion.div>
@@ -912,8 +928,8 @@ export default function LandingPage() {
               hidden: {},
               visible: {
                 transition: {
-                  staggerChildren: 0.08,
-                  delayChildren: 0.1,
+                  staggerChildren: 0.04,
+                  delayChildren: 0,
                 }
               }
             }}
@@ -924,15 +940,15 @@ export default function LandingPage() {
                 variants={{
                   hidden: { 
                     opacity: 0, 
-                    scale: 0.9,
-                    y: 30,
+                    scale: 0.95,
+                    y: 20,
                   },
                   visible: { 
                     opacity: 1, 
                     scale: 1,
                     y: 0,
                     transition: {
-                      duration: 0.5,
+                      duration: 0.3,
                       ease: [0.25, 0.46, 0.45, 0.94],
                     }
                   }
@@ -1021,7 +1037,7 @@ export default function LandingPage() {
 
       {/* Course Curriculum Section */}
       <section ref={curriculumRef} className="py-32 px-6 border-t border-border">
-        <motion.div
+            <motion.div
           style={{ y: curriculumY, opacity: curriculumOpacity }}
           className="max-w-4xl mx-auto"
         >
@@ -1039,7 +1055,7 @@ export default function LandingPage() {
 
           <div className="border-t border-border">
             {courseModules.map((module, i) => (
-              <motion.div
+            <motion.div
                 key={i}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
@@ -1049,12 +1065,12 @@ export default function LandingPage() {
               >
                 <button
                   onClick={() => setOpenModule(openModule === i ? null : i)}
-                  className="w-full py-8 flex items-start gap-8 text-left group cursor-pointer"
+                  className="w-full py-6 md:py-8 flex items-start gap-3 md:gap-8 text-left group cursor-pointer"
                 >
                   {/* Number */}
-                  <span className="text-3xl md:text-4xl font-light text-accent/60 font-mono shrink-0 w-12">
+                  <span className="text-xl md:text-4xl font-light text-accent/60 font-mono shrink-0 w-8 md:w-12">
                     {module.number}
-                  </span>
+                    </span>
                   
                   {/* Content */}
                   <div className="flex-1 min-w-0">
@@ -1075,8 +1091,8 @@ export default function LandingPage() {
                         </span>
                       </div>
                     </div>
-                  </div>
-                  
+                </div>
+                
                   {/* Toggle icon */}
                   <motion.span
                     animate={{ rotate: openModule === i ? 45 : 0 }}
@@ -1097,7 +1113,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                   className="overflow-hidden"
                 >
-                  <div className="pb-8 pl-20">
+                  <div className="pb-8 pl-11 md:pl-20">
                     <ul className="space-y-3">
                       {module.lessons.map((lesson, j) => (
                         <motion.li
@@ -1113,13 +1129,13 @@ export default function LandingPage() {
                           <span className="w-1.5 h-1.5 bg-accent/50 shrink-0" />
                           {lesson}
                         </motion.li>
-                      ))}
-                    </ul>
-                  </div>
+                    ))}
+                  </ul>
+                </div>
                 </motion.div>
-              </motion.div>
+          </motion.div>
             ))}
-          </div>
+        </div>
         </motion.div>
       </section>
 
@@ -1217,7 +1233,7 @@ export default function LandingPage() {
                     className="relative z-10 shrink-0 self-center"
                     initial={{ scale: 0, rotate: -180 }}
                     whileInView={{ scale: 1, rotate: 0 }}
-                    viewport={{ once: true }}
+                viewport={{ once: true }}
                     transition={{ 
                       delay: 0.3 + i * 0.1, 
                       duration: 0.5,
@@ -1254,7 +1270,7 @@ export default function LandingPage() {
             className="mt-16 text-center"
           >
             <p className="text-xl font-medium font-sans">
-              This is <span className="text-accent">top-echelon AI engineering</span>, not prompt hacking.
+            This is <span className="text-accent">top-echelon AI engineering</span>, not prompt hacking.
             </p>
           </motion.div>
         </div>
@@ -1460,10 +1476,10 @@ export default function LandingPage() {
                 href="#"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-              className="group flex items-center justify-center gap-3 w-full py-5 bg-accent text-accent-foreground text-base font-medium tracking-wide hover:bg-accent/90 transition-colors mb-4"
+              className="group flex items-center justify-center gap-2 md:gap-3 w-full py-4 md:py-5 bg-accent text-accent-foreground text-sm md:text-base font-medium tracking-wide hover:bg-accent/90 transition-colors mb-4"
               >
               <span>Get Instant Access Now</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
               </motion.a>
             
             <p className="text-sm text-muted-foreground">
