@@ -358,7 +358,10 @@ export default function LandingPage() {
         className="fixed top-0 left-0 right-0 z-50 px-6 py-5"
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <span className="text-sm font-medium tracking-wide">200x</span>
+          <div className="flex items-center gap-1">
+            <Image src="/logo.png" alt="200x" width={24} height={24} />
+            <span className="text-sm font-medium tracking-wide">200x</span>
+          </div>
         </div>
       </motion.nav>
 
@@ -1541,7 +1544,10 @@ export default function LandingPage() {
         className="py-16 px-6 border-t border-border"
       >
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-          <span className="text-sm font-medium tracking-wide">200x</span>
+          <div className="flex items-center gap-1">
+            <Image src="/logo.png" alt="200x" width={24} height={24} />
+            <span className="text-sm font-medium tracking-wide">200x</span>
+          </div>
           
           <p className="text-sm text-muted-foreground">
             {new Date().getFullYear()} 200x. All rights reserved.
