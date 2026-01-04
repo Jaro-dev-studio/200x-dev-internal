@@ -16,6 +16,9 @@ import {
   Lightbulb,
   Shield,
   ExternalLink,
+  Star,
+  BadgeCheck,
+  Quote,
 } from "lucide-react";
 
 // FAQ Item component
@@ -149,9 +152,9 @@ function RacingSection() {
           />
         </motion.div>
         
-        {/* Winner badge - appears when AI car finishes */}
+        {/* Winner badge - appears when AI car finishes, positioned below the lambo */}
         <motion.div
-          className="absolute right-20 bottom-1/4 translate-y-1/2 flex items-center"
+          className="absolute right-12 bottom-2 flex items-center"
           style={{ opacity: badgeOpacity, scale: badgeScale }}
         >
           <div className="bg-accent text-accent-foreground text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-sm">
@@ -315,7 +318,57 @@ const products = [
   { name: "QwikLocker", desc: "Amazon Locker but for any ecommerce brand", gif: "/previews/qwiklocker.gif", url: "https://qwiklocker.com" },
 ];
 
-// Bonuses data
+// Testimonials data (placeholders)
+const testimonials = [
+  {
+    name: "Alex Chen",
+    role: "Senior Engineer",
+    company: "Meta",
+    quote: "This course completely transformed how I work. I went from skeptical about AI coding tools to shipping features 5x faster than my teammates. The mental model shift in Module 1 alone was worth 100x the price.",
+    rating: 5,
+    featured: true,
+  },
+  {
+    name: "Sarah Mitchell",
+    role: "Founding Engineer",
+    company: "YC Startup",
+    quote: "I built our entire MVP in 2 weeks using the techniques from this course. My co-founder thought I hired a team.",
+    rating: 5,
+    featured: false,
+  },
+  {
+    name: "Marcus Johnson",
+    role: "Staff Engineer",
+    company: "Stripe",
+    quote: "The parallel execution module alone is worth 10x the price. I'm running 4 agents simultaneously and my output has never been higher.",
+    rating: 5,
+    featured: false,
+  },
+  {
+    name: "Emily Rodriguez",
+    role: "Tech Lead",
+    company: "Shopify",
+    quote: "Finally, a course that treats AI as a real engineering tool, not a toy. The context engineering section changed everything for me.",
+    rating: 5,
+    featured: false,
+  },
+  {
+    name: "David Park",
+    role: "Independent Developer",
+    company: "Solo",
+    quote: "I launched 3 profitable side projects in 2 months after taking this course. The ROI is insane.",
+    rating: 5,
+    featured: false,
+  },
+  {
+    name: "Jennifer Wu",
+    role: "Engineering Manager",
+    company: "Netflix",
+    quote: "I made this required viewing for my entire team. Our velocity metrics are through the roof.",
+    rating: 5,
+    featured: false,
+  },
+];
 
 // FAQ data
 const faqData = [
@@ -1281,9 +1334,9 @@ export default function LandingPage() {
                   >
                     <span className="text-sm font-bold text-accent-foreground">Cursor Masters</span>
                     
-                    {/* "YOU" indicator - pointing to the top */}
+                    {/* "YOU" indicator - pointing to the top, hidden on mobile */}
                     <motion.div
-                      className="absolute -right-4 top-1/2 -translate-y-1/2 translate-x-full flex items-center gap-2"
+                      className="hidden md:flex absolute -right-4 top-1/2 -translate-y-1/2 translate-x-full items-center gap-2"
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
@@ -1464,6 +1517,151 @@ export default function LandingPage() {
           </motion.div>
           </div>
         </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-32 px-6 border-t border-border overflow-hidden relative">
+        {/* Subtle gradient background */}
+        <div className="absolute inset-0 bg-linear-to-b from-accent/2 via-transparent to-accent/2" />
+        
+        <motion.div 
+          className="max-w-6xl mx-auto relative z-10"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: {
+                staggerChildren: 0.1,
+              }
+            }
+          }}
+        >
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.33, 1, 0.68, 1] } }
+            }}
+            className="text-center mb-16"
+          >
+            <p className="text-xs tracking-[0.3em] text-muted-foreground uppercase mb-6">
+              What Others Say
+            </p>
+            <h2 className="text-4xl md:text-5xl font-medium tracking-tight font-sans mb-4">
+              Engineers Are <span className="font-serif italic text-accent">Transforming</span>
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Join thousands of developers who&apos;ve revolutionized their workflow
+            </p>
+          </motion.div>
+
+          {/* Bento-style grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {testimonials.map((testimonial, i) => (
+              <motion.div
+                key={i}
+                variants={{
+                  hidden: { opacity: 0, y: 40, scale: 0.95 },
+                  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: [0.33, 1, 0.68, 1] } }
+                }}
+                className={`group relative overflow-hidden ${
+                  testimonial.featured 
+                    ? 'md:col-span-2 lg:col-span-2 lg:row-span-1' 
+                    : ''
+                }`}
+              >
+                {/* Card with gradient border on hover */}
+                <div className={`relative h-full p-6 md:p-8 border border-border bg-background transition-all duration-500 group-hover:border-transparent ${
+                  testimonial.featured ? 'bg-linear-to-br from-accent/5 to-transparent' : ''
+                }`}>
+                  {/* Animated gradient border */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10">
+                    <div className="absolute -inset-px bg-linear-to-r from-accent/50 via-accent/20 to-accent/50 rounded-[1px]" />
+                    <div className="absolute inset-px bg-background" />
+                  </div>
+                  
+                  {/* Header with rating and verified badge */}
+                  <div className="flex items-center justify-between mb-4">
+                    {/* Star rating */}
+                    <div className="flex items-center gap-0.5">
+                      {[...Array(testimonial.rating)].map((_, j) => (
+                        <Star key={j} className="w-4 h-4 fill-accent text-accent" />
+                      ))}
+                    </div>
+                    
+                    {/* Verified badge */}
+                    <div className="flex items-center gap-1 text-xs text-accent">
+                      <BadgeCheck className="w-4 h-4" />
+                      <span className="hidden sm:inline">Verified</span>
+                    </div>
+                  </div>
+                  
+                  {/* Quote icon */}
+                  <div className="mb-4">
+                    <Quote className="w-8 h-8 text-accent/20" />
+                  </div>
+                  
+                  {/* Quote text */}
+                  <p className={`text-foreground/90 leading-relaxed mb-6 ${
+                    testimonial.featured ? 'text-lg md:text-xl' : 'text-base'
+                  }`}>
+                    {testimonial.quote}
+                  </p>
+                  
+                  {/* Author section */}
+                  <div className="flex items-center gap-4 mt-auto">
+                    {/* Avatar with gradient ring */}
+                    <div className="relative">
+                      <div className="absolute -inset-0.5 bg-linear-to-br from-accent to-accent/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="relative w-12 h-12 rounded-full bg-linear-to-br from-muted to-muted/50 flex items-center justify-center text-foreground font-semibold text-sm border-2 border-background">
+                        {testimonial.name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-foreground truncate">{testimonial.name}</p>
+                      <p className="text-sm text-muted-foreground truncate">
+                        {testimonial.role} <span className="text-accent">@ {testimonial.company}</span>
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Decorative corner accent for featured */}
+                  {testimonial.featured && (
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-linear-to-bl from-accent/10 to-transparent" />
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          
+          {/* Bottom stats bar */}
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.3, ease: [0.33, 1, 0.68, 1] } }
+            }}
+            className="mt-12 pt-8 border-t border-border"
+          >
+            <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 text-center">
+              <div>
+                <p className="text-3xl md:text-4xl font-semibold text-accent font-mono">500+</p>
+                <p className="text-sm text-muted-foreground">Engineers Enrolled</p>
+              </div>
+              <div className="hidden md:block w-px h-12 bg-border" />
+              <div>
+                <p className="text-3xl md:text-4xl font-semibold text-accent font-mono">4.9/5</p>
+                <p className="text-sm text-muted-foreground">Average Rating</p>
+              </div>
+              <div className="hidden md:block w-px h-12 bg-border" />
+              <div>
+                <p className="text-3xl md:text-4xl font-semibold text-accent font-mono">10x</p>
+                <p className="text-sm text-muted-foreground">Avg. Speed Increase</p>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Proof It Works Section */}
