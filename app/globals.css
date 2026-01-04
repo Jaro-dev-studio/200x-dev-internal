@@ -1,51 +1,59 @@
 @import "tailwindcss";
 
 /* 
- * CUSTOMIZE: Brand Colors
- * Update these CSS variables to match your client's brand colors.
- * All components use these variables for consistent theming.
+ * 200x Dev - Dark theme for developer landing page
+ * Optimized for high-converting course sales page
  */
 :root {
-  /* Primary brand color - buttons, links, accents */
-  --color-primary: #3B82F6;
-  --color-primary-hover: #2563EB;
+  /* Primary brand color - electric blue for CTAs */
+  --color-primary: #6366F1;
+  --color-primary-hover: #818CF8;
   --color-primary-foreground: #FFFFFF;
 
-  /* Secondary color - backgrounds, subtle elements */
-  --color-secondary: #1E293B;
-  --color-secondary-hover: #334155;
+  /* Secondary color - dark backgrounds */
+  --color-secondary: #1E1E2E;
+  --color-secondary-hover: #2A2A3C;
   --color-secondary-foreground: #FFFFFF;
 
-  /* Accent color - highlights, badges, success states */
-  --color-accent: #10B981;
-  --color-accent-hover: #059669;
-  --color-accent-foreground: #FFFFFF;
+  /* Accent color - electric green for success/highlights */
+  --color-accent: #22D3EE;
+  --color-accent-hover: #06B6D4;
+  --color-accent-foreground: #000000;
 
-  /* Background colors */
-  --color-background: #FFFFFF;
-  --color-foreground: #0F172A;
+  /* Background colors - deep dark */
+  --color-background: #0A0A0F;
+  --color-foreground: #F8FAFC;
 
   /* Muted elements */
-  --color-muted: #F1F5F9;
-  --color-muted-foreground: #64748B;
+  --color-muted: #1E1E2E;
+  --color-muted-foreground: #94A3B8;
 
   /* Border color */
-  --color-border: #E2E8F0;
+  --color-border: #2A2A3C;
 
   /* Card backgrounds */
-  --color-card: #FFFFFF;
-  --color-card-foreground: #0F172A;
+  --color-card: #111118;
+  --color-card-foreground: #F8FAFC;
 
   /* Destructive/error states */
   --color-destructive: #EF4444;
   --color-destructive-foreground: #FFFFFF;
 
+  /* Warning/urgency - orange */
+  --color-warning: #F97316;
+  --color-warning-foreground: #FFFFFF;
+
   /* Input and form elements */
-  --color-input: #E2E8F0;
-  --color-ring: #3B82F6;
+  --color-input: #2A2A3C;
+  --color-ring: #6366F1;
 
   /* Border radius */
   --radius: 0.5rem;
+
+  /* Gradient colors */
+  --gradient-start: #6366F1;
+  --gradient-mid: #8B5CF6;
+  --gradient-end: #D946EF;
 }
 
 /* Tailwind v4 theme configuration */
@@ -77,8 +85,15 @@
   --color-destructive: var(--color-destructive);
   --color-destructive-foreground: var(--color-destructive-foreground);
 
+  --color-warning: var(--color-warning);
+  --color-warning-foreground: var(--color-warning-foreground);
+
   --color-input: var(--color-input);
   --color-ring: var(--color-ring);
+
+  --gradient-start: var(--gradient-start);
+  --gradient-mid: var(--gradient-mid);
+  --gradient-end: var(--gradient-end);
 
   /* Font families */
   --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;

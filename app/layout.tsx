@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { DashboardShell } from "@/components/layout/dashboard-shell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,19 +12,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-/**
- * CUSTOMIZE: Update metadata for client branding
- */
 export const metadata: Metadata = {
-  title: "DemoApp - Dashboard",
-  description: "Your product dashboard. Manage your projects, analytics, and team.",
-  keywords: ["dashboard", "product", "saas", "platform"],
+  title: "200x Dev | 2026 Agentic Development: Cursor Mastery",
+  description: "The advanced Cursor course for mid-to-senior engineers. Learn to 10x your output with AI agentic development. Built by an OpenAI team lead managing 40+ engineers.",
+  keywords: ["cursor", "ai coding", "agentic development", "cursor mastery", "ai developer", "cursor course", "2026"],
 };
 
-/**
- * Root layout component with dashboard structure.
- * CUSTOMIZE: Update branding and navigation per client requirements.
- */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,7 +28,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} h-full bg-background font-sans antialiased`}
       >
-        <DashboardShell>{children}</DashboardShell>
+        {children}
       </body>
     </html>
   );
