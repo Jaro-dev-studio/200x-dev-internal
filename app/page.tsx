@@ -211,8 +211,8 @@ const valueStack = [
 const prerequisites = [
   "Built or contributed to production applications",
   "Mid-to-senior level engineering experience",
-  "Used AI tools like ChatGPT, Claude, or Copilot",
-  "Understand prompting and context basics",
+  "Familiarity with AI tools like ChatGPT, Claude, or Copilot",
+  "Understanding of prompting and context",
 ];
 
 // Products data
@@ -290,9 +290,9 @@ export default function LandingPage() {
     target: aboutRef,
     offset: ["start end", "end start"],
   });
-  const aboutLeftX = useTransform(aboutProgress, [0, 0.4], [-100, 0]);
-  const aboutRightX = useTransform(aboutProgress, [0, 0.4], [100, 0]);
-  const aboutOpacity = useTransform(aboutProgress, [0, 0.3], [0, 1]);
+  const aboutLeftX = useTransform(aboutProgress, [0, 0.15], [-60, 0]);
+  const aboutRightX = useTransform(aboutProgress, [0, 0.15], [60, 0]);
+  const aboutOpacity = useTransform(aboutProgress, [0, 0.1], [0, 1]);
 
   // Products section scroll animation
   const productsRef = useRef<HTMLDivElement>(null);
@@ -882,7 +882,7 @@ export default function LandingPage() {
                 transition={{ delay: 0.8 }}
                 className="text-lg font-medium text-foreground border-l-2 border-accent pl-6"
               >
-                If this doesn&apos;t convince you this is the most valuable skill you can learn in 2026, I don&apos;t know what will.
+                If that doesn&apos;t convince you this is the most valuable skill you can learn in 2026, I don&apos;t know what will.
               </motion.p>
           </motion.div>
           </div>
@@ -932,11 +932,14 @@ export default function LandingPage() {
                   if (isInInnerArea) {
                     setHoveredProduct(i);
                     // Only update position for this specific card
+                    // Full tracking when moving up, damped when moving down/left/right
+                    const yOffset = mouseY - centerY;
+                    const yDamping = yOffset < 0 ? 1.0 : 0.2; // No damping when moving up
                     setMousePositions(prev => ({
                       ...prev,
                       [i]: {
                         x: centerX + (mouseX - centerX) * 0.2,
-                        y: centerY + (mouseY - centerY) * 0.2,
+                        y: centerY + yOffset * yDamping,
                       }
                     }));
                   } else {
@@ -1425,7 +1428,7 @@ export default function LandingPage() {
             <div className="flex items-baseline justify-center gap-2 mb-2">
               <span className="text-6xl font-medium font-sans">$999</span>
             </div>
-            <p className="text-muted-foreground mb-8">One-time payment. Lifetime access. All future updates.</p>
+            <p className="text-muted-foreground mb-8">One-time payment. Lifetime access.</p>
               
               <motion.a
                 href="#"

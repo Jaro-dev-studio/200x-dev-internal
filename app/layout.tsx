@@ -22,7 +22,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Cursor Mastery - Ship Production Apps 10x Faster",
+  title: "200x Dev | Courses for AI-native developers",
   description: "Learn to direct AI like a team of engineers. The exact Cursor workflow used by 40+ engineers at OpenAI. Ship production-quality software every week.",
   keywords: ["cursor", "ai coding", "agentic development", "cursor mastery", "ai developer", "cursor course"],
   icons: {
