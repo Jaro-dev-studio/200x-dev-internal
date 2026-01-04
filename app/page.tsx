@@ -850,7 +850,7 @@ export default function LandingPage() {
                 </div>
 
               <p className="text-muted-foreground leading-relaxed">
-                I manage a team of 40+ engineers at OpenAI, the largest AI company in the world. We spend hundreds of thousands of dollars a month on world-class engineers, and this course is required viewing for all of them.
+                I manage a team of 40+ engineers at OpenAI, the largest AI company in the world. We spend millions of dollars a month on world-class engineers, and this course is required viewing for all of them.
               </p>
           </motion.div>
 
@@ -1161,7 +1161,7 @@ export default function LandingPage() {
               },
               { 
                 icon: Bot, 
-                title: "Delegate nearly all execution to Cursor agents",
+                title: "Delegate all execution to Cursor agents",
                 desc: "Stop typing code manually. Direct AI agents to handle implementation while you focus on architecture.",
               },
               { 
