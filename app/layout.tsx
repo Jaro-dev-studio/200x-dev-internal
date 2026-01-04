@@ -25,6 +25,17 @@ export const metadata: Metadata = {
   title: "Cursor Mastery - Ship Production Apps 10x Faster",
   description: "Learn to direct AI like a team of engineers. The exact Cursor workflow used by 40+ engineers at OpenAI. Ship production-quality software every week.",
   keywords: ["cursor", "ai coding", "agentic development", "cursor mastery", "ai developer", "cursor course"],
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({
