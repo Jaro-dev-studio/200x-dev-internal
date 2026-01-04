@@ -15,6 +15,7 @@ import {
   Zap,
   Lightbulb,
   Shield,
+  ExternalLink,
 } from "lucide-react";
 
 // FAQ Item component
@@ -59,35 +60,122 @@ function FAQItem({ question, answer, isOpen, onClick }: {
   );
 }
 
-// Scroll-animated section wrapper with parallax
-function ParallaxSection({ 
-  children, 
-  className = "",
-  yOffset = 100,
-  scaleFrom = 0.95,
-}: { 
-  children: React.ReactNode; 
-  className?: string;
-  yOffset?: number;
-  scaleFrom?: number;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
+// Scroll-dependent Racing Section Component
+function RacingSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
+    target: containerRef,
+    offset: ["start end", "center center"], // Animation completes when section is centered
   });
   
-  const y = useTransform(scrollYProgress, [0, 0.5, 1], [yOffset, 0, -yOffset]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [scaleFrom, 1, 1, scaleFrom]);
+  // Lambo moves fast: 10% to finish line - completes at 60% scroll (before center)
+  const lamboLeft = useTransform(scrollYProgress, [0.1, 0.6], ["10%", "calc(100% - 140px)"]);
+  
+  // Prius moves slowly: 10% to 40% - still going when animation ends
+  const priusLeft = useTransform(scrollYProgress, [0.1, 1], ["10%", "40%"]);
+  
+  // Winner badge appears after lambo finishes
+  const badgeOpacity = useTransform(scrollYProgress, [0.6, 0.7], [0, 1]);
+  const badgeScale = useTransform(scrollYProgress, [0.6, 0.7], [0, 1]);
+  
+  // "Still typing..." appears when prius is lagging behind
+  const typingOpacity = useTransform(scrollYProgress, [0.5, 0.6], [0, 1]);
+  
+  // Text appears at the end (when centered)
+  const textOpacity = useTransform(scrollYProgress, [0.75, 0.9], [0, 1]);
+  const text2Opacity = useTransform(scrollYProgress, [0.85, 1], [0, 1]);
 
   return (
     <motion.div
-      ref={ref}
-      style={{ y, opacity, scale }}
-      className={className}
+      ref={containerRef}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8 }}
+      className="relative py-8"
     >
-      {children}
+      <h3 className="text-2xl md:text-3xl font-medium font-sans mb-8 text-center">
+        You&apos;re Being Outpaced
+      </h3>
+      
+      {/* Racing lanes */}
+      <div className="relative h-40 md:h-48 bg-muted/30 border-y border-border overflow-hidden">
+        {/* Lane divider */}
+        <div className="absolute top-1/2 left-0 right-0 border-t-2 border-dashed border-border" />
+        
+        {/* Lane labels */}
+        <div className="absolute left-4 top-3 text-xs text-muted-foreground uppercase tracking-wider">Senior Dev (You)</div>
+        <div className="absolute left-4 bottom-3 text-xs text-accent uppercase tracking-wider">Junior + AI</div>
+        
+        {/* Start line */}
+        <div className="absolute left-16 top-0 bottom-0 w-1 bg-foreground/20" />
+        <div className="absolute left-12 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground uppercase tracking-wider -rotate-90 origin-center">Start</div>
+        
+        {/* Finish line */}
+        <div className="absolute right-8 top-0 bottom-0 w-4 bg-[repeating-linear-gradient(0deg,transparent,transparent_8px,currentColor_8px,currentColor_16px)] opacity-30" />
+        <div className="absolute right-14 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground uppercase tracking-wider -rotate-90 origin-center">Finish</div>
+        
+        {/* You - slow racer (top lane) - Prius */}
+        <motion.div
+          className="absolute top-1/4 -translate-y-1/2 flex items-center gap-3"
+          style={{ left: priusLeft }}
+        >
+          <Image 
+            src="/prius.png" 
+            alt="Prius - Senior Dev" 
+            width={80} 
+            height={40} 
+            className="h-10 w-auto object-contain"
+          />
+          <motion.span 
+            className="text-xs text-muted-foreground whitespace-nowrap bg-background/80 px-2 py-0.5 rounded"
+            style={{ opacity: typingOpacity }}
+          >
+            Still typing...
+          </motion.span>
+        </motion.div>
+        
+        {/* Junior + AI - fast racer (bottom lane) - Lambo */}
+        <motion.div
+          className="absolute bottom-1/4 translate-y-1/2 flex items-center gap-2"
+          style={{ left: lamboLeft }}
+        >
+          <Image 
+            src="/lambo.png" 
+            alt="Lamborghini - Junior + AI" 
+            width={100} 
+            height={40} 
+            className="h-10 w-auto object-contain"
+          />
+        </motion.div>
+        
+        {/* Winner badge - appears when AI car finishes */}
+        <motion.div
+          className="absolute right-20 bottom-1/4 translate-y-1/2 flex items-center"
+          style={{ opacity: badgeOpacity, scale: badgeScale }}
+        >
+          <div className="bg-accent text-accent-foreground text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-sm">
+            Done!
+          </div>
+        </motion.div>
+        
+        {/* Progress indicators */}
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex items-center gap-4 text-[10px] text-muted-foreground">
+          <motion.span style={{ opacity: textOpacity }}>
+            Same task. Same starting point.
+          </motion.span>
+          <motion.span
+            className="text-accent font-medium"
+            style={{ opacity: text2Opacity }}
+          >
+            Different results.
+          </motion.span>
+        </div>
+      </div>
+      
+      <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto text-center mt-8 text-lg">
+        Junior developers with AI skills are shipping faster than senior engineers without them. The hierarchy is being rewritten. Your experience becomes a liability, not an asset.
+      </p>
     </motion.div>
   );
 }
@@ -200,10 +288,10 @@ const valueStack = [
   { title: "First-Year Salary Increase Potential", desc: "Top AI-native engineers command $200-500K. This is your leverage.", value: 30000, isOutcome: true },
   { title: "Side Project Freedom", desc: "Finally ship those ideas gathering dust. Build your SaaS, app, or startup in a weekend.", value: 25000, isOutcome: true },
   // Course components
-  { title: "Complete Agentic Development System", desc: "The full methodology used by OpenAI engineers daily", value: 6997, isOutcome: true },
+  { title: "Complete Agentic Development System", desc: "The full methodology to build anything you can imagine", value: 6997, isOutcome: true },
+  { title: "Full Production SaaS Source Code", desc: "Next.js 16 Website analytics SaaS with Stripe, admin panel, and MCP server - built live on the course using Cursor alone", value: 4997, isOutcome: true },
   { title: "Production-Ready Cursor Rules Library", desc: "Pre-built rules files used in enterprise environments", value: 3000, isOutcome: true },
   { title: "Lifetime Updates + All Future Content", desc: "Stay current as Cursor evolves - never fall behind again", value: 2999, isOutcome: true },
-  { title: "5 Slack Questions with 48hr Response", desc: "Direct access to ask questions and get personalized guidance", value: 500, isOutcome: true },
 ];
 
 // Prerequisites
@@ -216,15 +304,15 @@ const prerequisites = [
 
 // Products data
 const products = [
-  { name: "This Landing Page", desc: "You're looking at it. Built entirely with Cursor 2.0 and the techniques taught in this course.", isHighlighted: true, gif: "/previews/landing-page.gif" },
-  { name: "RealGreatDevs", desc: "Platform with 2M+ software engineers", gif: "/previews/realgreatdevs.gif" },
-  { name: "Studio.jaro.dev", desc: "Our internal platform at Jaro.dev, used to manage $1M/yr worth of projects", gif: "/previews/studio.gif" },
-  { name: "BusinessOS", desc: "A platform to run your business on autopilot, beautiful GSAP powered landing page", gif: "/previews/businessos.gif" },
-  { name: "Pivotal", desc: "Google ads automation platform for clinics", gif: "/previews/pivotal.gif" },
-  { name: "Raise", desc: "Investment platform of the future, integrating with government portals", gif: "/previews/raise.gif" },
-  { name: "ReviveDeadLinks", desc: "Bootstrapped SaaS profitable within 7 days", gif: "/previews/revivedeadlinks.gif" },
-  { name: "Devthusiast", desc: "AI Newsletter read by thousands of software engineers", gif: "/previews/devthusiast.gif" },
-  { name: "QwikLocker", desc: "Amazon Locker but for any ecommerce brand", gif: "/previews/qwiklocker.gif" },
+  { name: "This Landing Page", desc: "You're looking at it. Built entirely with Cursor 2.0 and the techniques taught in this course.", isHighlighted: true, gif: "/previews/landing-page.gif", url: "#" },
+  { name: "RealGreatDevs", desc: "Platform with 2M+ software engineers", gif: "/previews/realgreatdevs.gif", url: "https://realgreatdevs.com" },
+  { name: "Studio.jaro.dev", desc: "Our internal platform at Jaro.dev, used to manage $1M/yr worth of projects", gif: "/previews/studio.gif", url: "https://studio.jaro.dev" },
+  { name: "BusinessOS", desc: "A platform to run your business on autopilot, beautiful GSAP powered landing page", gif: "/previews/businessos.gif", url: "https://businessos.io" },
+  { name: "Pivotal", desc: "Google ads automation platform for clinics", gif: "/previews/pivotal.gif", url: "https://pivotalos.com" },
+  { name: "Raise", desc: "Investment platform of the future, integrating with government portals", gif: "/previews/raise.gif", url: "https://raisefinancial.co" },
+  { name: "ReviveDeadLinks", desc: "Bootstrapped SaaS profitable within 7 days", gif: "/previews/revivedeadlinks.gif", url: "https://revivedeadlinks.com" },
+  { name: "Devthusiast", desc: "AI Newsletter read by thousands of software engineers", gif: "/previews/devthusiast.gif", url: "https://devthusiast.com" },
+  { name: "QwikLocker", desc: "Amazon Locker but for any ecommerce brand", gif: "/previews/qwiklocker.gif", url: "https://qwiklocker.com" },
 ];
 
 // Bonuses data
@@ -248,12 +336,8 @@ const faqData = [
     a: "Yes. I provide an invoice and a template email for requesting reimbursement.",
   },
   {
-    q: "How do the 5 Slack questions work?",
-    a: "You get 5 questions with 48-hour response time. You can attach screen recordings to help me understand your situation better and give you a more useful answer.",
-  },
-  {
     q: "What's your refund policy?",
-    a: "All sales are final. This course contains proprietary workflows and configurations that I use professionally.",
+    a: "All sales are final. This course contains proprietary workflows and configurations that I use professionally. They cannot be un-seen or un-learned.",
   },
   {
     q: "How do I get the $100 credit for the 10x Engineer Course?",
@@ -444,7 +528,7 @@ export default function LandingPage() {
               transition={{ duration: 0.6, delay: 1 }}
               className="text-xs tracking-[0.3em] text-muted-foreground uppercase mt-4"
           >
-              Avoid the AI Job Drought
+              Don&apos;t be a victim of the AI Job Drought
             </motion.p>
           </motion.div>
 
@@ -575,59 +659,214 @@ export default function LandingPage() {
               <span className="font-serif italic text-destructive">You Will Be Left Behind</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              The AI economy is coming. Thousands of jobs will be eliminated. This is not fear-mongering, it's already happening. Amazon laid off 15,000 employees in 2025, Microsoft laid off 10,000.
+              The AI economy is coming. Thousands of jobs will be eliminated. This is not fear-mongering, it&apos;s already happening. Amazon laid off 15,000 employees in 2025, Microsoft laid off 10,000
             </p>
             </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-16">
+          <div className="max-w-4xl mx-auto space-y-16 mb-16">
+            
+            {/* 1. YOUR JOB IS AT RISK - Termination Notice Visual */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="p-8 border border-destructive/20 bg-background"
+              transition={{ duration: 0.8 }}
+              className="relative"
             >
-              <h3 className="text-lg font-medium font-sans mb-3">Your Job Is At Risk</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Millions of engineering jobs will be eliminated in the AI economy. Companies are already replacing entire teams with engineers who use AI effectively.
-              </p>
+              {/* Fake document/notice */}
+              <div className="relative bg-background border-2 border-destructive/30 p-8 md:p-12 transform rotate-[-0.5deg]">
+                {/* Red stamp overlay */}
+                <motion.div
+                  initial={{ scale: 0, rotate: -30, opacity: 0 }}
+                  whileInView={{ scale: 1, rotate: -12, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.8, duration: 0.4, type: "spring", stiffness: 200 }}
+                  className="absolute top-6 right-6 md:top-8 md:right-8 border-4 border-destructive px-4 py-2 text-destructive font-bold text-sm md:text-lg uppercase tracking-wider transform"
+                >
+                  Terminated
             </motion.div>
 
+                {/* Document header */}
+                <div className="flex items-center gap-3 mb-6 opacity-40">
+                  <div className="w-8 h-8 border border-current" />
+                  <div className="h-2 w-32 bg-current rounded" />
+                </div>
+                
+                {/* Title with strikethrough animation */}
+                <h3 className="text-2xl md:text-3xl font-medium font-sans mb-4 relative inline-block">
+                  Your Job Is At Risk
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                    className="absolute left-0 top-1/2 h-0.5 bg-destructive"
+                    initial={{ width: 0 }}
+                    whileInView={{ width: "100%" }}
                   viewport={{ once: true }}
-              transition={{ delay: 0.15 }}
-              className="p-8 border border-destructive/20 bg-background"
-                >
-              <h3 className="text-lg font-medium font-sans mb-3">You&apos;re Being Outpaced</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                Junior developers with AI skills are shipping faster than senior engineers without them. The hierarchy is being rewritten. Your experience becomes a liability, not an asset.
-                  </p>
+                    transition={{ delay: 1.2, duration: 0.6 }}
+                  />
+                </h3>
+                
+                <p className="text-muted-foreground leading-relaxed max-w-2xl text-lg">
+                Millions of engineering jobs will be eliminated in the AI economy. Companies are already replacing entire teams with engineers who use AI effectively.
+              </p>
+                
+                {/* Fake signature lines */}
+                <div className="mt-8 flex gap-8 opacity-20">
+                  <div className="w-32 border-t border-current" />
+                  <div className="w-24 border-t border-current" />
+                </div>
+              </div>
+              
+              {/* Shadow paper layers */}
+              <div className="absolute inset-0 bg-muted/50 border border-border -z-10 transform translate-x-2 translate-y-2 rotate-[0.5deg]" />
+              <div className="absolute inset-0 bg-muted/30 border border-border -z-20 transform translate-x-4 translate-y-4 rotate-1" />
           </motion.div>
 
+            {/* 2. YOU'RE BEING OUTPACED - Racing Track Visual */}
+            <RacingSection />
+
+            {/* 3. WASTING 80% OF YOUR TIME - Giant Pie Chart */}
           <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-              className="p-8 border border-destructive/20 bg-background"
-                >
-              <h3 className="text-lg font-medium font-sans mb-3">Wasting 80% of Your Time</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                Every hour you spend manually coding is an hour someone else is using to build 10x more. The gap widens daily. Your learning curve is their shipping speed.
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
+              <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
+                {/* Giant pie chart */}
+                <div className="relative w-48 h-48 md:w-64 md:h-64 shrink-0">
+                  <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
+                    {/* Background circle */}
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="10" className="text-accent/20" />
+                    {/* Wasted portion - 80% */}
+                    <motion.circle
+                      cx="50" cy="50" r="45"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="10"
+                      strokeLinecap="round"
+                      className="text-destructive"
+                      strokeDasharray="283"
+                      initial={{ strokeDashoffset: 283 }}
+                      whileInView={{ strokeDashoffset: 283 * 0.2 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 2, delay: 0.5, ease: "easeOut" }}
+                    />
+                  </svg>
+                  {/* Center text */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <motion.span
+                      className="text-4xl md:text-5xl font-bold text-destructive font-mono"
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 1.5, duration: 0.4 }}
+                    >
+                      80%
+                    </motion.span>
+                    <span className="text-sm text-muted-foreground">wasted</span>
+                  </div>
+                </div>
+                
+                {/* Text content */}
+                <div className="text-center md:text-left">
+                  <h3 className="text-2xl md:text-3xl font-medium font-sans mb-4">
+                    Wasting 80% of Your Time
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed text-lg">
+                    Every hour you spend manually coding is an hour someone else is using to build 10x more. The gap widens daily.
                   </p>
+                  
+                  {/* Time comparison */}
+                  <div className="mt-6 flex items-center justify-center md:justify-start gap-6 text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-destructive rounded-full" />
+                      <span className="text-muted-foreground">Manual coding</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-accent rounded-full" />
+                      <span className="text-muted-foreground">Actually shipping</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
           </motion.div>
 
+            {/* 4. MISSING $200K+ OPPORTUNITIES - Salary Counter */}
           <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-              transition={{ delay: 0.25 }}
-              className="p-8 border border-destructive/20 bg-background"
-                >
-              <h3 className="text-lg font-medium font-sans mb-3">Missing $200K+ Opportunities</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+              transition={{ duration: 0.8 }}
+              className="relative bg-muted/20 border border-border p-8 md:p-12"
+            >
+              <h3 className="text-2xl md:text-3xl font-medium font-sans mb-8 text-center">
+                Missing $200K+ Opportunities
+              </h3>
+              
+              {/* Salary ticker display */}
+              <div className="flex justify-center mb-8">
+                <div className="bg-background border-2 border-destructive/30 px-6 py-4 font-mono">
+                  <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Money You&apos;re Leaving on the Table</div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-destructive text-2xl">$</span>
+                    <motion.span
+                      className="text-4xl md:text-5xl font-bold text-destructive tabular-nums"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                    >
+                      {/* Animated counter effect using CSS */}
+                      <motion.span
+                        initial={{ opacity: 1 }}
+                        animate={{ opacity: 1 }}
+                      >
+                        200,000
+                      </motion.span>
+                    </motion.span>
+                    <motion.span
+                      className="text-lg text-muted-foreground"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 1 }}
+                    >
+                      +/year
+                    </motion.span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Salary comparison bars */}
+              <div className="max-w-xl mx-auto space-y-4">
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-muted-foreground w-32 shrink-0 text-right">Average Dev</span>
+                  <div className="flex-1 h-6 bg-muted/50 relative overflow-hidden">
+                    <motion.div
+                      className="absolute inset-y-0 left-0 bg-muted-foreground/40"
+                      initial={{ width: 0 }}
+                      whileInView={{ width: "40%" }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1, delay: 0.5 }}
+                    />
+                  </div>
+                  <span className="text-sm text-muted-foreground w-20">$120K</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-accent w-32 shrink-0 text-right font-medium">AI-Native Dev</span>
+                  <div className="flex-1 h-6 bg-muted/50 relative overflow-hidden">
+                    <motion.div
+                      className="absolute inset-y-0 left-0 bg-accent"
+                      initial={{ width: 0 }}
+                      whileInView={{ width: "100%" }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.5, delay: 0.8 }}
+                    />
+                  </div>
+                  <span className="text-sm text-accent w-20 font-medium">$300K+</span>
+                </div>
+              </div>
+              
+              <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto text-center mt-8 text-lg">
                 Top AI-native engineers at companies like OpenAI earn $200-500K+. These roles won&apos;t exist in 2 years, everyone will be using agentic development by default.
                   </p>
                 </motion.div>
@@ -689,56 +928,381 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-16">
+          <div className="max-w-4xl mx-auto space-y-20 mb-16">
+            
+            {/* 1. 10X YOUR OUTPUT - Stacking Blocks Multiplier */}
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="p-8 border border-accent/20 bg-accent/5"
-                >
-              <h3 className="text-lg font-medium font-sans mb-3">10x Your Output Immediately</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
+              <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
+                {/* Stacking blocks visualization */}
+                <div className="relative w-48 h-48 md:w-56 md:h-56 shrink-0">
+                  {/* Base single block (1x) */}
+                  <motion.div
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-12 border-2 border-muted-foreground/30 bg-muted/30 flex items-center justify-center"
+                    initial={{ opacity: 0.3 }}
+                    whileInView={{ opacity: 0.3 }}
+                    viewport={{ once: true }}
+                  >
+                    <span className="text-xs text-muted-foreground font-mono">1x</span>
+                  </motion.div>
+                  
+                  {/* Stacked blocks (10x) */}
+                  {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute w-12 h-12 border-2 border-accent bg-accent/20 flex items-center justify-center"
+                      style={{
+                        bottom: 48 + (i * 14),
+                        left: `calc(50% + ${(i % 2 === 0 ? -1 : 1) * 20}px)`,
+                        transform: "translateX(-50%)",
+                      }}
+                      initial={{ opacity: 0, y: 50, scale: 0.5 }}
+                      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 + i * 0.08, duration: 0.4, type: "spring" }}
+                    />
+                  ))}
+                  
+                  {/* 10x label */}
+                  <motion.div
+                    className="absolute -top-4 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground px-4 py-2 font-bold text-2xl font-mono"
+                    initial={{ opacity: 0, scale: 0 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 1.2, duration: 0.4, type: "spring" }}
+                  >
+                    10x
+                  </motion.div>
+                </div>
+                
+                {/* Text content */}
+                <div className="text-center md:text-left flex-1">
+                  <h3 className="text-2xl md:text-3xl font-medium font-sans mb-4">
+                    10x Your Output Immediately
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed text-lg mb-6">
                 Ship in hours what used to take weeks. Build complete applications in a single sitting. The backlog of ideas you&apos;ve been meaning to build finally gets built.
                   </p>
+                  
+                  {/* Before/After comparison */}
+                  <div className="flex items-center justify-center md:justify-start gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-2 bg-muted-foreground/30 rounded" />
+                      <span className="text-muted-foreground">Before</span>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-accent" />
+                    <div className="flex items-center gap-2">
+                      <div className="flex gap-0.5">
+                        {[...Array(10)].map((_, i) => (
+                          <motion.div
+                            key={i}
+                            className="w-2 h-2 bg-accent rounded-sm"
+                            initial={{ scale: 0 }}
+                            whileInView={{ scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 1.5 + i * 0.05 }}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-accent font-medium">After</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
                 </motion.div>
 
+            {/* 2. FUTURE-PROOF YOUR CAREER - Before/After Comparison */}
                 <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
+              <h3 className="text-2xl md:text-3xl font-medium font-sans mb-12 text-center">
+                Future-Proof Your Career
+              </h3>
+              
+              {/* Before/After comparison */}
+              <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+                
+                {/* WITHOUT - Engineers getting laid off */}
+                <motion.div
+                  className="relative border border-destructive/30 bg-destructive/5 p-8"
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <div className="text-xs text-destructive uppercase tracking-wider mb-6 font-medium">Without AI Skills</div>
+                  
+                  {/* Engineers falling/getting cut */}
+                  <div className="flex justify-center gap-4 mb-6 h-24 items-end">
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <motion.div
+                        key={i}
+                        className="relative"
+                        initial={{ opacity: 1, y: 0 }}
+                        whileInView={{ 
+                          opacity: i < 3 ? 0.2 : 1,
+                          y: i < 3 ? 20 : 0,
+                        }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 1 + i * 0.15, duration: 0.5 }}
+                      >
+                        {/* Person icon */}
+                        <div className={`flex flex-col items-center ${i < 3 ? 'text-destructive/40' : 'text-muted-foreground'}`}>
+                          <div className="w-6 h-6 rounded-full border-2 border-current" />
+                          <div className="w-4 h-8 border-2 border-current rounded-sm mt-1" />
+                        </div>
+                        {/* X mark for laid off */}
+                        {i < 3 && (
+                          <motion.div
+                            className="absolute inset-0 flex items-center justify-center"
+                            initial={{ scale: 0 }}
+                            whileInView={{ scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 1.3 + i * 0.15, type: "spring" }}
+                          >
+                            <X className="w-10 h-10 text-destructive" />
+                          </motion.div>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                  
+                  {/* Stats */}
+                  <div className="text-center">
+                    <motion.div
+                      className="text-3xl font-bold text-destructive font-mono mb-1"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 1.8 }}
+                    >
+                      60%+
+                    </motion.div>
+                    <div className="text-sm text-muted-foreground">will be replaced</div>
+                  </div>
+                </motion.div>
+                
+                {/* WITH - Engineer protected and thriving */}
+                <motion.div
+                  className="relative border border-accent/30 bg-accent/5 p-8"
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <div className="text-xs text-accent uppercase tracking-wider mb-6 font-medium">With Agentic Development</div>
+                  
+                  {/* Protected engineer with shield */}
+                  <div className="flex justify-center mb-6 h-24 items-center">
+                    <motion.div
+                      className="relative"
+                      initial={{ scale: 0.8 }}
+                      whileInView={{ scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.8, type: "spring" }}
+                    >
+                      {/* Shield background */}
+                      <motion.div
+                        className="absolute -inset-4 bg-accent/20 rounded-full"
+                        animate={{ scale: [1, 1.1, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+                      
+                      {/* Person icon - larger and prominent */}
+                      <div className="relative flex flex-col items-center text-accent z-10">
+                        <div className="w-8 h-8 rounded-full border-3 border-current bg-accent/20" />
+                        <div className="w-6 h-12 border-3 border-current rounded-sm mt-1 bg-accent/10" />
+                      </div>
+                    </motion.div>
+                  </div>
+                  
+                  {/* Stats */}
+                  <div className="text-center">
+                    <motion.div
+                      className="text-3xl font-bold text-accent font-mono mb-1"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 1.6 }}
+                    >
+                      Top 1%
+                    </motion.div>
+                    <div className="text-sm text-muted-foreground"> are indispensable</div>
+                  </div>
+                </motion.div>
+              </div>
+              
+              {/* Connecting message */}
+              <motion.div
+                className="text-center mt-10"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-              transition={{ delay: 0.15 }}
-              className="p-8 border border-accent/20 bg-accent/5"
+                transition={{ delay: 2 }}
                 >
-              <h3 className="text-lg font-medium font-sans mb-3">Future-Proof Your Career</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                Become one of the engineers who thrives in the AI economy instead of being replaced by it. When layoffs come, they don&apos;t cut the person shipping 10x.
+                <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+                  When layoffs come, they don&apos;t cut the person shipping <span className="text-accent font-medium">10x</span>. They cut everyone else.
                   </p>
+              </motion.div>
                 </motion.div>
 
+            {/* 3. THINK IT, BUILD IT - Journey Timeline */}
                 <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
+              <h3 className="text-2xl md:text-3xl font-medium font-sans mb-12 text-center">
+                Think It, Build It
+              </h3>
+              
+              {/* Journey timeline */}
+              <div className="relative max-w-3xl mx-auto">
+                {/* Connecting line */}
+                <motion.div
+                  className="absolute top-8 left-0 right-0 h-0.5 bg-border"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.5, delay: 0.3 }}
+                  style={{ transformOrigin: "left" }}
+                />
+                <motion.div
+                  className="absolute top-8 left-0 h-0.5 bg-accent"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: "100%" }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 2, delay: 0.5 }}
+                />
+                
+                {/* Timeline steps */}
+                <div className="flex justify-between relative">
+                  {[
+                    { icon: Lightbulb, label: "Idea", time: "0 min" },
+                    { icon: Bot, label: "Prompt", time: "5 min" },
+                    { icon: Zap, label: "Build", time: "30 min" },
+                    { icon: Rocket, label: "Ship", time: "1 hour" },
+                  ].map((step, i) => (
+                    <motion.div
+                      key={step.label}
+                      className="flex flex-col items-center"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="p-8 border border-accent/20 bg-accent/5"
-                >
-              <h3 className="text-lg font-medium font-sans mb-3">Think It, Build It</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+                      transition={{ delay: 0.5 + i * 0.3, duration: 0.5 }}
+                    >
+                      <motion.div
+                        className="w-16 h-16 rounded-full bg-background border-2 border-accent flex items-center justify-center relative z-10"
+                        whileInView={{ scale: [0.8, 1.1, 1] }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.7 + i * 0.3, duration: 0.4 }}
+                      >
+                        <step.icon className="w-6 h-6 text-accent" />
+                      </motion.div>
+                      <span className="mt-3 text-sm font-medium">{step.label}</span>
+                      <span className="text-xs text-muted-foreground">{step.time}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+              
+              <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto text-center mt-12 text-lg">
                 Any software idea you can imagine can be reality in minutes. The highest leverage a human has ever had. You&apos;re not competing with AI - you&apos;re commanding it.
                   </p>
                 </motion.div>
 
+            {/* 4. JOIN THE TOP 1% - Pyramid/Podium Visual */}
                 <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
+              <h3 className="text-2xl md:text-3xl font-medium font-sans mb-8 text-center">
+                Join the Top 1%
+              </h3>
+              
+              {/* Pyramid visualization */}
+              <div className="relative w-full">
+                {/* Pyramid layers - stacked from bottom to top */}
+                <div className="flex flex-col items-center">
+                  {/* Bottom layer - 99% of engineers */}
+                  <motion.div
+                    className="w-full h-16 bg-muted/30 border border-border flex items-center justify-center"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-              transition={{ delay: 0.25 }}
-              className="p-8 border border-accent/20 bg-accent/5"
-                >
-              <h3 className="text-lg font-medium font-sans mb-3">Join the Top 1%</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                Get the exact skills that OpenAI, Google, and top startups are desperately hiring for. The exact prompts and workflows that took 40+ engineers months to refine.
+                    transition={{ delay: 0.3 }}
+                  >
+                    <span className="text-sm text-muted-foreground">99% of engineers</span>
+                  </motion.div>
+                  
+                  {/* Second layer - Side projects */}
+                  <motion.div
+                    className="w-[75%] h-14 bg-muted/40 border border-border -mt-px flex items-center justify-center"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    <span className="text-xs text-muted-foreground">Engineers with side projects</span>
+                  </motion.div>
+                  
+                  {/* Third layer - Use AI */}
+                  <motion.div
+                    className="w-[50%] h-14 bg-muted/50 border border-border -mt-px flex items-center justify-center"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.7 }}
+                  >
+                    <span className="text-xs text-muted-foreground">Engineers that use AI</span>
+                  </motion.div>
+                  
+                  {/* Top - Cursor Masters */}
+                  <motion.div
+                    className="w-[20%] min-w-[160px] h-14 bg-accent border-2 border-accent -mt-px flex items-center justify-center relative"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.9, type: "spring" }}
+                  >
+                    <span className="text-sm font-bold text-accent-foreground">Cursor Masters</span>
+                    
+                    {/* "YOU" indicator - pointing to the top */}
+                    <motion.div
+                      className="absolute -right-4 top-1/2 -translate-y-1/2 translate-x-full flex items-center gap-2"
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 1.4 }}
+                    >
+                      <motion.div
+                        animate={{ x: [0, -5, 0] }}
+                        transition={{ duration: 1, repeat: Infinity }}
+                      >
+                        <ArrowRight className="w-5 h-5 text-accent rotate-180" />
+                      </motion.div>
+                      <span className="text-sm font-medium text-accent whitespace-nowrap">You, after this course</span>
+                    </motion.div>
+                  </motion.div>
+                </div>
+              </div>
+              
+              <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto text-center mt-8 text-lg">
+                Get the exact skills that OpenAI and top startups are desperately hiring for.
                   </p>
                 </motion.div>
               </div>
@@ -932,8 +1496,14 @@ export default function LandingPage() {
             }}
           >
             {products.map((product, i) => (
-          <motion.div
+              <a
                 key={i}
+                href={product.url}
+                target={product.url !== "#" ? "_blank" : undefined}
+                rel={product.url !== "#" ? "noopener noreferrer" : undefined}
+                className="cursor-pointer"
+              >
+          <motion.div
                 variants={{
                   hidden: { 
                     opacity: 0, 
@@ -985,12 +1555,20 @@ export default function LandingPage() {
                     setHoveredProduct(null);
                   }
                 }}
-                className={`relative p-8 group hover:bg-muted/30 transition-colors ${product.isHighlighted ? 'bg-accent/10 border-l-2 border-accent' : 'bg-background'}`}
+                className={`relative p-8 group hover:bg-muted/30 transition-colors h-full ${product.isHighlighted ? 'bg-accent/10 border-l-2 border-accent' : 'bg-background'}`}
               >
-                <div className="mb-4">
+                <div className="mb-4 flex items-center justify-between">
                   <h3 className={`text-lg font-medium font-sans ${product.isHighlighted ? 'text-accent' : ''}`}>{product.name}</h3>
+                  {product.url !== "#" && (
+                    <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                  )}
                   </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">{product.desc}</p>
+                {product.url !== "#" && (
+                  <p className="text-xs text-muted-foreground/60 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    Click to open in new tab
+                  </p>
+                )}
                 
                 {/* GIF Preview on Hover - follows mouse with damping */}
                 <motion.div
@@ -1027,6 +1605,7 @@ export default function LandingPage() {
                   </div>
                 </motion.div>
               </motion.div>
+              </a>
             ))}
           </motion.div>
         </motion.div>
@@ -1444,7 +2023,7 @@ export default function LandingPage() {
             transition={{ delay: 0.1 }}
             className="text-2xl md:text-4xl font-medium text-accent mb-8 font-serif italic"
           >
-            It&apos;s Whether You Can Afford Not To.
+            It&apos;s Whether You Can Afford Not To Get It.
           </motion.p>
           <motion.p
             initial={{ opacity: 0 }}
@@ -1494,8 +2073,6 @@ export default function LandingPage() {
             <span>Lifetime Access</span>
             <span className="w-1 h-1 bg-muted-foreground/50 rounded-full" />
             <span>All Future Updates</span>
-            <span className="w-1 h-1 bg-muted-foreground/50 rounded-full" />
-            <span>Instant Access</span>
           </motion.div>
           </motion.div>
       </section>

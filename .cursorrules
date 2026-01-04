@@ -1,4 +1,4 @@
-# Demo Project - Next.js Dashboard Application
+# 200x Project - Next.js Dashboard Application
 
 ## Framework
 
@@ -85,8 +85,6 @@
 - Use pnpm lint for linting fixes
 - Use pnpm dev for development server
 - Use pnpm build for production builds
-
-## Available Components
 
 ### UI Components (@/components/ui)
 - Button: Primary, secondary, outline, ghost, destructive, link variants
