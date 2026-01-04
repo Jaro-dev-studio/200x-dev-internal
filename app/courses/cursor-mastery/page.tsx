@@ -1564,11 +1564,6 @@ export default function LandingPage() {
                   )}
                   </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">{product.desc}</p>
-                {product.url !== "#" && (
-                  <p className="text-xs text-muted-foreground/60 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                    Click to open in new tab
-                  </p>
-                )}
                 
                 {/* GIF Preview on Hover - follows mouse with damping */}
                 <motion.div
@@ -1588,18 +1583,25 @@ export default function LandingPage() {
                   className="absolute left-0 top-0 z-50 pointer-events-none"
                 >
                   <div className="relative">
-                    <div className="w-80 h-48 bg-muted rounded-lg overflow-hidden border border-border shadow-2xl flex items-center justify-center">
-                      {product.gif ? (
-                        <Image 
-                          src={product.gif} 
-                          alt={`${product.name} preview`}
-                          width={320}
-                          height={192}
-                          className="w-full h-full object-cover"
-                          unoptimized
-                        />
-                      ) : (
-                        <span className="text-muted-foreground text-sm">Preview coming soon</span>
+                    <div className="w-80 bg-muted rounded-lg overflow-hidden border border-border shadow-2xl">
+                      <div className="h-48 flex items-center justify-center">
+                        {product.gif ? (
+                          <Image 
+                            src={product.gif} 
+                            alt={`${product.name} preview`}
+                            width={320}
+                            height={192}
+                            className="w-full h-full object-cover"
+                            unoptimized
+                          />
+                        ) : (
+                          <span className="text-muted-foreground text-sm">Preview coming soon</span>
+                        )}
+                      </div>
+                      {product.url !== "#" && (
+                        <div className="px-3 py-2 bg-background/80 border-t border-border text-xs text-muted-foreground text-center">
+                          Click to open in new tab
+                        </div>
                       )}
                     </div>
                   </div>
