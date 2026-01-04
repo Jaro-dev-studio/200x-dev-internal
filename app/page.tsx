@@ -342,7 +342,7 @@ export default function LandingPage() {
   const faqOpacity = useTransform(faqProgress, [0, 0.3], [0, 1]);
   
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
-  const [openModule, setOpenModule] = useState<number | null>(null);
+  const [openModule, setOpenModule] = useState<number | null>(0);
   const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
   const [mousePositions, setMousePositions] = useState<Record<number, { x: number; y: number }>>({});
 
@@ -464,7 +464,7 @@ export default function LandingPage() {
               Who This Is For
             </p>
             <h2 className="text-4xl md:text-6xl font-medium tracking-tight leading-tight font-sans">
-              From Mid-Level Vibe Coder to
+              From Mid-Level Engineer to
               <br />
               <span className="font-serif italic text-accent">Elite AI Architect</span>
             </h2>
@@ -479,108 +479,68 @@ export default function LandingPage() {
               The Problems You&apos;re Facing
             </p>
             
-            <div className="space-y-0">
+            <div className="space-y-6">
               {[
                 {
+                  num: "01",
                   title: "Your AI-generated code works, but it's not production-grade",
                   desc: "You're constantly fixing, refactoring, debugging things that shouldn't have broken.",
                 },
                 {
+                  num: "02",
                   title: "You expected 10x speed. You got maybe 1.5x.",
                   desc: "The promise of AI-assisted development feels just out of reach.",
                 },
                 {
+                  num: "03",
                   title: "You're using AI as a helper, not as the main engineer",
                   desc: "You can see the potential, but you're not using it to its full extent.",
                 },
               ].map((problem, i) => (
               <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, x: -40 }}
+                  whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ delay: i * 0.15, duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
-                  className="group py-8 border-t border-border first:border-t-0 hover:bg-muted/30 transition-colors -mx-6 px-6"
+                  className="group relative"
                 >
-                  <div>
-                    <h3 className="text-xl md:text-2xl font-medium mb-2 font-sans">{problem.title}</h3>
-                    <p className="text-muted-foreground">{problem.desc}</p>
-                </div>
+                  <div className="flex gap-6 p-6 md:p-8 border border-border bg-background hover:border-destructive/40 hover:bg-destructive/5 transition-all duration-300">
+                    {/* Number */}
+                    <motion.span 
+                      className="text-4xl md:text-5xl font-light text-destructive/40 font-mono shrink-0"
+                      initial={{ scale: 0.8 }}
+                      whileInView={{ scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.2 + i * 0.15, duration: 0.4, type: "spring" }}
+                    >
+                      {problem.num}
+                    </motion.span>
+                    
+                    {/* Content */}
+                    <div className="flex-1">
+                      <h3 className="text-xl md:text-2xl lg:text-3xl font-medium mb-3 font-sans text-foreground leading-tight">
+                        {problem.title}
+                      </h3>
+                      <p className="text-base md:text-lg text-muted-foreground/80 font-mono leading-relaxed">
+                        {problem.desc}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Animated accent line */}
+                  <motion.div 
+                    className="absolute left-0 top-0 w-1 h-full bg-destructive/60"
+                    initial={{ scaleY: 0 }}
+                    whileInView={{ scaleY: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.3 + i * 0.15, duration: 0.4 }}
+                    style={{ transformOrigin: "top" }}
+                  />
               </motion.div>
             ))}
             </div>
           </motion.div>
-
-          {/* What You'll Learn */}
-          <ParallaxSection className="mb-24 py-16 border-y border-border" yOffset={60}>
-            <p className="text-xs tracking-[0.3em] text-muted-foreground uppercase mb-8">
-              This course will teach you
-            </p>
-            <p className="text-2xl md:text-3xl font-medium leading-relaxed max-w-4xl font-sans">
-              How to orchestrate AI agents like a team of engineers-running them in parallel, enforcing quality gates, and recovering instantly when things break.
-            </p>
-          </ParallaxSection>
-
-          {/* For/Not For Grid */}
-          <div className="grid md:grid-cols-2 gap-16 md:gap-24">
-          <motion.div
-              initial={{ opacity: 0, x: -60 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }}
-            >
-              <p className="text-sm font-medium text-accent mb-8">This is for you if:</p>
-              <ul className="space-y-4">
-                {[
-                  "You already use AI tools in your workflow",
-                  "You can build features end-to-end with AI assistance",
-                  "You want production-quality output, not just \"it works\"",
-                  "You're ready to change how you work",
-                ].map((item, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, x: -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
-                    className="flex items-start gap-4"
-                  >
-                    <Check className="w-5 h-5 text-accent mt-0.5 shrink-0" />
-                    <span className="text-foreground/80">{item}</span>
-                  </motion.li>
-                ))}
-              </ul>
-            </motion.div>
-
-                <motion.div
-              initial={{ opacity: 0, x: 60 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, delay: 0.15, ease: [0.33, 1, 0.68, 1] }}
-            >
-              <p className="text-sm font-medium text-muted-foreground mb-8">This is not for you if:</p>
-              <ul className="space-y-4">
-                {[
-                  "You're brand new to programming",
-                  "You've never used AI coding tools",
-                  "You just want prompt templates to copy-paste",
-                  "You're not willing to learn a new workflow",
-                ].map((item, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, x: 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                    transition={{ delay: 0.35 + i * 0.1, duration: 0.5 }}
-                    className="flex items-start gap-4"
-                >
-                    <X className="w-5 h-5 text-muted-foreground mt-0.5 shrink-0" />
-                  <span className="text-muted-foreground">{item}</span>
-                  </motion.li>
-              ))}
-              </ul>
-          </motion.div>
-          </div>
         </div>
       </section>
 
@@ -602,7 +562,7 @@ export default function LandingPage() {
               <span className="font-serif italic text-destructive">You Will Be Left Behind</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              The AI economy is coming. Millions of jobs will be eliminated. This is not fear-mongering, it's a fact.
+              The AI economy is coming. Thousands of jobs will be eliminated. This is not fear-mongering, it's already happening. Amazon laid off 15,000 employees in 2025, Microsoft laid off 10,000.
             </p>
             </motion.div>
 
@@ -894,7 +854,7 @@ export default function LandingPage() {
                   { content: <>Founded <a href="https://jaro.dev" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Jaro.dev</a>, a 7-figure software agency</> },
                   { content: <>Previously at JPMorgan & Deutsche Bank (Fortune 500)</> },
                   { content: <>Top 0.1% on GitHub</> },
-                  { content: <>Engineers using these techniques earn $300-500K+ per year</> },
+                  { content: <>Engineers using these techniques earn $200-500K+ per year</> },
                 ].map((item, i) => (
                   <motion.li
                     key={i}
@@ -922,7 +882,7 @@ export default function LandingPage() {
                 transition={{ delay: 0.8 }}
                 className="text-lg font-medium text-foreground border-l-2 border-accent pl-6"
               >
-                If that&apos;s not enough to convince you this is the most valuable skill you can learn in 2026, I don&apos;t know what else would be.
+                If this doesn&apos;t convince you this is the most valuable skill you can learn in 2026, I don&apos;t know what will.
               </motion.p>
           </motion.div>
           </div>
@@ -940,7 +900,7 @@ export default function LandingPage() {
           </p>
           
           <h2 className="text-4xl md:text-5xl font-medium tracking-tight mb-16 font-sans">
-            Products I Built Using <span className="font-serif italic">This System</span>
+            Products I Built Using <span className="font-serif italic text-accent">This System</span>
               </h2>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
@@ -1072,15 +1032,19 @@ export default function LandingPage() {
                     <h3 className="text-lg md:text-xl font-medium font-sans mb-2 group-hover:text-accent transition-colors">
                       {module.title}
                     </h3>
-                    <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm font-mono">
-                      <span>
-                        <span className="text-muted-foreground">Before:</span>{" "}
-                        <span className="text-muted-foreground/70">{module.before}</span>
-                      </span>
-                      <span>
-                        <span className="text-muted-foreground">After:</span>{" "}
-                        <span className="text-accent">{module.after}</span>
-                      </span>
+                    <div className="flex flex-col gap-3 text-sm font-mono mt-3">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[10px] uppercase tracking-widest text-muted-foreground/50">Before</span>
+                        <span className="px-3 py-1.5 bg-muted/50 border border-border rounded-sm text-muted-foreground line-through decoration-muted-foreground/30">
+                          {module.before}
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[10px] uppercase tracking-widest text-accent">After</span>
+                        <span className="px-3 py-1.5 bg-accent/10 border border-accent/30 rounded-sm text-accent font-medium">
+                          {module.after}
+                        </span>
+                      </div>
                     </div>
                   </div>
                   
@@ -1155,43 +1119,31 @@ export default function LandingPage() {
                 icon: Rocket, 
                 title: "Build entire production applications with AI agents",
                 desc: "Ship complete, polished products from idea to deployment using AI as your engineering team.",
-                gradient: "from-orange-500/20 to-red-500/20",
-                iconColor: "text-orange-500"
               },
               { 
                 icon: Bot, 
                 title: "Delegate nearly all execution to Cursor agents",
                 desc: "Stop typing code manually. Direct AI agents to handle implementation while you focus on architecture.",
-                gradient: "from-blue-500/20 to-cyan-500/20",
-                iconColor: "text-blue-500"
               },
               { 
                 icon: Users, 
                 title: "Parallelize development like a team - as a solo engineer",
                 desc: "Run multiple AI agents simultaneously on non-conflicting tasks. One person, team-level output.",
-                gradient: "from-purple-500/20 to-pink-500/20",
-                iconColor: "text-purple-500"
               },
               { 
                 icon: Zap, 
                 title: "Debug faster than you ever thought possible",
                 desc: "Copy errors, paste to agent, get root cause analysis, fix, and prevention strategy in seconds.",
-                gradient: "from-yellow-500/20 to-orange-500/20",
-                iconColor: "text-yellow-500"
               },
               { 
                 icon: Lightbulb, 
                 title: "Turn any software idea into a live product",
                 desc: "The highest leverage a human has ever had. Think it, describe it, ship it. In hours, not months.",
-                gradient: "from-emerald-500/20 to-teal-500/20",
-                iconColor: "text-emerald-500"
               },
               { 
                 icon: Shield, 
                 title: "Stay relevant, employable, and dominant in the AI economy",
                 desc: "Future-proof your career. Become the engineer companies fight to keep when layoffs come.",
-                gradient: "from-accent/20 to-accent/10",
-                iconColor: "text-accent"
               },
             ].map((promise, i) => (
               <motion.div
@@ -1209,16 +1161,16 @@ export default function LandingPage() {
                 <div className="relative flex items-start gap-6 p-8 border border-border bg-background hover:border-accent/40 transition-all duration-300">
                   {/* Gradient background on hover */}
                   <motion.div 
-                    className={`absolute inset-0 bg-linear-to-r ${promise.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+                    className="absolute inset-0 bg-linear-to-r from-accent/20 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   />
                   
                   {/* Icon container with animation */}
                   <motion.div 
-                    className={`relative z-10 shrink-0 w-14 h-14 flex items-center justify-center border border-border bg-background group-hover:border-accent/30 transition-colors`}
+                    className="relative z-10 shrink-0 w-14 h-14 flex items-center justify-center border border-border bg-background group-hover:border-accent/30 transition-colors"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
-                    <promise.icon className={`w-6 h-6 ${promise.iconColor}`} />
+                    <promise.icon className="w-6 h-6 text-accent" />
                   </motion.div>
                   
                   {/* Content */}
@@ -1448,7 +1400,7 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-xl md:text-2xl font-medium text-accent mb-8 font-serif italic"
+            className="text-2xl md:text-4xl font-medium text-accent mb-8 font-serif italic"
           >
             It&apos;s Whether You Can Afford Not To.
           </motion.p>
