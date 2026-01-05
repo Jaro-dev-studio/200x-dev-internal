@@ -85,7 +85,7 @@ export default function ProjectsPage() {
             Manage and track all your team projects.
           </p>
         </div>
-        <Button>
+        <Button variant="accent">
           <svg
             className="mr-2 h-4 w-4"
             fill="none"

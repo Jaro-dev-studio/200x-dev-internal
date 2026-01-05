@@ -83,7 +83,7 @@ export default function TeamPage() {
             Manage your team members and permissions.
           </p>
         </div>
-        <Button>
+        <Button variant="accent">
           <svg
             className="mr-2 h-4 w-4"
             fill="none"

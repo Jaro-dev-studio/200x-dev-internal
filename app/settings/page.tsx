@@ -70,7 +70,7 @@ export default function SettingsPage() {
           </div>
 
           <div className="flex justify-end">
-            <Button>Save Changes</Button>
+            <Button variant="accent">Save Changes</Button>
           </div>
         </CardContent>
       </Card>
@@ -153,7 +153,7 @@ export default function SettingsPage() {
           </div>
 
           <div className="flex justify-end">
-            <Button variant="outline">Update Password</Button>
+            <Button variant="accent">Update Password</Button>
           </div>
         </CardContent>
       </Card>
