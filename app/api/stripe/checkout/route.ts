@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
           type: "digital_product",
         },
         success_url: successUrl,
-        cancel_url: email ? `${appUrl}/dashboard/browse` : `${appUrl}/products/${product.slug}`,
+        cancel_url: `${appUrl}/products/${product.slug}`,
       });
 
       console.log("[Stripe Checkout] Checkout session created successfully for digital product");
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
           type: "course",
         },
         success_url: successUrl,
-        cancel_url: email ? `${appUrl}/dashboard/browse` : `${appUrl}/products/${course.id}`,
+        cancel_url: `${appUrl}/products/${course.slug}`,
       });
 
       console.log("[Stripe Checkout] Checkout session created successfully for course");
