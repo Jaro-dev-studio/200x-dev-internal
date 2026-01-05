@@ -547,13 +547,13 @@ export function CursorrrulesClient({
             <span>Access Purchase</span>
           </Link>
         ) : (
-          <a
-            href="#pricing"
-            className="flex items-center justify-center gap-2 w-full md:w-auto py-3.5 md:py-3 md:px-8 bg-accent text-accent-foreground text-sm font-medium tracking-wide hover:brightness-110 transition-all md:shadow-lg md:shadow-accent/25 hover:md:shadow-xl hover:md:shadow-accent/30 hover:md:scale-105"
+          <CursorrulesBuyButton
+            productId={productId}
+            className="flex items-center justify-center gap-2 w-full md:w-auto py-3.5 md:py-3 md:px-8 bg-accent text-accent-foreground text-sm font-medium tracking-wide hover:brightness-110 transition-all md:shadow-lg md:shadow-accent/25 hover:md:shadow-xl hover:md:shadow-accent/30 hover:md:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span>Get the File</span>
             <ArrowRight className="w-4 h-4" />
-          </a>
+          </CursorrulesBuyButton>
         )}
       </motion.div>
 
@@ -646,13 +646,13 @@ export function CursorrrulesClient({
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             ) : (
-              <a
-                href="#pricing"
-                className="group inline-flex items-center justify-center gap-3 px-16 py-4 bg-foreground text-background text-sm font-medium tracking-wide hover:bg-foreground/90 transition-all min-w-[320px]"
+              <CursorrulesBuyButton
+                productId={productId}
+                className="group inline-flex items-center justify-center gap-3 px-16 py-4 bg-foreground text-background text-sm font-medium tracking-wide hover:bg-foreground/90 transition-all min-w-[320px] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span>Get the File Now</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </CursorrulesBuyButton>
             )}
           </motion.div>
         </motion.div>
@@ -2197,13 +2197,13 @@ export function CursorrrulesClient({
                 One-Time Payment
               </motion.p>
             </div>
-            <a
-              href="#pricing"
-              className="group flex items-center justify-center gap-3 w-full py-4 bg-accent text-accent-foreground text-sm font-medium tracking-wide hover:bg-accent/90 transition-colors"
+            <CursorrulesBuyButton
+              productId={productId}
+              className="group flex items-center justify-center gap-3 w-full py-4 bg-accent text-accent-foreground text-sm font-medium tracking-wide hover:bg-accent/90 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span>Get the File</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </a>
+            </CursorrulesBuyButton>
           </motion.div>
         </motion.div>
       </section>
