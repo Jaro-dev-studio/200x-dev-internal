@@ -69,6 +69,7 @@ body {
 html {
   scroll-behavior: smooth;
   overscroll-behavior: none;
+  color-scheme: dark;
 }
 
 html, body {
@@ -254,6 +255,7 @@ html, body {
 .light-mode {
   background-color: #FAFAFA !important;
   color: #1A1A1A !important;
+  color-scheme: light !important;
 }
 
 /* All direct children should also have proper colors */

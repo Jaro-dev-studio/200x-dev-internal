@@ -650,7 +650,7 @@ export function CursorrrulesClient({
                 href="#pricing"
                 className="group inline-flex items-center justify-center gap-3 px-16 py-4 bg-foreground text-background text-sm font-medium tracking-wide hover:bg-foreground/90 transition-all min-w-[320px]"
               >
-                <span>Get Instant Access</span>
+                <span>Get the File Now</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>
             )}
@@ -2201,7 +2201,7 @@ export function CursorrrulesClient({
               href="#pricing"
               className="group flex items-center justify-center gap-3 w-full py-4 bg-accent text-accent-foreground text-sm font-medium tracking-wide hover:bg-accent/90 transition-colors"
             >
-              <span>Get Instant Access</span>
+              <span>Get the File</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </a>
           </motion.div>
@@ -2334,7 +2334,7 @@ export function CursorrrulesClient({
                   productId={productId}
                   className="group flex items-center justify-center gap-2 md:gap-3 w-full py-4 md:py-5 bg-accent text-accent-foreground text-sm md:text-base font-medium tracking-wide hover:bg-accent/90 transition-colors mb-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span>Get Instant Access Now</span>
+                  <span>Get the File Now</span>
                   <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                 </CursorrulesBuyButton>
                 <p className="text-sm text-muted-foreground">
