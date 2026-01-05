@@ -28,3 +28,4 @@ export function LessonLink({ href, isLocked, children }: LessonLinkProps) {
   );
 }
 
+

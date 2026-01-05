@@ -28,3 +28,4 @@ export function WistiaPlayer({ videoId }: WistiaPlayerProps) {
   );
 }
 
+
