@@ -11,14 +11,14 @@ const publicRoutes = [
   "/auth/login",
   "/auth/register",
   "/auth/error",
-  "/courses", // Public course listings
+  "/products", // Public product listings
 ];
 
 // Routes that start with these prefixes are public
 const publicPrefixes = [
   "/api/auth",
   "/api/webhooks",
-  "/courses/", // Individual course preview pages
+  "/products/", // Individual product preview pages
 ];
 
 // Admin-only routes

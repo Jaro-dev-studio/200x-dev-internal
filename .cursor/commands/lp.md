@@ -18,3 +18,5 @@ Final CTA
 FAQ
 
 Style every section exactly like in cursor mastery landing page unless specified otherwise.
+
+Dont make it generic, and use beautiful unique visuals and animations to showcase each point.

@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
         courseId: course.id,
       },
       success_url: `${appUrl}/auth/register?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/courses/${course.id}`,
+      cancel_url: `${appUrl}/products/${course.id}`,
     });
 
     console.log("[Stripe Checkout] Checkout session created successfully");

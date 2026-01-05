@@ -789,7 +789,7 @@ export default function LandingPage() {
                 <div className="relative w-48 h-48 md:w-64 md:h-64 shrink-0">
                   <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
                     {/* Background circle */}
-                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="10" className="text-accent/20" />
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="10" className="text-accent" />
                     {/* Wasted portion - 80% */}
                     <motion.circle
                       cx="50" cy="50" r="45"
