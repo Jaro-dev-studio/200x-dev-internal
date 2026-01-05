@@ -23,9 +23,10 @@ model User {
   updatedAt    DateTime @updatedAt
 
   // Relations
-  purchases      Purchase[]
-  quizAttempts   QuizAttempt[]
-  lessonProgress LessonProgress[]
+  coursePurchases  CoursePurchase[]
+  productPurchases ProductPurchase[]
+  quizAttempts     QuizAttempt[]
+  lessonProgress   LessonProgress[]
 }
 
 // ============================================================================
@@ -43,8 +44,8 @@ model Course {
   updatedAt    DateTime @updatedAt
 
   // Relations
-  sections  Section[]
-  purchases Purchase[]
+  sections        Section[]
+  coursePurchases CoursePurchase[]
 }
 
 model Section {
@@ -149,10 +150,11 @@ model QuizAttempt {
 // PURCHASES & PROGRESS
 // ============================================================================
 
-model Purchase {
+model CoursePurchase {
   id              String   @id @default(cuid())
   email           String // Email used at Stripe checkout
   stripeSessionId String   @unique
+  amountPaid      Int      @default(0) // Amount paid in cents at time of purchase
   createdAt       DateTime @default(now())
 
   // Relations - userId is nullable until user registers
@@ -161,6 +163,7 @@ model Purchase {
   courseId String
   course   Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
+  @@map("Purchase") // Keep the existing table name
   @@index([email])
   @@index([userId])
   @@index([courseId])
@@ -182,4 +185,43 @@ model LessonProgress {
   @@unique([userId, lessonId])
   @@index([userId])
   @@index([lessonId])
+}
+
+// ============================================================================
+// DIGITAL PRODUCTS
+// ============================================================================
+
+model DigitalProduct {
+  id           String   @id @default(cuid())
+  slug         String   @unique // URL-friendly identifier (e.g., "cursorrules")
+  title        String
+  description  String?  @db.Text
+  thumbnail    String?
+  priceInCents Int      @default(0)
+  published    Boolean  @default(false)
+  fileUrl      String?  // URL to the downloadable file
+  content      String?  @db.Text // Rich content to display after purchase
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  purchases ProductPurchase[]
+}
+
+model ProductPurchase {
+  id              String   @id @default(cuid())
+  email           String // Email used at Stripe checkout
+  stripeSessionId String   @unique
+  amountPaid      Int      @default(0) // Amount paid in cents at time of purchase
+  createdAt       DateTime @default(now())
+
+  // Relations - userId is nullable until user registers
+  userId    String?
+  user      User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  productId String
+  product   DigitalProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([email])
+  @@index([userId])
+  @@index([productId])
 }

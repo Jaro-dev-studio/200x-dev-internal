@@ -30,14 +30,14 @@ export default async function CoursePage({ params }: CoursePageProps) {
   }
 
   // Check if user has purchased this course
-  const purchase = await db.purchase.findFirst({
+  const coursePurchase = await db.coursePurchase.findFirst({
     where: {
       userId: session.user.id,
       courseId,
     },
   });
 
-  if (!purchase) {
+  if (!coursePurchase) {
     redirect("/dashboard");
   }
 

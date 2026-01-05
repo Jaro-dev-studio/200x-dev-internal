@@ -26,7 +26,7 @@ export default async function AuthErrorPage({ searchParams }: ErrorPageProps) {
   const errorMessage = errorMessages[error || ""] || errorMessages.Default;
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
+    <div className="flex min-h-screen items-center justify-center px-4 bg-background">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-destructive">

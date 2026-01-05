@@ -97,7 +97,7 @@ function LoginFormSkeleton() {
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
+    <div className="flex min-h-screen items-center justify-center px-4 bg-background">
       <Suspense fallback={<LoginFormSkeleton />}>
         <LoginForm />
       </Suspense>

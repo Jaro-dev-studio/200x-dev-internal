@@ -46,7 +46,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body
-        className={`${jetbrainsMono.variable} ${instrumentSerif.variable} ${outfit.variable} h-full bg-background antialiased`}
+        className={`${jetbrainsMono.variable} ${instrumentSerif.variable} ${outfit.variable} h-full antialiased`}
       >
         {children}
       </body>

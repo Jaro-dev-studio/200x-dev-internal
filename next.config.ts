@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+// Validate env vars at build time
+import "./env/server";
+import "./env/client";
+
 const nextConfig: NextConfig = {
   async headers() {
     return [

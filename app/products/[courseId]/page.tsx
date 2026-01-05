@@ -52,13 +52,13 @@ export default async function CoursePreviewPage({
   // Check if user already purchased
   let hasPurchased = false;
   if (session?.user?.id) {
-    const purchase = await db.purchase.findFirst({
+    const coursePurchase = await db.coursePurchase.findFirst({
       where: {
         userId: session.user.id,
         courseId,
       },
     });
-    hasPurchased = !!purchase;
+    hasPurchased = !!coursePurchase;
   }
 
   const totalLessons = course.sections.reduce(
@@ -67,7 +67,7 @@ export default async function CoursePreviewPage({
   );
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Navigation */}
       <header className="border-b border-border">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">

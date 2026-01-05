@@ -30,14 +30,14 @@ export default async function LessonPage({ params }: LessonPageProps) {
   }
 
   // Check if user has purchased this course
-  const purchase = await db.purchase.findFirst({
+  const coursePurchase = await db.coursePurchase.findFirst({
     where: {
       userId: session.user.id,
       courseId,
     },
   });
 
-  if (!purchase) {
+  if (!coursePurchase) {
     redirect("/dashboard");
   }
 
@@ -154,7 +154,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
                 <CardTitle>Lesson Content</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="prose prose-invert max-w-none">
+                <div className="prose max-w-none">
                   {lesson.content.split("\n").map((paragraph, i) => (
                     <p key={i}>{paragraph}</p>
                   ))}

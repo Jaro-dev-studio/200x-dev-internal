@@ -121,9 +121,21 @@ export async function register(
     },
   });
 
-  // Link any existing purchases with this email to the new user
-  console.log("[Auth] Linking existing purchases to user...");
-  await db.purchase.updateMany({
+  // Link any existing course purchases with this email to the new user
+  console.log("[Auth] Linking existing course purchases to user...");
+  await db.coursePurchase.updateMany({
+    where: {
+      email,
+      userId: null,
+    },
+    data: {
+      userId: user.id,
+    },
+  });
+
+  // Link any existing product purchases with this email to the new user
+  console.log("[Auth] Linking existing product purchases to user...");
+  await db.productPurchase.updateMany({
     where: {
       email,
       userId: null,

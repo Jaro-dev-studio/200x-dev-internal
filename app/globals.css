@@ -59,8 +59,6 @@
 
 /* Base styles */
 body {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
   font-family: var(--font-mono);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -158,4 +156,145 @@ html, body {
   opacity: 0.02;
   pointer-events: none;
   z-index: 1;
+}
+
+/* Light mode theme for dashboard/admin */
+.light-mode {
+  --color-primary: #1A1A1A !important;
+  --color-primary-hover: #0A0A0A !important;
+  --color-primary-foreground: #FAFAFA !important;
+
+  --color-secondary: #F5F5F4 !important;
+  --color-secondary-hover: #E7E5E4 !important;
+  --color-secondary-foreground: #1A1A1A !important;
+
+  --color-accent: #9A7B4F !important;
+  --color-accent-hover: #8A6B3F !important;
+  --color-accent-foreground: #FFFFFF !important;
+
+  --color-background: #FAFAFA !important;
+  --color-foreground: #1A1A1A !important;
+
+  --color-muted: #F5F5F4 !important;
+  --color-muted-foreground: #737373 !important;
+
+  --color-border: #E5E5E5 !important;
+
+  --color-card: #FFFFFF !important;
+  --color-card-foreground: #1A1A1A !important;
+
+  --color-destructive: #DC2626 !important;
+  --color-destructive-foreground: #FFFFFF !important;
+
+  --color-input: #F5F5F4 !important;
+  --color-ring: #1A1A1A !important;
+}
+
+/* Force light mode colors on utility classes */
+/* Backgrounds */
+.light-mode.bg-background,
+.light-mode .bg-background { background-color: #FAFAFA !important; }
+.light-mode.bg-card,
+.light-mode .bg-card { background-color: #FFFFFF !important; }
+.light-mode.bg-muted,
+.light-mode .bg-muted { background-color: #F5F5F4 !important; }
+.light-mode.bg-secondary,
+.light-mode .bg-secondary { background-color: #F5F5F4 !important; }
+.light-mode.bg-accent,
+.light-mode .bg-accent { background-color: #9A7B4F !important; }
+.light-mode.bg-input,
+.light-mode .bg-input { background-color: #F5F5F4 !important; }
+.light-mode.bg-primary,
+.light-mode .bg-primary { background-color: #1A1A1A !important; }
+
+/* Text colors */
+.light-mode.text-foreground,
+.light-mode .text-foreground { color: #1A1A1A !important; }
+.light-mode.text-muted-foreground,
+.light-mode .text-muted-foreground { color: #737373 !important; }
+.light-mode.text-card-foreground,
+.light-mode .text-card-foreground { color: #1A1A1A !important; }
+.light-mode.text-accent,
+.light-mode .text-accent { color: #9A7B4F !important; }
+.light-mode.text-accent-foreground,
+.light-mode .text-accent-foreground { color: #FFFFFF !important; }
+.light-mode.text-primary,
+.light-mode .text-primary { color: #1A1A1A !important; }
+.light-mode.text-primary-foreground,
+.light-mode .text-primary-foreground { color: #FAFAFA !important; }
+.light-mode.text-secondary-foreground,
+.light-mode .text-secondary-foreground { color: #1A1A1A !important; }
+
+/* Borders */
+.light-mode.border-border,
+.light-mode .border-border { border-color: #E5E5E5 !important; }
+
+/* Hover states */
+.light-mode .hover\:bg-muted:hover { background-color: #F5F5F4 !important; }
+.light-mode .hover\:bg-accent:hover { background-color: #9A7B4F !important; }
+.light-mode .hover\:text-foreground:hover { color: #1A1A1A !important; }
+.light-mode .hover\:text-accent:hover { color: #9A7B4F !important; }
+.light-mode .hover\:border-accent\/50:hover { border-color: rgba(154, 123, 79, 0.5) !important; }
+
+/* Background with opacity */
+.light-mode .bg-accent\/10,
+.light-mode [class*="bg-accent/10"] { background-color: rgba(154, 123, 79, 0.1) !important; }
+.light-mode .bg-accent\/5,
+.light-mode [class*="bg-accent/5"] { background-color: rgba(154, 123, 79, 0.05) !important; }
+.light-mode .bg-muted\/30,
+.light-mode [class*="bg-muted/30"] { background-color: rgba(245, 245, 244, 0.3) !important; }
+.light-mode .bg-destructive\/10,
+.light-mode [class*="bg-destructive/10"] { background-color: rgba(220, 38, 38, 0.1) !important; }
+.light-mode .bg-green-500\/10,
+.light-mode [class*="bg-green-500/10"] { background-color: rgba(34, 197, 94, 0.1) !important; }
+
+/* Default text and background for the root element */
+.light-mode {
+  background-color: #FAFAFA !important;
+  color: #1A1A1A !important;
+}
+
+/* All direct children should also have proper colors */
+.light-mode > * {
+  color: inherit;
+}
+
+/* Fix for aside/sidebar specifically */
+.light-mode aside {
+  background-color: #FFFFFF !important;
+  border-color: #E5E5E5 !important;
+}
+
+/* Fix for main content area */
+.light-mode main {
+  background-color: #FAFAFA !important;
+}
+
+/* Nav links in sidebar */
+.light-mode nav a {
+  color: #737373;
+}
+.light-mode nav a:hover {
+  background-color: #F5F5F4 !important;
+  color: #1A1A1A !important;
+}
+
+/* Font styling */
+.light-mode .font-semibold,
+.light-mode .font-medium,
+.light-mode .font-bold {
+  color: inherit;
+}
+
+.light-mode ::selection {
+  background-color: #9A7B4F;
+  color: #FFFFFF;
+}
+
+.light-mode ::-webkit-scrollbar-thumb {
+  background: #D4D4D4;
+}
+
+.light-mode ::-webkit-scrollbar-thumb:hover {
+  background: #A3A3A3;
 }

@@ -4,22 +4,42 @@ import { db } from "@/lib/db";
 export const dynamic = "force-dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Users, DollarSign, TrendingUp } from "lucide-react";
+import { BookOpen, Users, DollarSign, TrendingUp, Package } from "lucide-react";
 
 export default async function AdminDashboard() {
-  const [courseCount, userCount, purchaseCount, revenue] = await Promise.all([
+  const [
+    courseCount,
+    productCount,
+    userCount,
+    coursePurchaseCount,
+    productPurchaseCount,
+    coursePurchases,
+    productPurchases,
+  ] = await Promise.all([
     db.course.count(),
+    db.digitalProduct.count(),
     db.user.count(),
-    db.purchase.count(),
-    db.purchase.findMany({
-      include: { course: true },
+    db.coursePurchase.count(),
+    db.productPurchase.count(),
+    db.coursePurchase.findMany({
+      select: { amountPaid: true },
+    }),
+    db.productPurchase.findMany({
+      select: { amountPaid: true },
     }),
   ]);
 
-  const totalRevenue = revenue.reduce(
-    (sum, p) => sum + (p.course?.priceInCents || 0),
+  const courseRevenue = coursePurchases.reduce(
+    (sum, p) => sum + p.amountPaid,
     0
   );
+
+  const productRevenue = productPurchases.reduce(
+    (sum, p) => sum + p.amountPaid,
+    0
+  );
+
+  const totalRevenue = courseRevenue + productRevenue;
 
   const stats = [
     {
@@ -28,13 +48,18 @@ export default async function AdminDashboard() {
       icon: BookOpen,
     },
     {
+      title: "Total Products",
+      value: productCount,
+      icon: Package,
+    },
+    {
       title: "Total Users",
       value: userCount,
       icon: Users,
     },
     {
       title: "Total Purchases",
-      value: purchaseCount,
+      value: coursePurchaseCount + productPurchaseCount,
       icon: TrendingUp,
     },
     {
@@ -78,12 +103,18 @@ export default async function AdminDashboard() {
         <CardHeader>
           <CardTitle>Quick Actions</CardTitle>
         </CardHeader>
-        <CardContent className="flex gap-4">
+        <CardContent className="flex flex-wrap gap-4">
           <Button asChild variant="outline">
             <Link href="/admin/courses">View All Courses</Link>
           </Button>
           <Button asChild variant="outline">
             <Link href="/admin/courses/new">Create New Course</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/admin/products">View All Products</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/admin/products/new">Create New Product</Link>
           </Button>
         </CardContent>
       </Card>

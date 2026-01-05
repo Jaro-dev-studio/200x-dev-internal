@@ -37,7 +37,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
+    <div className="flex min-h-screen items-center justify-center px-4 bg-background">
       <RegisterForm
         prefilledEmail={prefilledEmail}
         isEmailLocked={isEmailLocked}

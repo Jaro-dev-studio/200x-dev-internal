@@ -25,8 +25,8 @@ const products = [
   },
   {
     id: "cursorrules",
-    title: "The .cursorrules File",
-    subtitle: "Production-Ready AI Configuration",
+    title: "The Ultimate .cursorrules File",
+    subtitle: "By an OpenAI Engineering Manager",
     description:
       "The exact .cursorrules file used to build dozens of production applications. One-shot Next.js apps with zero drift.",
     price: "$49",
@@ -57,6 +57,20 @@ export default function ProductsPage() {
             <Image src="/logo.png" alt="200x" width={24} height={24} />
             <span className="text-sm font-medium tracking-wide">200x</span>
           </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/auth/login"
+              className="px-4 py-2 text-sm font-medium text-foreground hover:text-accent transition-colors"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/auth/register"
+              className="px-4 py-2 bg-foreground text-background text-sm font-medium hover:bg-foreground/90 transition-colors"
+            >
+              Sign Up
+            </Link>
+          </div>
         </div>
       </motion.nav>
 

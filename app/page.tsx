@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function HomePage() {
-  redirect("/products/cursor-mastery");
+  redirect("/products");
 }

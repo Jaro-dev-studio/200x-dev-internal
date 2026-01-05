@@ -2,7 +2,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/admin";
-import { BookOpen, LayoutDashboard, Settings, LogOut, ArrowLeft } from "lucide-react";
+import { BookOpen, LayoutDashboard, Settings, LogOut, ArrowLeft, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavLink } from "@/components/ui/nav-link";
 import { signOut } from "@/auth";
@@ -19,7 +19,7 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="flex min-h-screen font-sans">
+    <div className="light-mode flex min-h-screen font-sans bg-background text-foreground">
       {/* Sidebar */}
       <aside className="sticky top-0 h-screen w-64 shrink-0 border-r border-border bg-card overflow-y-auto">
         <div className="flex h-full flex-col">
@@ -47,6 +47,10 @@ export default async function AdminLayout({
             <NavLink href="/admin/courses">
               <BookOpen className="h-4 w-4" />
               Courses
+            </NavLink>
+            <NavLink href="/admin/products">
+              <Package className="h-4 w-4" />
+              Products
             </NavLink>
           </nav>
 

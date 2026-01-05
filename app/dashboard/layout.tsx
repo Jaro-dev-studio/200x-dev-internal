@@ -3,7 +3,7 @@ import { auth, signOut } from "@/auth";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
-import { BookOpen, Settings, LogOut } from "lucide-react";
+import { BookOpen, Settings, LogOut, Package, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavLink } from "@/components/ui/nav-link";
 
@@ -31,7 +31,7 @@ export default async function DashboardLayout({
   const userIsAdmin = isAdmin(user.email);
 
   return (
-    <div className="flex min-h-screen font-sans">
+    <div className="light-mode flex min-h-screen font-sans bg-background text-foreground">
       {/* Sidebar */}
       <aside className="sticky top-0 h-screen w-64 shrink-0 border-r border-border bg-card overflow-y-auto">
         <div className="flex h-full flex-col">
@@ -47,8 +47,19 @@ export default async function DashboardLayout({
           <nav className="flex-1 space-y-1 p-4">
             <NavLink href="/dashboard" exact>
               <BookOpen className="h-4 w-4" />
-              Courses
+              My Courses
             </NavLink>
+            <NavLink href="/dashboard/my-products">
+              <Package className="h-4 w-4" />
+              My Products
+            </NavLink>
+            <NavLink href="/dashboard/browse">
+              <ShoppingBag className="h-4 w-4" />
+              Browse
+            </NavLink>
+          </nav>
+
+          <div className="space-y-1 p-4 pt-0">
             <NavLink href="/dashboard/settings">
               <Settings className="h-4 w-4" />
               Settings
@@ -59,7 +70,7 @@ export default async function DashboardLayout({
                 Admin Panel
               </NavLink>
             )}
-          </nav>
+          </div>
 
           <div className="border-t border-border p-4">
             <div className="mb-2 text-sm font-medium">{user.name}</div>
