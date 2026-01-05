@@ -22,12 +22,18 @@ export function MarkCompleteButton({
 
   const handleClick = async () => {
     setIsLoading(true);
-    if (isCompleted) {
-      await unmarkLessonComplete(lessonId, userId);
-    } else {
-      await markLessonComplete(lessonId, userId);
+    try {
+      if (isCompleted) {
+        await unmarkLessonComplete(lessonId, userId);
+      } else {
+        await markLessonComplete(lessonId, userId);
+      }
+      router.refresh();
+    } catch (error) {
+      console.error("[MarkCompleteButton] Error:", error);
+    } finally {
+      setIsLoading(false);
     }
-    router.refresh();
   };
 
   return (
