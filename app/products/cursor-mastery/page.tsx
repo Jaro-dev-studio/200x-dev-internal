@@ -4,24 +4,18 @@ import { CursorMasteryClient } from "./client";
 
 export const dynamic = "force-dynamic";
 
+// The Advanced Cursor Mastery course ID
+const CURSOR_MASTERY_COURSE_ID = "cmk0gfcb5000253k50ojad9wz";
+
 export default async function CursorMasteryPage() {
   const session = await auth();
 
-  // First, ensure the course exists or create it
-  let course = await db.course.findFirst({
-    where: { title: "200x Dev - Cursor Mastery" },
+  const course = await db.course.findUnique({
+    where: { id: CURSOR_MASTERY_COURSE_ID },
   });
 
-  // If course doesn't exist, create it
   if (!course) {
-    course = await db.course.create({
-      data: {
-        title: "200x Dev - Cursor Mastery",
-        description: "The Advanced Cursor Course. Be the replacer, not the replaced.",
-        priceInCents: 99900,
-        published: true,
-      },
-    });
+    throw new Error("Course not found");
   }
 
   // Check if user has purchased this course

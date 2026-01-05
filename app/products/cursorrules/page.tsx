@@ -4,25 +4,18 @@ import { CursorrrulesClient } from "./client";
 
 export const dynamic = "force-dynamic";
 
+// The .cursorrules product ID
+const CURSORRULES_PRODUCT_ID = "cmk184xfk0000532ukyqx5fxz";
+
 export default async function CursorrulesPage() {
   const session = await auth();
 
-  // First, ensure the product exists or create it
-  let product = await db.digitalProduct.findUnique({
-    where: { slug: "cursorrules" },
+  const product = await db.digitalProduct.findUnique({
+    where: { id: CURSORRULES_PRODUCT_ID },
   });
 
-  // If product doesn't exist, create it
   if (!product) {
-    product = await db.digitalProduct.create({
-      data: {
-        slug: "cursorrules",
-        title: "The Battle-Tested .cursorrules File",
-        description: "The ultimate .cursorrules file, by an OpenAI Engineering Manager. 50+ production apps. Every edge case already solved.",
-        priceInCents: 4900,
-        published: true,
-      },
-    });
+    throw new Error("Product not found");
   }
 
   // Check if user has purchased this product

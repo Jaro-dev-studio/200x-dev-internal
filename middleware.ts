@@ -18,6 +18,7 @@ const publicRoutes = [
 const publicPrefixes = [
   "/api/auth",
   "/api/webhooks",
+  "/api/stripe/checkout", // Allow guest checkout
   "/products/", // Individual product preview pages
 ];
 
