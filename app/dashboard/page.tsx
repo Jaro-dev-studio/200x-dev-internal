@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Play, CheckCircle, Package, Download, ExternalLink } from "lucide-react";
+import { BookOpen, CheckCircle, Package, Download, ExternalLink } from "lucide-react";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -160,29 +160,11 @@ export default async function DashboardPage() {
                           />
                         </div>
 
-                        <div className="flex gap-2">
-                          {nextLesson ? (
-                            <Button variant="accent" asChild className="flex-1">
-                              <Link
-                                href={`/dashboard/courses/${course.id}/lessons/${nextLesson.lessonId}`}
-                              >
-                                <Play className="h-4 w-4" />
-                                Continue
-                              </Link>
-                            </Button>
-                          ) : (
-                            <Button variant="accent" asChild className="flex-1">
-                              <Link href={`/dashboard/courses/${course.id}`}>
-                                View Course
-                              </Link>
-                            </Button>
-                          )}
-                          <Button variant="outline" asChild>
-                            <Link href={`/dashboard/courses/${course.id}`}>
-                              Overview
-                            </Link>
-                          </Button>
-                        </div>
+                        <Button variant="accent" asChild className="w-full">
+                          <Link href={`/dashboard/courses/${course.id}`}>
+                            Access
+                          </Link>
+                        </Button>
                       </CardContent>
                     </Card>
                   )

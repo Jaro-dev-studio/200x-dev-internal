@@ -1,11 +1,13 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { signIn, auth } from "@/auth";
 import { db } from "@/lib/db";
 import { hash } from "bcryptjs";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { AuthError } from "next-auth";
+import { isAdmin } from "@/lib/admin";
+import { env } from "@/env/server";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -160,6 +162,59 @@ export async function register(
       return {
         success: false,
         error: "Account created but login failed. Please login manually.",
+      };
+    }
+    throw error;
+  }
+
+  redirect("/dashboard");
+}
+
+export async function signInAs(
+  userId: string
+): Promise<AuthActionResult> {
+  console.log("[Auth] Starting sign in as process...");
+
+  // Verify current user is an admin
+  const session = await auth();
+  if (!session?.user?.email || !isAdmin(session.user.email)) {
+    console.log("[Auth] Sign in as failed - not an admin");
+    return {
+      success: false,
+      error: "Only admins can use sign in as",
+    };
+  }
+
+  // Get the target user
+  console.log("[Auth] Fetching target user...");
+  const targetUser = await db.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!targetUser) {
+    console.log("[Auth] Sign in as failed - user not found");
+    return {
+      success: false,
+      error: "User not found",
+    };
+  }
+
+  try {
+    console.log("[Auth] Signing in as user:", targetUser.email);
+    await signIn("credentials", {
+      email: targetUser.email,
+      password: env.ADMIN_PASS,
+      isImpersonated: "true",
+      redirect: false,
+    });
+
+    console.log("[Auth] Sign in as successful");
+  } catch (error) {
+    if (error instanceof AuthError) {
+      console.log("[Auth] Sign in as failed - auth error");
+      return {
+        success: false,
+        error: "Failed to sign in as user",
       };
     }
     throw error;

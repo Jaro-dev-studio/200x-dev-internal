@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Instrument_Serif, Outfit } from "next/font/google";
 import "./globals.css";
+import { ImpersonationBanner } from "@/components/layout/impersonation-banner";
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
@@ -48,6 +49,7 @@ export default function RootLayout({
       <body
         className={`${jetbrainsMono.variable} ${instrumentSerif.variable} ${outfit.variable} h-full antialiased`}
       >
+        <ImpersonationBanner />
         {children}
       </body>
     </html>

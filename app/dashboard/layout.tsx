@@ -45,11 +45,11 @@ export default async function DashboardLayout({
           </div>
 
           <nav className="flex-1 space-y-1 p-4">
-            <NavLink href="/dashboard" exact>
+            <NavLink href="/dashboard" exact activePathPrefixes={["/dashboard/courses"]}>
               <BookOpen className="h-4 w-4" />
               My Courses
             </NavLink>
-            <NavLink href="/dashboard/my-products">
+            <NavLink href="/dashboard/my-products" activePathPrefixes={["/dashboard/products"]}>
               <Package className="h-4 w-4" />
               My Products
             </NavLink>

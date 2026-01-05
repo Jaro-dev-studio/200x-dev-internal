@@ -168,8 +168,8 @@ html, body {
   --color-secondary-hover: #E7E5E4 !important;
   --color-secondary-foreground: #1A1A1A !important;
 
-  --color-accent: #9A7B4F !important;
-  --color-accent-hover: #8A6B3F !important;
+  --color-accent: #CBA135 !important;
+  --color-accent-hover: #B8912F !important;
   --color-accent-foreground: #FFFFFF !important;
 
   --color-background: #FAFAFA !important;
@@ -201,7 +201,7 @@ html, body {
 .light-mode.bg-secondary,
 .light-mode .bg-secondary { background-color: #F5F5F4 !important; }
 .light-mode.bg-accent,
-.light-mode .bg-accent { background-color: #9A7B4F !important; }
+.light-mode .bg-accent { background-color: #CBA135 !important; }
 .light-mode.bg-input,
 .light-mode .bg-input { background-color: #F5F5F4 !important; }
 .light-mode.bg-primary,
@@ -215,7 +215,7 @@ html, body {
 .light-mode.text-card-foreground,
 .light-mode .text-card-foreground { color: #1A1A1A !important; }
 .light-mode.text-accent,
-.light-mode .text-accent { color: #9A7B4F !important; }
+.light-mode .text-accent { color: #CBA135 !important; }
 .light-mode.text-accent-foreground,
 .light-mode .text-accent-foreground { color: #FFFFFF !important; }
 .light-mode.text-primary,
@@ -228,19 +228,21 @@ html, body {
 /* Borders */
 .light-mode.border-border,
 .light-mode .border-border { border-color: #E5E5E5 !important; }
+.light-mode.border-input,
+.light-mode .border-input { border-color: #E5E5E5 !important; }
 
 /* Hover states */
 .light-mode .hover\:bg-muted:hover { background-color: #F5F5F4 !important; }
-.light-mode .hover\:bg-accent:hover { background-color: #9A7B4F !important; }
+.light-mode .hover\:bg-accent:hover { background-color: #CBA135 !important; }
 .light-mode .hover\:text-foreground:hover { color: #1A1A1A !important; }
-.light-mode .hover\:text-accent:hover { color: #9A7B4F !important; }
-.light-mode .hover\:border-accent\/50:hover { border-color: rgba(154, 123, 79, 0.5) !important; }
+.light-mode .hover\:text-accent:hover { color: #CBA135 !important; }
+.light-mode .hover\:border-accent\/50:hover { border-color: rgba(203, 161, 53, 0.5) !important; }
 
 /* Background with opacity */
 .light-mode .bg-accent\/10,
-.light-mode [class*="bg-accent/10"] { background-color: rgba(154, 123, 79, 0.1) !important; }
+.light-mode [class*="bg-accent/10"] { background-color: rgba(203, 161, 53, 0.1) !important; }
 .light-mode .bg-accent\/5,
-.light-mode [class*="bg-accent/5"] { background-color: rgba(154, 123, 79, 0.05) !important; }
+.light-mode [class*="bg-accent/5"] { background-color: rgba(203, 161, 53, 0.05) !important; }
 .light-mode .bg-muted\/30,
 .light-mode [class*="bg-muted/30"] { background-color: rgba(245, 245, 244, 0.3) !important; }
 .light-mode .bg-destructive\/10,
@@ -287,7 +289,7 @@ html, body {
 }
 
 .light-mode ::selection {
-  background-color: #9A7B4F;
+  background-color: #CBA135;
   color: #FFFFFF;
 }
 

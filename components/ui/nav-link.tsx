@@ -9,14 +9,20 @@ interface NavLinkProps {
   children: React.ReactNode;
   exact?: boolean;
   className?: string;
+  /** Additional path prefixes that should trigger active state */
+  activePathPrefixes?: string[];
 }
 
-export function NavLink({ href, children, exact = false, className }: NavLinkProps) {
+export function NavLink({ href, children, exact = false, className, activePathPrefixes = [] }: NavLinkProps) {
   const pathname = usePathname();
   
+  const matchesPrefix = activePathPrefixes.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/")
+  );
+  
   const isActive = exact 
-    ? pathname === href 
-    : pathname === href || pathname.startsWith(href + "/");
+    ? pathname === href || matchesPrefix
+    : pathname === href || pathname.startsWith(href + "/") || matchesPrefix;
 
   return (
     <Link

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/admin";
-import { BookOpen, LayoutDashboard, Settings, LogOut, ArrowLeft, Package } from "lucide-react";
+import { BookOpen, LayoutDashboard, Settings, LogOut, ArrowLeft, Package, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavLink } from "@/components/ui/nav-link";
 import { signOut } from "@/auth";
@@ -51,6 +51,10 @@ export default async function AdminLayout({
             <NavLink href="/admin/products">
               <Package className="h-4 w-4" />
               Products
+            </NavLink>
+            <NavLink href="/admin/users">
+              <Users className="h-4 w-4" />
+              Users
             </NavLink>
           </nav>
 
