@@ -127,7 +127,10 @@ export default async function CoursePreviewPage({
                     </Link>
                   </Button>
                 ) : (
-                  <BuyButton courseId={courseId} />
+                  <BuyButton
+                    courseId={courseId}
+                    email={session?.user?.email || undefined}
+                  />
                 )}
               </div>
             </div>
@@ -206,7 +209,10 @@ export default async function CoursePreviewPage({
                 </Link>
               </Button>
             ) : (
-              <BuyButton courseId={courseId} />
+              <BuyButton
+                courseId={courseId}
+                email={session?.user?.email || undefined}
+              />
             )}
           </div>
         </div>

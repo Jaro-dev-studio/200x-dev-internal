@@ -6,9 +6,10 @@ import { Loader2, ShoppingCart } from "lucide-react";
 
 interface BuyButtonProps {
   courseId: string;
+  email?: string;
 }
 
-export function BuyButton({ courseId }: BuyButtonProps) {
+export function BuyButton({ courseId, email }: BuyButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleBuy = async () => {
@@ -20,7 +21,7 @@ export function BuyButton({ courseId }: BuyButtonProps) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ courseId }),
+        body: JSON.stringify({ courseId, email }),
       });
 
       const data = await res.json();

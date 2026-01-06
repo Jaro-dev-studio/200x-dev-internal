@@ -1,16 +1,17 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useTransition } from "react";
 import Link from "next/link";
 import {
   createSection,
   deleteSection,
+  renameSection,
   type ActionResult,
 } from "@/lib/actions/courses";
-import { createLesson as createLessonAction } from "@/lib/actions/lessons";
+import { createLesson as createLessonAction, renameLesson } from "@/lib/actions/lessons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Trash2, ChevronDown, ChevronRight, FileText } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronRight, FileText, Pencil, Check, X } from "lucide-react";
 import type { Section, Lesson } from "@prisma/client";
 
 interface SectionManagerProps {
@@ -28,6 +29,10 @@ export function SectionManager({ courseId, sections }: SectionManagerProps) {
   );
   const [showNewSection, setShowNewSection] = useState(false);
   const [showNewLesson, setShowNewLesson] = useState<string | null>(null);
+  const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
+  const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [isPending, startTransition] = useTransition();
 
   const [sectionState, sectionAction, isSectionPending] = useActionState(
     createSection,
@@ -38,6 +43,42 @@ export function SectionManager({ courseId, sections }: SectionManagerProps) {
     createLessonAction,
     initialState
   );
+
+  const handleStartEditSection = (section: Section) => {
+    setEditingSectionId(section.id);
+    setEditTitle(section.title);
+    setEditingLessonId(null);
+  };
+
+  const handleStartEditLesson = (lesson: Lesson) => {
+    setEditingLessonId(lesson.id);
+    setEditTitle(lesson.title);
+    setEditingSectionId(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingSectionId(null);
+    setEditingLessonId(null);
+    setEditTitle("");
+  };
+
+  const handleSaveSection = (sectionId: string) => {
+    if (!editTitle.trim()) return;
+    startTransition(async () => {
+      await renameSection(sectionId, editTitle);
+      setEditingSectionId(null);
+      setEditTitle("");
+    });
+  };
+
+  const handleSaveLesson = (lessonId: string) => {
+    if (!editTitle.trim()) return;
+    startTransition(async () => {
+      await renameLesson(lessonId, editTitle);
+      setEditingLessonId(null);
+      setEditTitle("");
+    });
+  };
 
   const toggleSection = (sectionId: string) => {
     const newExpanded = new Set(expandedSections);
@@ -60,8 +101,8 @@ export function SectionManager({ courseId, sections }: SectionManagerProps) {
       {sections.map((section) => (
         <div key={section.id} className="rounded-lg border border-border">
           <div
-            className="flex cursor-pointer items-center justify-between p-3 hover:bg-muted/50"
-            onClick={() => toggleSection(section.id)}
+            className="flex cursor-pointer items-center justify-between p-3"
+            onClick={() => editingSectionId !== section.id && toggleSection(section.id)}
           >
             <div className="flex items-center gap-2">
               {expandedSections.has(section.id) ? (
@@ -69,28 +110,80 @@ export function SectionManager({ courseId, sections }: SectionManagerProps) {
               ) : (
                 <ChevronRight className="h-4 w-4" />
               )}
-              <span className="font-medium">{section.title}</span>
-              <span className="text-sm text-muted-foreground">
-                ({section.lessons.length} lessons)
-              </span>
+              {editingSectionId === section.id ? (
+                <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                  <Input
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    className="h-7 w-48"
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleSaveSection(section.id);
+                      } else if (e.key === "Escape") {
+                        handleCancelEdit();
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7"
+                    onClick={() => handleSaveSection(section.id)}
+                    disabled={isPending}
+                  >
+                    <Check className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7"
+                    onClick={handleCancelEdit}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <span className="font-medium">{section.title}</span>
+                  <span className="text-sm text-muted-foreground">
+                    ({section.lessons.length} lessons)
+                  </span>
+                </>
+              )}
             </div>
-            <form
-              action={async () => {
-                if (confirm("Delete this section and all its lessons?")) {
-                  await deleteSection(section.id);
-                }
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Button
-                type="submit"
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-muted-foreground hover:text-destructive"
+            <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+              {editingSectionId !== section.id && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                  onClick={() => handleStartEditSection(section)}
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              )}
+              <form
+                action={async () => {
+                  if (confirm("Delete this section and all its lessons?")) {
+                    await deleteSection(section.id);
+                  }
+                }}
               >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </form>
+                <Button
+                  type="submit"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </form>
+            </div>
           </div>
 
           {expandedSections.has(section.id) && (
@@ -102,14 +195,71 @@ export function SectionManager({ courseId, sections }: SectionManagerProps) {
               ) : (
                 <div className="mb-3 space-y-2">
                   {section.lessons.map((lesson) => (
-                    <Link
+                    <div
                       key={lesson.id}
-                      href={`/admin/courses/${courseId}/sections/${section.id}/lessons/${lesson.id}`}
-                      className="flex items-center gap-2 rounded-md p-2 text-sm hover:bg-muted"
+                      className="group flex items-center justify-between rounded-md p-2 text-sm hover:bg-muted"
                     >
-                      <FileText className="h-4 w-4 text-muted-foreground" />
-                      {lesson.title}
-                    </Link>
+                      {editingLessonId === lesson.id ? (
+                        <div className="flex flex-1 items-center gap-2">
+                          <FileText className="h-4 w-4 text-muted-foreground" />
+                          <Input
+                            value={editTitle}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            className="h-7 flex-1"
+                            autoFocus
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleSaveLesson(lesson.id);
+                              } else if (e.key === "Escape") {
+                                handleCancelEdit();
+                              }
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => handleSaveLesson(lesson.id)}
+                            disabled={isPending}
+                          >
+                            <Check className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={handleCancelEdit}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <Link
+                            href={`/admin/courses/${courseId}/sections/${section.id}/lessons/${lesson.id}`}
+                            className="flex flex-1 items-center gap-2"
+                          >
+                            <FileText className="h-4 w-4 text-muted-foreground" />
+                            {lesson.title}
+                          </Link>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 opacity-0 group-hover:opacity-100"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleStartEditLesson(lesson);
+                            }}
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   ))}
                 </div>
               )}

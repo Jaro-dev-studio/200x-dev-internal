@@ -258,3 +258,30 @@ export async function reorderSections(
     return { success: false, error: "Failed to reorder sections" };
   }
 }
+
+export async function renameSection(
+  sectionId: string,
+  title: string
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    console.log("[Sections] Renaming section:", sectionId);
+
+    if (!title.trim()) {
+      return { success: false, error: "Title is required" };
+    }
+
+    const section = await db.section.update({
+      where: { id: sectionId },
+      data: { title: title.trim() },
+    });
+
+    console.log("[Sections] Section renamed successfully");
+    revalidatePath(`/admin/courses/${section.courseId}`);
+    revalidatePath(`/admin/courses/${section.courseId}/sections`);
+    return { success: true };
+  } catch (error) {
+    console.error("[Sections] Error renaming section:", error);
+    return { success: false, error: "Failed to rename section" };
+  }
+}

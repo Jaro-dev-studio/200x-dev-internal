@@ -83,38 +83,42 @@ export default async function BrowsePage() {
 
               return (
                 <Card key={course.id} className="overflow-hidden flex flex-col">
-                  {course.thumbnail && (
-                    <div className="aspect-video w-full overflow-hidden bg-muted">
-                      <img
-                        src={course.thumbnail}
-                        alt={course.title}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <CardHeader className="flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <CardTitle className="text-lg">{course.title}</CardTitle>
-                      {isPurchased && (
-                        <Badge className="bg-green-500 shrink-0">Owned</Badge>
-                      )}
-                    </div>
-                    {course.description && (
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {course.description}
-                      </p>
+                  <Link href={`/dashboard/browse/courses/${course.id}`}>
+                    {course.thumbnail && (
+                      <div className="aspect-video w-full overflow-hidden bg-muted">
+                        <img
+                          src={course.thumbnail}
+                          alt={course.title}
+                          className="h-full w-full object-cover transition-transform hover:scale-105"
+                        />
+                      </div>
                     )}
-                    <div className="flex gap-4 text-xs text-muted-foreground pt-2">
-                      <span className="flex items-center gap-1">
-                        <BookOpen className="h-3 w-3" />
-                        {course.sections.length} sections
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Play className="h-3 w-3" />
-                        {totalLessons} lessons
-                      </span>
-                    </div>
-                  </CardHeader>
+                    <CardHeader className="flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <CardTitle className="text-lg hover:text-accent transition-colors">
+                          {course.title}
+                        </CardTitle>
+                        {isPurchased && (
+                          <Badge className="bg-green-500 shrink-0">Owned</Badge>
+                        )}
+                      </div>
+                      {course.description && (
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {course.description}
+                        </p>
+                      )}
+                      <div className="flex gap-4 text-xs text-muted-foreground pt-2">
+                        <span className="flex items-center gap-1">
+                          <BookOpen className="h-3 w-3" />
+                          {course.sections.length} sections
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Play className="h-3 w-3" />
+                          {totalLessons} lessons
+                        </span>
+                      </div>
+                    </CardHeader>
+                  </Link>
                   <CardContent className="pt-0">
                     <div className="flex items-center justify-between">
                       <span className="text-2xl font-bold">

@@ -75,13 +75,9 @@ export async function createLesson(
 
     console.log("[Lessons] Lesson created successfully:", lesson.id);
     revalidatePath(`/admin/courses/${section.courseId}`);
-    redirect(
-      `/admin/courses/${section.courseId}/sections/${section.id}/lessons/${lesson.id}`
-    );
+    revalidatePath(`/admin/courses/${section.courseId}/sections`);
+    return { success: true };
   } catch (error) {
-    if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-      throw error;
-    }
     console.error("[Lessons] Error creating lesson:", error);
     return { success: false, error: "Failed to create lesson" };
   }
@@ -191,6 +187,34 @@ export async function reorderLessons(
   } catch (error) {
     console.error("[Lessons] Error reordering lessons:", error);
     return { success: false, error: "Failed to reorder lessons" };
+  }
+}
+
+export async function renameLesson(
+  lessonId: string,
+  title: string
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    console.log("[Lessons] Renaming lesson:", lessonId);
+
+    if (!title.trim()) {
+      return { success: false, error: "Title is required" };
+    }
+
+    const lesson = await db.lesson.update({
+      where: { id: lessonId },
+      data: { title: title.trim() },
+      include: { section: true },
+    });
+
+    console.log("[Lessons] Lesson renamed successfully");
+    revalidatePath(`/admin/courses/${lesson.section.courseId}`);
+    revalidatePath(`/admin/courses/${lesson.section.courseId}/sections`);
+    return { success: true };
+  } catch (error) {
+    console.error("[Lessons] Error renaming lesson:", error);
+    return { success: false, error: "Failed to rename lesson" };
   }
 }
 
