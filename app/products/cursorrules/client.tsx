@@ -2421,4 +2421,3 @@ export function CursorrrulesClient({
     </main>
   );
 }
-

@@ -139,6 +139,3 @@ export async function updatePassword(
     return { success: false, error: "Failed to update password. Please try again." };
   }
 }
-
-
-

@@ -45,5 +45,3 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
     </div>
   );
 }
-
-

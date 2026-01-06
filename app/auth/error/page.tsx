@@ -51,4 +51,3 @@ export default async function AuthErrorPage({ searchParams }: ErrorPageProps) {
     </div>
   );
 }
-

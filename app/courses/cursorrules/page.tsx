@@ -2142,5 +2142,3 @@ export default function CursorrrulesLandingPage() {
     </main>
   );
 }
-
-

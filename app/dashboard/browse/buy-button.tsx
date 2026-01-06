@@ -59,5 +59,3 @@ export function BrowseBuyButton({ type, id, email }: BrowseBuyButtonProps) {
     </Button>
   );
 }
-
-

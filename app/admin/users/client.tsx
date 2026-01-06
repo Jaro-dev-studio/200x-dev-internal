@@ -336,5 +336,3 @@ export function UsersClient({ users, courses, products }: UsersClientProps) {
     </div>
   );
 }
-
-

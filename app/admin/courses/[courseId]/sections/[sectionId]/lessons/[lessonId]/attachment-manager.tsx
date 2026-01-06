@@ -129,4 +129,3 @@ export function AttachmentManager({
     </div>
   );
 }
-

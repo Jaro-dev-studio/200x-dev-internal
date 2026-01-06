@@ -30,5 +30,3 @@ export function SignInAsButton({ userId }: SignInAsButtonProps) {
     </Button>
   );
 }
-
-

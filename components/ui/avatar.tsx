@@ -103,4 +103,3 @@ export function AvatarGroup({
     </div>
   );
 }
-

@@ -137,4 +137,3 @@ export function SettingsForm({ user }: SettingsFormProps) {
     </div>
   );
 }
-

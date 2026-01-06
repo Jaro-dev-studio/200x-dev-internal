@@ -69,5 +69,3 @@ export function SkeletonCard({ className }: { className?: string }) {
     </div>
   );
 }
-
-

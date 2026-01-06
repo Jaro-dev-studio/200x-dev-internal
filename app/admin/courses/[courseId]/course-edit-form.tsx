@@ -98,4 +98,3 @@ export function CourseEditForm({ course }: CourseEditFormProps) {
     </form>
   );
 }
-

@@ -271,5 +271,3 @@ export function ProductsClient({ isSignedIn }: ProductsClientProps) {
     </main>
   );
 }
-
-

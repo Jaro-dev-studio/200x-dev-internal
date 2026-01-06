@@ -58,6 +58,3 @@ export default async function SectionsPage({ params }: SectionsPageProps) {
     </div>
   );
 }
-
-
-

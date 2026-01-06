@@ -79,4 +79,3 @@ export function LessonEditForm({ lesson }: LessonEditFormProps) {
     </form>
   );
 }
-

@@ -6,6 +6,7 @@ import { isAdmin } from "@/lib/admin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { put, del } from "@vercel/blob";
 
 const productSchema = z.object({
   slug: z.string().min(1, "Slug is required").regex(/^[a-z0-9-]+$/, "Slug must be lowercase with dashes only"),
@@ -136,9 +137,19 @@ export async function deleteProduct(productId: string): Promise<ActionResult> {
     await requireAdmin();
     console.log("[Products] Deleting product:", productId);
 
-    await db.digitalProduct.delete({
+    const product = await db.digitalProduct.delete({
       where: { id: productId },
     });
+
+    // Delete file from blob storage if exists
+    if (product.fileUrl) {
+      try {
+        console.log("[Products] Deleting file from blob storage...");
+        await del(product.fileUrl);
+      } catch {
+        console.warn("[Products] Failed to delete file from blob storage");
+      }
+    }
 
     console.log("[Products] Product deleted successfully");
     revalidatePath("/admin/products");
@@ -149,5 +160,100 @@ export async function deleteProduct(productId: string): Promise<ActionResult> {
     }
     console.error("[Products] Error deleting product:", error);
     return { success: false, error: "Failed to delete product" };
+  }
+}
+
+// ============================================================================
+// PRODUCT FILE UPLOAD
+// ============================================================================
+
+export async function uploadProductFile(
+  productId: string,
+  formData: FormData
+): Promise<ActionResult & { fileUrl?: string }> {
+  try {
+    await requireAdmin();
+    console.log("[Products] Uploading file for product:", productId);
+
+    const file = formData.get("file") as File;
+    if (!file) {
+      return { success: false, error: "No file provided" };
+    }
+
+    const product = await db.digitalProduct.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) {
+      return { success: false, error: "Product not found" };
+    }
+
+    // Delete old file if exists
+    if (product.fileUrl) {
+      try {
+        console.log("[Products] Deleting old file from blob storage...");
+        await del(product.fileUrl);
+      } catch {
+        console.warn("[Products] Failed to delete old file from blob storage");
+      }
+    }
+
+    console.log("[Products] Uploading file to Vercel Blob...");
+    const blob = await put(`products/${productId}/${file.name}`, file, {
+      access: "public",
+    });
+
+    await db.digitalProduct.update({
+      where: { id: productId },
+      data: { fileUrl: blob.url },
+    });
+
+    console.log("[Products] File uploaded successfully");
+    revalidatePath(`/admin/products/${productId}`);
+    return { success: true, fileUrl: blob.url };
+  } catch (error) {
+    console.error("[Products] Error uploading file:", error);
+    return { success: false, error: "Failed to upload file" };
+  }
+}
+
+export async function deleteProductFile(
+  productId: string
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    console.log("[Products] Deleting file for product:", productId);
+
+    const product = await db.digitalProduct.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) {
+      return { success: false, error: "Product not found" };
+    }
+
+    if (!product.fileUrl) {
+      return { success: false, error: "No file to delete" };
+    }
+
+    // Delete from blob storage
+    try {
+      console.log("[Products] Deleting file from blob storage...");
+      await del(product.fileUrl);
+    } catch {
+      console.warn("[Products] Failed to delete from blob storage");
+    }
+
+    await db.digitalProduct.update({
+      where: { id: productId },
+      data: { fileUrl: null },
+    });
+
+    console.log("[Products] File deleted successfully");
+    revalidatePath(`/admin/products/${productId}`);
+    return { success: true };
+  } catch (error) {
+    console.error("[Products] Error deleting file:", error);
+    return { success: false, error: "Failed to delete file" };
   }
 }

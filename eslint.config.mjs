@@ -13,6 +13,11 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    rules: {
+      "no-multiple-empty-lines": ["error", { max: 1, maxEOF: 0 }],
+    },
+  },
 ]);
 
 export default eslintConfig;

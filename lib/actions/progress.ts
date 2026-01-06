@@ -86,4 +86,3 @@ export async function unmarkLessonComplete(
     return { success: false, error: "Failed to unmark lesson complete" };
   }
 }
-

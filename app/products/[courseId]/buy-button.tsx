@@ -53,4 +53,3 @@ export function BuyButton({ courseId }: BuyButtonProps) {
     </Button>
   );
 }
-

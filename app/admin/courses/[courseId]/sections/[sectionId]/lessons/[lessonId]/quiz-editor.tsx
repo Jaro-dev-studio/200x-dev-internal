@@ -496,4 +496,3 @@ function NewQuestionForm({ quizId, onCreated }: NewQuestionFormProps) {
     </div>
   );
 }
-

@@ -5,6 +5,3 @@ export function isAdmin(email: string | null | undefined): boolean {
   if (!email) return false;
   return email === ADMIN_EMAIL;
 }
-
-
-

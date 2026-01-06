@@ -87,4 +87,3 @@ export default async function ProductEditPage({ params }: ProductEditPageProps) 
     </div>
   );
 }
-

@@ -19,5 +19,3 @@ declare module "next-auth/jwt" {
     isImpersonated?: boolean;
   }
 }
-
-

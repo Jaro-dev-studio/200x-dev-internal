@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { updateProduct, deleteProduct, type ActionResult } from "@/lib/actions/products";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
+import { ProductFileUploader } from "./product-file-uploader";
 import type { DigitalProduct } from "@prisma/client";
 
 interface ProductEditFormProps {
@@ -73,12 +74,9 @@ export function ProductEditForm({ product }: ProductEditFormProps) {
         defaultValue={product.thumbnail || ""}
       />
 
-      <Input
-        name="fileUrl"
-        type="url"
-        label="File Download URL"
-        defaultValue={product.fileUrl || ""}
-        helperText="URL to the downloadable file (optional)"
+      <ProductFileUploader
+        productId={product.id}
+        currentFileUrl={product.fileUrl}
       />
 
       <Textarea
@@ -120,5 +118,3 @@ export function ProductEditForm({ product }: ProductEditFormProps) {
     </form>
   );
 }
-
-

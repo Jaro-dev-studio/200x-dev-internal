@@ -39,5 +39,3 @@ export function NavLink({ href, children, exact = false, className, activePathPr
     </Link>
   );
 }
-
-

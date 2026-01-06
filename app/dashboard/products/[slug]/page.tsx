@@ -114,5 +114,3 @@ export default async function ProductAccessPage({
     </div>
   );
 }
-
-

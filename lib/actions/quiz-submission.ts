@@ -80,6 +80,3 @@ export async function submitQuiz(
     return { success: false, error: "Failed to submit quiz" };
   }
 }
-
-
-

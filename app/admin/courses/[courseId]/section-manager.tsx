@@ -187,4 +187,3 @@ export function SectionManager({ courseId, sections }: SectionManagerProps) {
     </div>
   );
 }
-
