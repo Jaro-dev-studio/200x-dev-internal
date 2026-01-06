@@ -26,7 +26,7 @@ import {
   reorderSections,
   type ActionResult,
 } from "@/lib/actions/courses";
-import { createLesson as createLessonAction, renameLesson } from "@/lib/actions/lessons";
+import { createLesson as createLessonAction, renameLesson, deleteLessonFromList } from "@/lib/actions/lessons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Trash2, ChevronDown, ChevronRight, FileText, Pencil, Check, X, GripVertical } from "lucide-react";
@@ -257,18 +257,36 @@ function SortableSection({
                         <FileText className="h-4 w-4 text-muted-foreground" />
                         {lesson.title}
                       </Link>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 opacity-0 group-hover:opacity-100"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          onStartEditLesson(lesson);
-                        }}
-                      >
-                        <Pencil className="h-3 w-3" />
-                      </Button>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            onStartEditLesson(lesson);
+                          }}
+                        >
+                          <Pencil className="h-3 w-3" />
+                        </Button>
+                        <form
+                          action={async () => {
+                            if (confirm("Delete this lesson?")) {
+                              await deleteLessonFromList(lesson.id);
+                            }
+                          }}
+                        >
+                          <Button
+                            type="submit"
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </form>
+                      </div>
                     </>
                   )}
                 </div>

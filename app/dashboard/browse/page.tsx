@@ -169,28 +169,32 @@ export default async function BrowsePage() {
 
               return (
                 <Card key={product.id} className="overflow-hidden flex flex-col">
-                  {product.thumbnail && (
-                    <div className="aspect-video w-full overflow-hidden bg-muted">
-                      <img
-                        src={product.thumbnail}
-                        alt={product.title}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <CardHeader className="flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <CardTitle className="text-lg">{product.title}</CardTitle>
-                      {isPurchased && (
-                        <Badge className="bg-green-500 shrink-0">Owned</Badge>
-                      )}
-                    </div>
-                    {product.description && (
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {product.description}
-                      </p>
+                  <Link href={`/products/${product.slug}`}>
+                    {product.thumbnail && (
+                      <div className="aspect-video w-full overflow-hidden bg-muted">
+                        <img
+                          src={product.thumbnail}
+                          alt={product.title}
+                          className="h-full w-full object-cover transition-transform hover:scale-105"
+                        />
+                      </div>
                     )}
-                  </CardHeader>
+                    <CardHeader className="flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <CardTitle className="text-lg hover:text-accent transition-colors">
+                          {product.title}
+                        </CardTitle>
+                        {isPurchased && (
+                          <Badge className="bg-green-500 shrink-0">Owned</Badge>
+                        )}
+                      </div>
+                      {product.description && (
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {product.description}
+                        </p>
+                      )}
+                    </CardHeader>
+                  </Link>
                   <CardContent className="pt-0">
                     <div className="flex items-center justify-between">
                       <span className="text-2xl font-bold">

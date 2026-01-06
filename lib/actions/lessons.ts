@@ -218,6 +218,35 @@ export async function renameLesson(
   }
 }
 
+export async function deleteLessonFromList(lessonId: string): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    console.log("[Lessons] Deleting lesson from list:", lessonId);
+
+    const lesson = await db.lesson.delete({
+      where: { id: lessonId },
+      include: { section: true, attachments: true },
+    });
+
+    // Delete attachments from blob storage
+    for (const attachment of lesson.attachments) {
+      try {
+        await del(attachment.url);
+      } catch {
+        console.warn("[Lessons] Failed to delete attachment:", attachment.url);
+      }
+    }
+
+    console.log("[Lessons] Lesson deleted successfully");
+    revalidatePath(`/admin/courses/${lesson.section.courseId}`);
+    revalidatePath(`/admin/courses/${lesson.section.courseId}/sections`);
+    return { success: true };
+  } catch (error) {
+    console.error("[Lessons] Error deleting lesson:", error);
+    return { success: false, error: "Failed to delete lesson" };
+  }
+}
+
 // ============================================================================
 // ATTACHMENTS
 // ============================================================================

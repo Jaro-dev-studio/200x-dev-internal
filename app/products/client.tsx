@@ -12,8 +12,8 @@ interface ProductsClientProps {
 const products = [
   {
     id: "cursor-mastery",
-    title: "The Replacer",
-    subtitle: "Advanced Cursor Mastery Course",
+    title: "Advanced Cursor Mastery",
+    subtitle: "Become an elite AI-native engineer",
     description:
       "The complete system to become an elite AI-native engineer. 8 modules, production workflows, and the exact techniques used at OpenAI.",
     price: "$999",
