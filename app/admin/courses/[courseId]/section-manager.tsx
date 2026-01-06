@@ -1,17 +1,35 @@
 "use client";
 
-import { useActionState, useState, useTransition } from "react";
+import { useActionState, useState, useTransition, useEffect } from "react";
 import Link from "next/link";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
   createSection,
   deleteSection,
   renameSection,
+  reorderSections,
   type ActionResult,
 } from "@/lib/actions/courses";
 import { createLesson as createLessonAction, renameLesson } from "@/lib/actions/lessons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Trash2, ChevronDown, ChevronRight, FileText, Pencil, Check, X } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronRight, FileText, Pencil, Check, X, GripVertical } from "lucide-react";
 import type { Section, Lesson } from "@prisma/client";
 
 interface SectionManagerProps {
@@ -23,7 +41,287 @@ const initialState: ActionResult = {
   success: false,
 };
 
+interface SortableSectionProps {
+  section: Section & { lessons: Lesson[] };
+  courseId: string;
+  isExpanded: boolean;
+  onToggle: () => void;
+  editingSectionId: string | null;
+  editTitle: string;
+  setEditTitle: (title: string) => void;
+  onStartEdit: () => void;
+  onSaveEdit: () => void;
+  onCancelEdit: () => void;
+  isPending: boolean;
+  editingLessonId: string | null;
+  onStartEditLesson: (lesson: Lesson) => void;
+  onSaveLesson: (lessonId: string) => void;
+  showNewLesson: string | null;
+  setShowNewLesson: (id: string | null) => void;
+  lessonAction: (payload: FormData) => void;
+  lessonState: ActionResult;
+  isLessonPending: boolean;
+}
+
+function SortableSection({
+  section,
+  courseId,
+  isExpanded,
+  onToggle,
+  editingSectionId,
+  editTitle,
+  setEditTitle,
+  onStartEdit,
+  onSaveEdit,
+  onCancelEdit,
+  isPending,
+  editingLessonId,
+  onStartEditLesson,
+  onSaveLesson,
+  showNewLesson,
+  setShowNewLesson,
+  lessonAction,
+  lessonState,
+  isLessonPending,
+}: SortableSectionProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: section.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const isEditing = editingSectionId === section.id;
+
+  return (
+    <div ref={setNodeRef} style={style} className="rounded-lg border border-border">
+      <div
+        className="flex cursor-pointer items-center justify-between p-3"
+        onClick={() => !isEditing && onToggle()}
+      >
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="cursor-grab touch-none text-muted-foreground hover:text-foreground"
+            {...attributes}
+            {...listeners}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <GripVertical className="h-4 w-4" />
+          </button>
+          {isExpanded ? (
+            <ChevronDown className="h-4 w-4" />
+          ) : (
+            <ChevronRight className="h-4 w-4" />
+          )}
+          {isEditing ? (
+            <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+              <Input
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                className="h-7 w-48"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    onSaveEdit();
+                  } else if (e.key === "Escape") {
+                    onCancelEdit();
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+                onClick={onSaveEdit}
+                disabled={isPending}
+              >
+                <Check className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+                onClick={onCancelEdit}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <>
+              <span className="font-medium">{section.title}</span>
+              <span className="text-sm text-muted-foreground">
+                ({section.lessons.length} lessons)
+              </span>
+            </>
+          )}
+        </div>
+        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+          {!isEditing && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              onClick={onStartEdit}
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+          )}
+          <form
+            action={async () => {
+              if (confirm("Delete this section and all its lessons?")) {
+                await deleteSection(section.id);
+              }
+            }}
+          >
+            <Button
+              type="submit"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground hover:text-destructive"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </form>
+        </div>
+      </div>
+
+      {isExpanded && (
+        <div className="border-t border-border p-3">
+          {section.lessons.length === 0 ? (
+            <p className="mb-3 text-sm text-muted-foreground">
+              No lessons in this section yet.
+            </p>
+          ) : (
+            <div className="mb-3 space-y-2">
+              {section.lessons.map((lesson) => (
+                <div
+                  key={lesson.id}
+                  className="group flex items-center justify-between rounded-md p-2 text-sm hover:bg-muted"
+                >
+                  {editingLessonId === lesson.id ? (
+                    <div className="flex flex-1 items-center gap-2">
+                      <FileText className="h-4 w-4 text-muted-foreground" />
+                      <Input
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        className="h-7 flex-1"
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            onSaveLesson(lesson.id);
+                          } else if (e.key === "Escape") {
+                            onCancelEdit();
+                          }
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => onSaveLesson(lesson.id)}
+                        disabled={isPending}
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={onCancelEdit}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <Link
+                        href={`/admin/courses/${courseId}/sections/${section.id}/lessons/${lesson.id}`}
+                        className="flex flex-1 items-center gap-2"
+                      >
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                        {lesson.title}
+                      </Link>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 opacity-0 group-hover:opacity-100"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onStartEditLesson(lesson);
+                        }}
+                      >
+                        <Pencil className="h-3 w-3" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {showNewLesson === section.id ? (
+            <form action={lessonAction} className="space-y-3">
+              <input type="hidden" name="sectionId" value={section.id} />
+              {lessonState.error && (
+                <p className="text-sm text-destructive">
+                  {lessonState.error}
+                </p>
+              )}
+              <Input
+                name="title"
+                placeholder="Lesson title"
+                required
+                autoFocus
+              />
+              <div className="flex gap-2">
+                <Button type="submit" variant="accent" size="sm" isLoading={isLessonPending}>
+                  Create
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowNewLesson(null)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowNewLesson(section.id)}
+            >
+              <Plus className="mr-2 h-3 w-3" />
+              Add Lesson
+            </Button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function SectionManager({ courseId, sections }: SectionManagerProps) {
+  const [orderedSections, setOrderedSections] = useState(sections);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(sections.map((s) => s.id))
   );
@@ -33,6 +331,13 @@ export function SectionManager({ courseId, sections }: SectionManagerProps) {
   const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [isPending, startTransition] = useTransition();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const [sectionState, sectionAction, isSectionPending] = useActionState(
     createSection,
@@ -90,222 +395,70 @@ export function SectionManager({ courseId, sections }: SectionManagerProps) {
     setExpandedSections(newExpanded);
   };
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = orderedSections.findIndex((s) => s.id === active.id);
+      const newIndex = orderedSections.findIndex((s) => s.id === over.id);
+
+      const newOrder = arrayMove(orderedSections, oldIndex, newIndex);
+      setOrderedSections(newOrder);
+
+      startTransition(async () => {
+        await reorderSections(courseId, newOrder.map((s) => s.id));
+      });
+    }
+  };
+
+  // Sync with prop changes (e.g., after server revalidation)
+  useEffect(() => {
+    setOrderedSections(sections);
+  }, [sections]);
+
   return (
     <div className="space-y-4">
-      {sections.length === 0 && !showNewSection && (
+      {orderedSections.length === 0 && !showNewSection && (
         <p className="text-sm text-muted-foreground">
           No sections yet. Create your first section to start adding lessons.
         </p>
       )}
 
-      {sections.map((section) => (
-        <div key={section.id} className="rounded-lg border border-border">
-          <div
-            className="flex cursor-pointer items-center justify-between p-3"
-            onClick={() => editingSectionId !== section.id && toggleSection(section.id)}
-          >
-            <div className="flex items-center gap-2">
-              {expandedSections.has(section.id) ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
-              )}
-              {editingSectionId === section.id ? (
-                <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                  <Input
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
-                    className="h-7 w-48"
-                    autoFocus
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleSaveSection(section.id);
-                      } else if (e.key === "Escape") {
-                        handleCancelEdit();
-                      }
-                    }}
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7"
-                    onClick={() => handleSaveSection(section.id)}
-                    disabled={isPending}
-                  >
-                    <Check className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7"
-                    onClick={handleCancelEdit}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ) : (
-                <>
-                  <span className="font-medium">{section.title}</span>
-                  <span className="text-sm text-muted-foreground">
-                    ({section.lessons.length} lessons)
-                  </span>
-                </>
-              )}
-            </div>
-            <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-              {editingSectionId !== section.id && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                  onClick={() => handleStartEditSection(section)}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-              )}
-              <form
-                action={async () => {
-                  if (confirm("Delete this section and all its lessons?")) {
-                    await deleteSection(section.id);
-                  }
-                }}
-              >
-                <Button
-                  type="submit"
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </form>
-            </div>
-          </div>
-
-          {expandedSections.has(section.id) && (
-            <div className="border-t border-border p-3">
-              {section.lessons.length === 0 ? (
-                <p className="mb-3 text-sm text-muted-foreground">
-                  No lessons in this section yet.
-                </p>
-              ) : (
-                <div className="mb-3 space-y-2">
-                  {section.lessons.map((lesson) => (
-                    <div
-                      key={lesson.id}
-                      className="group flex items-center justify-between rounded-md p-2 text-sm hover:bg-muted"
-                    >
-                      {editingLessonId === lesson.id ? (
-                        <div className="flex flex-1 items-center gap-2">
-                          <FileText className="h-4 w-4 text-muted-foreground" />
-                          <Input
-                            value={editTitle}
-                            onChange={(e) => setEditTitle(e.target.value)}
-                            className="h-7 flex-1"
-                            autoFocus
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") {
-                                e.preventDefault();
-                                handleSaveLesson(lesson.id);
-                              } else if (e.key === "Escape") {
-                                handleCancelEdit();
-                              }
-                            }}
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7"
-                            onClick={() => handleSaveLesson(lesson.id)}
-                            disabled={isPending}
-                          >
-                            <Check className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7"
-                            onClick={handleCancelEdit}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <>
-                          <Link
-                            href={`/admin/courses/${courseId}/sections/${section.id}/lessons/${lesson.id}`}
-                            className="flex flex-1 items-center gap-2"
-                          >
-                            <FileText className="h-4 w-4 text-muted-foreground" />
-                            {lesson.title}
-                          </Link>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 opacity-0 group-hover:opacity-100"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleStartEditLesson(lesson);
-                            }}
-                          >
-                            <Pencil className="h-3 w-3" />
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {showNewLesson === section.id ? (
-                <form action={lessonAction} className="space-y-3">
-                  <input type="hidden" name="sectionId" value={section.id} />
-                  {lessonState.error && (
-                    <p className="text-sm text-destructive">
-                      {lessonState.error}
-                    </p>
-                  )}
-                  <Input
-                    name="title"
-                    placeholder="Lesson title"
-                    required
-                    autoFocus
-                  />
-                  <div className="flex gap-2">
-                    <Button type="submit" variant="accent" size="sm" isLoading={isLessonPending}>
-                      Create
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowNewLesson(null)}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </form>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowNewLesson(section.id)}
-                >
-                  <Plus className="mr-2 h-3 w-3" />
-                  Add Lesson
-                </Button>
-              )}
-            </div>
-          )}
-        </div>
-      ))}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={orderedSections.map((s) => s.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {orderedSections.map((section) => (
+            <SortableSection
+              key={section.id}
+              section={section}
+              courseId={courseId}
+              isExpanded={expandedSections.has(section.id)}
+              onToggle={() => toggleSection(section.id)}
+              editingSectionId={editingSectionId}
+              editTitle={editTitle}
+              setEditTitle={setEditTitle}
+              onStartEdit={() => handleStartEditSection(section)}
+              onSaveEdit={() => handleSaveSection(section.id)}
+              onCancelEdit={handleCancelEdit}
+              isPending={isPending}
+              editingLessonId={editingLessonId}
+              onStartEditLesson={handleStartEditLesson}
+              onSaveLesson={handleSaveLesson}
+              showNewLesson={showNewLesson}
+              setShowNewLesson={setShowNewLesson}
+              lessonAction={lessonAction}
+              lessonState={lessonState}
+              isLessonPending={isLessonPending}
+            />
+          ))}
+        </SortableContext>
+      </DndContext>
 
       {showNewSection ? (
         <form action={sectionAction} className="space-y-3 rounded-lg border border-border p-3">
