@@ -464,7 +464,7 @@ export function CursorMasteryClient({
   courseId,
   priceInCents,
   hasPurchased,
-  // isLoggedIn - available if needed for future features
+  isLoggedIn,
 }: CursorMasteryClientProps) {
   // Hero scroll animation
   const heroRef = useRef<HTMLDivElement>(null);
@@ -565,6 +565,31 @@ export function CursorMasteryClient({
           <div className="flex items-center gap-1">
             <Image src="/logo.png" alt="200x" width={24} height={24} />
             <span className="text-sm font-medium tracking-wide">200x</span>
+          </div>
+          <div className="flex items-center gap-3">
+            {isLoggedIn ? (
+              <Link
+                href="/dashboard"
+                className="px-4 py-2 bg-foreground text-background text-sm font-medium hover:bg-foreground/90 transition-colors"
+              >
+                Go to Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/auth/login"
+                  className="px-4 py-2 text-sm font-medium text-foreground hover:text-accent transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/auth/register"
+                  className="px-4 py-2 bg-foreground text-background text-sm font-medium hover:bg-foreground/90 transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </motion.nav>
