@@ -79,6 +79,19 @@ export function CourseEditForm({ course }: CourseEditFormProps) {
         </label>
       </div>
 
+      <div className="flex items-center gap-3">
+        <input
+          type="checkbox"
+          id="requireSequentialProgress"
+          name="requireSequentialProgress"
+          defaultChecked={course.requireSequentialProgress}
+          className="h-4 w-4 rounded border-border"
+        />
+        <label htmlFor="requireSequentialProgress" className="text-sm">
+          Require sequential progress (lock next lesson until current is completed)
+        </label>
+      </div>
+
       <div className="flex gap-4">
         <Button type="submit" variant="accent" isLoading={isPending}>
           Save Changes

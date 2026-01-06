@@ -83,7 +83,7 @@ export default async function BrowsePage() {
 
               return (
                 <Card key={course.id} className="overflow-hidden flex flex-col">
-                  <Link href={`/dashboard/browse/courses/${course.id}`}>
+                  <Link href={`/products/${course.id}`}>
                     {course.thumbnail && (
                       <div className="aspect-video w-full overflow-hidden bg-muted">
                         <img

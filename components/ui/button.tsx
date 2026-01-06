@@ -44,7 +44,7 @@ export function getButtonStyles(
   className?: string
 ) {
   return cn(
-    "flex items-center justify-center gap-2 font-medium transition-colors whitespace-nowrap cursor-pointer",
+    "flex items-center justify-center gap-2 font-medium transition-colors whitespace-nowrap cursor-pointer rounded-[2px]",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
     "disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed",
     buttonVariants.variant[variant],

@@ -112,6 +112,9 @@ export default async function CoursePage({ params }: CoursePageProps) {
     sectionIndex: number,
     lessonIndex: number
   ): boolean => {
+    // If sequential progress is not required, all lessons are unlocked
+    if (!course.requireSequentialProgress) return false;
+
     // First lesson is never locked
     if (sectionIndex === 0 && lessonIndex === 0) return false;
 

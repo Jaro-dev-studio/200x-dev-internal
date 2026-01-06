@@ -26,7 +26,7 @@ import {
   reorderSections,
   type ActionResult,
 } from "@/lib/actions/courses";
-import { createLesson as createLessonAction, renameLesson, deleteLessonFromList } from "@/lib/actions/lessons";
+import { createLesson as createLessonAction, renameLesson, deleteLessonFromList, reorderLessons } from "@/lib/actions/lessons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Trash2, ChevronDown, ChevronRight, FileText, Pencil, Check, X, GripVertical } from "lucide-react";
@@ -40,6 +40,146 @@ interface SectionManagerProps {
 const initialState: ActionResult = {
   success: false,
 };
+
+interface SortableLessonProps {
+  lesson: Lesson;
+  courseId: string;
+  sectionId: string;
+  editingLessonId: string | null;
+  editTitle: string;
+  setEditTitle: (title: string) => void;
+  onStartEditLesson: (lesson: Lesson) => void;
+  onSaveLesson: (lessonId: string) => void;
+  onCancelEdit: () => void;
+  isPending: boolean;
+}
+
+function SortableLesson({
+  lesson,
+  courseId,
+  sectionId,
+  editingLessonId,
+  editTitle,
+  setEditTitle,
+  onStartEditLesson,
+  onSaveLesson,
+  onCancelEdit,
+  isPending,
+}: SortableLessonProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: lesson.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const isEditing = editingLessonId === lesson.id;
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="group flex items-center justify-between rounded-md p-2 text-sm hover:bg-muted"
+    >
+      {isEditing ? (
+        <div className="flex flex-1 items-center gap-2">
+          <FileText className="h-4 w-4 text-muted-foreground" />
+          <Input
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            className="h-7 flex-1"
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                onSaveLesson(lesson.id);
+              } else if (e.key === "Escape") {
+                onCancelEdit();
+              }
+            }}
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7"
+            onClick={() => onSaveLesson(lesson.id)}
+            disabled={isPending}
+          >
+            <Check className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7"
+            onClick={onCancelEdit}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-1 items-center gap-2">
+            <button
+              type="button"
+              className="cursor-grab touch-none text-muted-foreground hover:text-foreground"
+              {...attributes}
+              {...listeners}
+            >
+              <GripVertical className="h-3 w-3" />
+            </button>
+            <Link
+              href={`/admin/courses/${courseId}/sections/${sectionId}/lessons/${lesson.id}`}
+              className="flex flex-1 items-center gap-2"
+            >
+              <FileText className="h-4 w-4 text-muted-foreground" />
+              {lesson.title}
+            </Link>
+          </div>
+          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={(e) => {
+                e.preventDefault();
+                onStartEditLesson(lesson);
+              }}
+            >
+              <Pencil className="h-3 w-3" />
+            </Button>
+            <form
+              action={async () => {
+                if (confirm("Delete this lesson?")) {
+                  await deleteLessonFromList(lesson.id);
+                }
+              }}
+            >
+              <Button
+                type="submit"
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 text-muted-foreground hover:text-destructive"
+              >
+                <Trash2 className="h-3 w-3" />
+              </Button>
+            </form>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 interface SortableSectionProps {
   section: Section & { lessons: Lesson[] };
@@ -61,6 +201,7 @@ interface SortableSectionProps {
   lessonAction: (payload: FormData) => void;
   lessonState: ActionResult;
   isLessonPending: boolean;
+  onReorderLessons: (sectionId: string, lessonIds: string[]) => void;
 }
 
 function SortableSection({
@@ -83,7 +224,33 @@ function SortableSection({
   lessonAction,
   lessonState,
   isLessonPending,
+  onReorderLessons,
 }: SortableSectionProps) {
+  const [orderedLessons, setOrderedLessons] = useState(section.lessons);
+
+  const lessonSensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  useEffect(() => {
+    setOrderedLessons(section.lessons);
+  }, [section.lessons]);
+
+  const handleLessonDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = orderedLessons.findIndex((l) => l.id === active.id);
+      const newIndex = orderedLessons.findIndex((l) => l.id === over.id);
+
+      const newOrder = arrayMove(orderedLessons, oldIndex, newIndex);
+      setOrderedLessons(newOrder);
+      onReorderLessons(section.id, newOrder.map((l) => l.id));
+    }
+  };
   const {
     attributes,
     listeners,
@@ -118,10 +285,10 @@ function SortableSection({
             <GripVertical className="h-4 w-4" />
           </button>
           {isExpanded ? (
-            <ChevronDown className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
           {isEditing ? (
             <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
               <Input
@@ -166,7 +333,7 @@ function SortableSection({
               </span>
             </>
           )}
-        </div>
+            </div>
         <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
           {!isEditing && (
             <Button
@@ -179,162 +346,103 @@ function SortableSection({
               <Pencil className="h-4 w-4" />
             </Button>
           )}
-          <form
-            action={async () => {
-              if (confirm("Delete this section and all its lessons?")) {
-                await deleteSection(section.id);
-              }
-            }}
-          >
-            <Button
-              type="submit"
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-destructive"
+            <form
+              action={async () => {
+                if (confirm("Delete this section and all its lessons?")) {
+                  await deleteSection(section.id);
+                }
+              }}
             >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </form>
+              <Button
+                type="submit"
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-destructive"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </form>
         </div>
-      </div>
+          </div>
 
       {isExpanded && (
-        <div className="border-t border-border p-3">
-          {section.lessons.length === 0 ? (
-            <p className="mb-3 text-sm text-muted-foreground">
-              No lessons in this section yet.
-            </p>
-          ) : (
-            <div className="mb-3 space-y-2">
-              {section.lessons.map((lesson) => (
-                <div
-                  key={lesson.id}
-                  className="group flex items-center justify-between rounded-md p-2 text-sm hover:bg-muted"
-                >
-                  {editingLessonId === lesson.id ? (
-                    <div className="flex flex-1 items-center gap-2">
-                      <FileText className="h-4 w-4 text-muted-foreground" />
-                      <Input
-                        value={editTitle}
-                        onChange={(e) => setEditTitle(e.target.value)}
-                        className="h-7 flex-1"
-                        autoFocus
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                            onSaveLesson(lesson.id);
-                          } else if (e.key === "Escape") {
-                            onCancelEdit();
-                          }
-                        }}
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7"
-                        onClick={() => onSaveLesson(lesson.id)}
-                        disabled={isPending}
-                      >
-                        <Check className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7"
-                        onClick={onCancelEdit}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <>
-                      <Link
-                        href={`/admin/courses/${courseId}/sections/${section.id}/lessons/${lesson.id}`}
-                        className="flex flex-1 items-center gap-2"
-                      >
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                        {lesson.title}
-                      </Link>
-                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            onStartEditLesson(lesson);
-                          }}
-                        >
-                          <Pencil className="h-3 w-3" />
-                        </Button>
-                        <form
-                          action={async () => {
-                            if (confirm("Delete this lesson?")) {
-                              await deleteLessonFromList(lesson.id);
-                            }
-                          }}
-                        >
-                          <Button
-                            type="submit"
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 text-muted-foreground hover:text-destructive"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </form>
-                      </div>
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {showNewLesson === section.id ? (
-            <form action={lessonAction} className="space-y-3">
-              <input type="hidden" name="sectionId" value={section.id} />
-              {lessonState.error && (
-                <p className="text-sm text-destructive">
-                  {lessonState.error}
+            <div className="border-t border-border p-3">
+          {orderedLessons.length === 0 ? (
+                <p className="mb-3 text-sm text-muted-foreground">
+                  No lessons in this section yet.
                 </p>
+              ) : (
+                <div className="mb-3 space-y-2">
+              <DndContext
+                sensors={lessonSensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleLessonDragEnd}
+              >
+                <SortableContext
+                  items={orderedLessons.map((l) => l.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {orderedLessons.map((lesson) => (
+                    <SortableLesson
+                      key={lesson.id}
+                      lesson={lesson}
+                      courseId={courseId}
+                      sectionId={section.id}
+                      editingLessonId={editingLessonId}
+                      editTitle={editTitle}
+                      setEditTitle={setEditTitle}
+                      onStartEditLesson={onStartEditLesson}
+                      onSaveLesson={onSaveLesson}
+                      onCancelEdit={onCancelEdit}
+                      isPending={isPending}
+                    />
+                  ))}
+                </SortableContext>
+              </DndContext>
+                </div>
               )}
-              <Input
-                name="title"
-                placeholder="Lesson title"
-                required
-                autoFocus
-              />
-              <div className="flex gap-2">
-                <Button type="submit" variant="accent" size="sm" isLoading={isLessonPending}>
-                  Create
-                </Button>
+
+              {showNewLesson === section.id ? (
+                <form action={lessonAction} className="space-y-3">
+                  <input type="hidden" name="sectionId" value={section.id} />
+                  {lessonState.error && (
+                    <p className="text-sm text-destructive">
+                      {lessonState.error}
+                    </p>
+                  )}
+                  <Input
+                    name="title"
+                    placeholder="Lesson title"
+                    required
+                    autoFocus
+                  />
+                  <div className="flex gap-2">
+                    <Button type="submit" variant="accent" size="sm" isLoading={isLessonPending}>
+                      Create
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowNewLesson(null)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              ) : (
                 <Button
-                  type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => setShowNewLesson(null)}
+                  onClick={() => setShowNewLesson(section.id)}
                 >
-                  Cancel
+                  <Plus className="mr-2 h-3 w-3" />
+                  Add Lesson
                 </Button>
-              </div>
-            </form>
-          ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowNewLesson(section.id)}
-            >
-              <Plus className="mr-2 h-3 w-3" />
-              Add Lesson
-            </Button>
+              )}
+            </div>
           )}
         </div>
-      )}
-    </div>
   );
 }
 
@@ -429,6 +537,12 @@ export function SectionManager({ courseId, sections }: SectionManagerProps) {
     }
   };
 
+  const handleReorderLessons = (sectionId: string, lessonIds: string[]) => {
+    startTransition(async () => {
+      await reorderLessons(sectionId, lessonIds);
+    });
+  };
+
   // Sync with prop changes (e.g., after server revalidation)
   useEffect(() => {
     setOrderedSections(sections);
@@ -473,6 +587,7 @@ export function SectionManager({ courseId, sections }: SectionManagerProps) {
               lessonAction={lessonAction}
               lessonState={lessonState}
               isLessonPending={isLessonPending}
+              onReorderLessons={handleReorderLessons}
             />
           ))}
         </SortableContext>

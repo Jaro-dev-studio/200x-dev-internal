@@ -13,6 +13,7 @@ const courseSchema = z.object({
   priceInCents: z.coerce.number().min(0, "Price must be positive"),
   thumbnail: z.string().url().optional().or(z.literal("")),
   published: z.coerce.boolean().optional(),
+  requireSequentialProgress: z.coerce.boolean().optional(),
 });
 
 const sectionSchema = z.object({
@@ -93,6 +94,7 @@ export async function updateCourse(
       priceInCents: formData.get("priceInCents"),
       thumbnail: formData.get("thumbnail"),
       published: formData.get("published") === "on",
+      requireSequentialProgress: formData.get("requireSequentialProgress") === "on",
     };
 
     const validatedData = courseSchema.safeParse(rawData);
@@ -108,6 +110,7 @@ export async function updateCourse(
         priceInCents: validatedData.data.priceInCents,
         thumbnail: validatedData.data.thumbnail || null,
         published: validatedData.data.published,
+        requireSequentialProgress: validatedData.data.requireSequentialProgress,
       },
     });
 

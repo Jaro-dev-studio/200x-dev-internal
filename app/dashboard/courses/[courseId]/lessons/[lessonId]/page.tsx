@@ -108,9 +108,10 @@ export default async function LessonPage({ params }: LessonPageProps) {
     currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
 
   // Check if can proceed to next lesson
+  // If sequential progress is not required, users can always proceed
   const canProceed =
-    progress?.completed &&
-    (!lesson.quiz?.isMandatory || hasPassedQuiz);
+    !lesson.section.course.requireSequentialProgress ||
+    (progress?.completed && (!lesson.quiz?.isMandatory || hasPassedQuiz));
 
   return (
     <div className="space-y-8">
