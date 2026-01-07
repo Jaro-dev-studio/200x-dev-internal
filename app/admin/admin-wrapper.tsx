@@ -245,4 +245,3 @@ export function AdminWrapper({
     </div>
   );
 }
-
