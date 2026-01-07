@@ -142,20 +142,22 @@ export default async function CoursePage({ params }: CoursePageProps) {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" asChild>
-          <Link href="/dashboard">
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-        </Button>
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold">{course.title}</h1>
-          {course.description && (
-            <p className="text-muted-foreground">{course.description}</p>
-          )}
+    <div className="space-y-6 md:space-y-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
+        <div className="flex items-start gap-3 sm:gap-4">
+          <Button variant="ghost" size="icon" asChild className="shrink-0 mt-1">
+            <Link href="/dashboard">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl font-bold sm:text-3xl">{course.title}</h1>
+            {course.description && (
+              <p className="text-muted-foreground text-sm sm:text-base">{course.description}</p>
+            )}
+          </div>
         </div>
-        <Badge variant="secondary" className="text-lg">
+        <Badge variant="secondary" className="text-base sm:text-lg shrink-0 ml-11 sm:ml-0">
           {progressPercent}% Complete
         </Badge>
       </div>
@@ -169,7 +171,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
       </div>
 
       {/* Sections */}
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {course.sections.map((section, sectionIndex) => (
           <Card key={section.id}>
             <CardHeader>

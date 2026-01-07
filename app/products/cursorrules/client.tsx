@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import {
   ArrowRight,
   Play,
@@ -561,7 +562,10 @@ export function CursorrrulesClient({
       {/* Bottom Bar CTA */}
       <motion.div
         style={{ opacity: bottomBarOpacity }}
-        className="fixed bottom-0 left-0 right-0 md:bottom-auto md:top-5 md:left-auto md:right-6 z-50 p-4 md:p-0 bg-background/95 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none border-t border-border md:border-0"
+        className={cn(
+          "fixed bottom-0 left-0 right-0 md:bottom-auto md:top-5 md:left-auto md:right-6 z-50 p-4 md:p-0 bg-background/95 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none border-t border-border md:border-0",
+          isLoggedIn && !hasPurchased && "md:hidden"
+        )}
       >
         {hasPurchased ? (
           <Link

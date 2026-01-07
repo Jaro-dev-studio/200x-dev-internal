@@ -107,15 +107,15 @@ export function UsersClient({ users, courses, products }: UsersClientProps) {
     selectedProductId;
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 md:space-y-8">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Users</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl font-bold sm:text-3xl">Users</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
             View all registered users and their purchases
           </p>
         </div>
-        <Badge variant="secondary" className="text-sm">
+        <Badge variant="secondary" className="text-sm w-fit">
           {filteredUsers.length} of {users.length} users
         </Badge>
       </div>
@@ -252,17 +252,17 @@ export function UsersClient({ users, courses, products }: UsersClientProps) {
         <div className="grid gap-4">
           {filteredUsers.map((user) => (
             <Card key={user.id}>
-              <CardHeader className="flex flex-row items-start justify-between">
-                <div className="space-y-1">
-                  <CardTitle className="text-xl">
+              <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="space-y-1 min-w-0">
+                  <CardTitle className="text-lg sm:text-xl">
                     {user.name || "Unnamed User"}
                   </CardTitle>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Mail className="h-4 w-4" />
-                    {user.email}
+                    <Mail className="h-4 w-4 shrink-0" />
+                    <span className="truncate">{user.email}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between gap-3 sm:justify-end">
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Calendar className="h-3 w-3" />
                     Joined {user.createdAt.toLocaleDateString()}

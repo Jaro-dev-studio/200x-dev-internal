@@ -20,15 +20,15 @@ export default async function AdminProductsPage() {
   });
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 md:space-y-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Digital Products</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl font-bold sm:text-3xl">Digital Products</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
             Manage your digital product catalog
           </p>
         </div>
-        <Button variant="accent" asChild>
+        <Button variant="accent" asChild className="w-full sm:w-auto">
           <Link href="/admin/products/new">
             <Plus className="h-4 w-4" />
             New Product
@@ -49,10 +49,10 @@ export default async function AdminProductsPage() {
         <div className="grid gap-4">
           {products.map((product) => (
             <Card key={product.id}>
-              <CardHeader className="flex flex-row items-start justify-between">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <CardTitle className="text-xl">{product.title}</CardTitle>
+              <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="space-y-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <CardTitle className="text-lg sm:text-xl">{product.title}</CardTitle>
                     <Badge variant={product.published ? "default" : "secondary"}>
                       {product.published ? (
                         <>
@@ -71,7 +71,7 @@ export default async function AdminProductsPage() {
                     /{product.slug}
                   </p>
                 </div>
-                <Button variant="outline" size="sm" asChild>
+                <Button variant="outline" size="sm" asChild className="w-full sm:w-auto shrink-0">
                   <Link href={`/admin/products/${product.id}`}>
                     <Edit className="h-4 w-4" />
                     Edit
@@ -79,7 +79,7 @@ export default async function AdminProductsPage() {
                 </Button>
               </CardHeader>
               <CardContent>
-                <div className="flex gap-6 text-sm text-muted-foreground">
+                <div className="flex flex-wrap gap-4 sm:gap-6 text-sm text-muted-foreground">
                   <span>
                     <strong className="text-foreground">
                       ${(product.priceInCents / 100).toFixed(2)}

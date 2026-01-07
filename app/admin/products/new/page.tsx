@@ -19,16 +19,16 @@ export default function NewProductPage() {
   );
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" asChild>
+    <div className="space-y-6 md:space-y-8">
+      <div className="flex items-start gap-3 sm:gap-4">
+        <Button variant="ghost" size="icon" asChild className="shrink-0 mt-1">
           <Link href="/admin/products">
             <ArrowLeft className="h-4 w-4" />
           </Link>
         </Button>
-        <div>
-          <h1 className="text-3xl font-bold">Create Digital Product</h1>
-          <p className="text-muted-foreground">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-bold sm:text-3xl">Create Digital Product</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
             Set up a new digital product for sale
           </p>
         </div>

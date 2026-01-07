@@ -70,15 +70,15 @@ export default async function AdminDashboard() {
   ];
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 md:space-y-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl font-bold sm:text-3xl">Admin Dashboard</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
             Manage your courses and content
           </p>
         </div>
-        <Button variant="accent" asChild>
+        <Button variant="accent" asChild className="w-full sm:w-auto">
           <Link href="/admin/courses/new">Create Course</Link>
         </Button>
       </div>

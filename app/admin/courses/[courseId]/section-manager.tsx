@@ -29,12 +29,20 @@ import {
 import { createLesson as createLessonAction, renameLesson, deleteLessonFromList, reorderLessons } from "@/lib/actions/lessons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Trash2, ChevronDown, ChevronRight, FileText, Pencil, Check, X, GripVertical } from "lucide-react";
-import type { Section, Lesson } from "@prisma/client";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Trash2, ChevronDown, ChevronRight, FileText, Pencil, Check, X, GripVertical, Play, Paperclip, HelpCircle, AlignLeft } from "lucide-react";
+import type { Section, Lesson, Quiz } from "@prisma/client";
+
+interface LessonWithDetails extends Lesson {
+  quiz: Quiz | null;
+  _count: {
+    attachments: number;
+  };
+}
 
 interface SectionManagerProps {
   courseId: string;
-  sections: (Section & { lessons: Lesson[] })[];
+  sections: (Section & { lessons: LessonWithDetails[] })[];
 }
 
 const initialState: ActionResult = {
@@ -42,13 +50,13 @@ const initialState: ActionResult = {
 };
 
 interface SortableLessonProps {
-  lesson: Lesson;
+  lesson: LessonWithDetails;
   courseId: string;
   sectionId: string;
   editingLessonId: string | null;
   editTitle: string;
   setEditTitle: (title: string) => void;
-  onStartEditLesson: (lesson: Lesson) => void;
+  onStartEditLesson: (lesson: LessonWithDetails) => void;
   onSaveLesson: (lessonId: string) => void;
   onCancelEdit: () => void;
   isPending: boolean;
@@ -144,6 +152,32 @@ function SortableLesson({
               <FileText className="h-4 w-4 text-muted-foreground" />
               {lesson.title}
             </Link>
+            <div className="flex items-center gap-1">
+              {lesson.wistiaVideoId && (
+                <Badge variant="accent" className="gap-1 px-1.5 py-0.5 text-[10px]">
+                  <Play className="h-2.5 w-2.5" />
+                  Video
+                </Badge>
+              )}
+              {lesson.content && (
+                <Badge variant="secondary" className="gap-1 px-1.5 py-0.5 text-[10px]">
+                  <AlignLeft className="h-2.5 w-2.5" />
+                  Content
+                </Badge>
+              )}
+              {lesson._count.attachments > 0 && (
+                <Badge variant="outline" className="gap-1 px-1.5 py-0.5 text-[10px]">
+                  <Paperclip className="h-2.5 w-2.5" />
+                  {lesson._count.attachments}
+                </Badge>
+              )}
+              {lesson.quiz && (
+                <Badge variant="default" className="gap-1 px-1.5 py-0.5 text-[10px]">
+                  <HelpCircle className="h-2.5 w-2.5" />
+                  Quiz
+                </Badge>
+              )}
+            </div>
           </div>
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
             <Button
@@ -182,7 +216,7 @@ function SortableLesson({
 }
 
 interface SortableSectionProps {
-  section: Section & { lessons: Lesson[] };
+  section: Section & { lessons: LessonWithDetails[] };
   courseId: string;
   isExpanded: boolean;
   onToggle: () => void;
@@ -194,7 +228,7 @@ interface SortableSectionProps {
   onCancelEdit: () => void;
   isPending: boolean;
   editingLessonId: string | null;
-  onStartEditLesson: (lesson: Lesson) => void;
+  onStartEditLesson: (lesson: LessonWithDetails) => void;
   onSaveLesson: (lessonId: string) => void;
   showNewLesson: string | null;
   setShowNewLesson: (id: string | null) => void;
@@ -481,7 +515,7 @@ export function SectionManager({ courseId, sections }: SectionManagerProps) {
     setEditingLessonId(null);
   };
 
-  const handleStartEditLesson = (lesson: Lesson) => {
+  const handleStartEditLesson = (lesson: LessonWithDetails) => {
     setEditingLessonId(lesson.id);
     setEditTitle(lesson.title);
     setEditingSectionId(null);

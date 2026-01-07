@@ -43,22 +43,22 @@ export default async function LessonEditPage({ params }: LessonEditPageProps) {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" asChild>
+    <div className="space-y-6 md:space-y-8">
+      <div className="flex items-start gap-3 sm:gap-4">
+        <Button variant="ghost" size="icon" asChild className="shrink-0 mt-1">
           <Link href={`/admin/courses/${courseId}/sections`}>
             <ArrowLeft className="h-4 w-4" />
           </Link>
         </Button>
-        <div>
-          <p className="text-sm text-muted-foreground">
+        <div className="min-w-0">
+          <p className="text-sm text-muted-foreground truncate">
             {lesson.section.course.title} / {lesson.section.title}
           </p>
-          <h1 className="text-3xl font-bold">{lesson.title}</h1>
+          <h1 className="text-xl font-bold sm:text-3xl">{lesson.title}</h1>
         </div>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 md:gap-8 lg:grid-cols-2">
         {/* Lesson Content */}
         <div className="space-y-6">
           <Card>

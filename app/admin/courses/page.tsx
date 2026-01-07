@@ -21,15 +21,15 @@ export default async function AdminCoursesPage() {
   });
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 md:space-y-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Courses</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl font-bold sm:text-3xl">Courses</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
             Manage your course catalog
           </p>
         </div>
-        <Button variant="accent" asChild>
+        <Button variant="accent" asChild className="w-full sm:w-auto">
           <Link href="/admin/courses/new">
             <Plus className="h-4 w-4" />
             New Course
@@ -50,10 +50,10 @@ export default async function AdminCoursesPage() {
         <div className="grid gap-4">
           {courses.map((course) => (
             <Card key={course.id}>
-              <CardHeader className="flex flex-row items-start justify-between">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <CardTitle className="text-xl">{course.title}</CardTitle>
+              <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="space-y-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <CardTitle className="text-lg sm:text-xl">{course.title}</CardTitle>
                     <Badge variant={course.published ? "default" : "secondary"}>
                       {course.published ? (
                         <>
@@ -72,7 +72,7 @@ export default async function AdminCoursesPage() {
                     {course.description || "No description"}
                   </p>
                 </div>
-                <Button variant="outline" size="sm" asChild>
+                <Button variant="outline" size="sm" asChild className="w-full sm:w-auto shrink-0">
                   <Link href={`/admin/courses/${course.id}`}>
                     <Edit className="h-4 w-4" />
                     Edit
@@ -80,7 +80,7 @@ export default async function AdminCoursesPage() {
                 </Button>
               </CardHeader>
               <CardContent>
-                <div className="flex gap-6 text-sm text-muted-foreground">
+                <div className="flex flex-wrap gap-4 sm:gap-6 text-sm text-muted-foreground">
                   <span>
                     <strong className="text-foreground">
                       ${(course.priceInCents / 100).toFixed(2)}

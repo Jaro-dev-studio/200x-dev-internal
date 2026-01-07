@@ -114,29 +114,31 @@ export default async function LessonPage({ params }: LessonPageProps) {
     (progress?.completed && (!lesson.quiz?.isMandatory || hasPassedQuiz));
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" asChild>
-          <Link href={`/dashboard/courses/${courseId}`}>
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-        </Button>
-        <div className="flex-1">
-          <p className="text-sm text-muted-foreground">
-            {lesson.section.course.title} / {lesson.section.title}
-          </p>
-          <h1 className="text-2xl font-bold">{lesson.title}</h1>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <Button variant="ghost" size="icon" asChild className="shrink-0">
+            <Link href={`/dashboard/courses/${courseId}`}>
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-muted-foreground truncate">
+              {lesson.section.course.title} / {lesson.section.title}
+            </p>
+            <h1 className="text-xl font-bold sm:text-2xl">{lesson.title}</h1>
+          </div>
         </div>
         {progress?.completed && (
-          <div className="flex items-center gap-2 text-green-500">
+          <div className="flex items-center gap-2 text-green-500 shrink-0 ml-11 sm:ml-0">
             <CheckCircle className="h-5 w-5" />
-            Completed
+            <span className="text-sm sm:text-base">Completed</span>
           </div>
         )}
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-3">
+      <div className="grid gap-6 md:gap-8 lg:grid-cols-3">
         {/* Main content */}
         <div className="space-y-6 lg:col-span-2">
           {/* Video */}
@@ -166,8 +168,8 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
           {/* Mark as complete */}
           <Card>
-            <CardContent className="flex items-center justify-between py-4">
-              <p className="text-muted-foreground">
+            <CardContent className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-muted-foreground text-sm sm:text-base">
                 {progress?.completed
                   ? "You have completed this lesson"
                   : "Mark this lesson as complete to continue"}
