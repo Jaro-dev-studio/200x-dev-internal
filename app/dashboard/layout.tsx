@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { DashboardWrapper } from "./dashboard-wrapper";
+import { ImpersonationBanner } from "@/components/layout/impersonation-banner";
 
 export default async function DashboardLayout({
   children,
@@ -33,12 +34,15 @@ export default async function DashboardLayout({
   };
 
   return (
-    <DashboardWrapper
-      user={user}
-      isAdmin={userIsAdmin}
-      signOutAction={signOutAction}
-    >
-      {children}
-    </DashboardWrapper>
+    <>
+      <ImpersonationBanner />
+      <DashboardWrapper
+        user={user}
+        isAdmin={userIsAdmin}
+        signOutAction={signOutAction}
+      >
+        {children}
+      </DashboardWrapper>
+    </>
   );
 }

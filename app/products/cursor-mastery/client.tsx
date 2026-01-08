@@ -600,12 +600,12 @@ export function CursorMasteryClient({
         style={{ opacity: bottomBarOpacity }}
         className={cn(
           "fixed bottom-0 left-0 right-0 md:bottom-auto md:top-5 md:left-auto md:right-6 z-50 p-4 md:p-0 bg-background/95 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none border-t border-border md:border-0",
-          isLoggedIn && !hasPurchased && "md:hidden"
+          isLoggedIn && "md:hidden"
         )}
       >
         {hasPurchased ? (
           <Link
-            href="/dashboard/courses"
+            href="/dashboard"
             className="flex items-center justify-center gap-2 w-full md:w-auto py-3.5 md:py-3 md:px-8 bg-green-600 text-white text-sm font-medium tracking-wide hover:bg-green-700 transition-all md:shadow-lg md:shadow-green-500/25"
           >
             <CheckCircle className="w-4 h-4" />
@@ -700,7 +700,7 @@ export function CursorMasteryClient({
           >
             {hasPurchased ? (
               <Link
-                href="/dashboard/courses"
+                href="/dashboard"
                 className="group inline-flex items-center justify-center gap-3 px-16 py-4 bg-green-600 text-white text-sm font-medium tracking-wide hover:bg-green-700 transition-all min-w-[320px]"
               >
                 <CheckCircle className="w-4 h-4" />
@@ -2368,7 +2368,7 @@ export function CursorMasteryClient({
             {hasPurchased ? (
               <>
                 <Link
-                  href="/dashboard/courses"
+                  href="/dashboard"
                   className="group flex items-center justify-center gap-2 md:gap-3 w-full py-4 md:py-5 bg-green-600 text-white text-sm md:text-base font-medium tracking-wide hover:bg-green-700 transition-colors mb-4"
                 >
                   <CheckCircle className="w-4 h-4 md:w-5 md:h-5" />

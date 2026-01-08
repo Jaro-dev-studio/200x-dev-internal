@@ -10,3 +10,5 @@ export { Sidebar } from "./sidebar";
 export type { SidebarProps } from "./sidebar";
 
 export { DashboardShell } from "./dashboard-shell";
+
+export { ImpersonationBanner } from "./impersonation-banner";

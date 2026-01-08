@@ -564,7 +564,7 @@ export function CursorrrulesClient({
         style={{ opacity: bottomBarOpacity }}
         className={cn(
           "fixed bottom-0 left-0 right-0 md:bottom-auto md:top-5 md:left-auto md:right-6 z-50 p-4 md:p-0 bg-background/95 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none border-t border-border md:border-0",
-          isLoggedIn && !hasPurchased && "md:hidden"
+          isLoggedIn && "md:hidden"
         )}
       >
         {hasPurchased ? (
