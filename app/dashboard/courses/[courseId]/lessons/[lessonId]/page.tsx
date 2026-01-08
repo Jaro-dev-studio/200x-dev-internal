@@ -10,12 +10,15 @@ import {
   ArrowLeft,
   ArrowRight,
   Download,
-  CheckCircle,
   FileText,
 } from "lucide-react";
 import { WistiaPlayer } from "./wistia-player";
 import { LessonQuiz } from "./lesson-quiz";
-import { MarkCompleteButton } from "./mark-complete-button";
+import {
+  CompletionProvider,
+  LessonCompletionBadge,
+  LessonCompletionCard,
+} from "./client";
 
 interface LessonPageProps {
   params: Promise<{ courseId: string; lessonId: string }>;
@@ -114,11 +117,15 @@ export default async function LessonPage({ params }: LessonPageProps) {
     (progress?.completed && (!lesson.quiz?.isMandatory || hasPassedQuiz));
 
   return (
-    <div className="space-y-6 md:space-y-8">
-      {/* Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-        <div className="flex items-center gap-3 sm:gap-4">
-          <Button variant="ghost" size="icon" asChild className="shrink-0">
+    <CompletionProvider
+      lessonId={lessonId}
+      userId={session.user.id}
+      initialCompleted={!!progress?.completed}
+    >
+      <div className="space-y-6 md:space-y-8">
+        {/* Header */}
+        <div className="flex items-start gap-3 sm:gap-4">
+          <Button variant="ghost" size="icon" asChild className="shrink-0 mt-4">
             <Link href={`/dashboard/courses/${courseId}`}>
               <ArrowLeft className="h-4 w-4" />
             </Link>
@@ -127,62 +134,45 @@ export default async function LessonPage({ params }: LessonPageProps) {
             <p className="text-sm text-muted-foreground truncate">
               {lesson.section.course.title} / {lesson.section.title}
             </p>
-            <h1 className="text-xl font-bold sm:text-2xl">{lesson.title}</h1>
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="text-xl font-bold sm:text-2xl">{lesson.title}</h1>
+              <LessonCompletionBadge />
+            </div>
           </div>
         </div>
-        {progress?.completed && (
-          <div className="flex items-center gap-2 text-green-500 shrink-0 ml-11 sm:ml-0">
-            <CheckCircle className="h-5 w-5" />
-            <span className="text-sm sm:text-base">Completed</span>
-          </div>
-        )}
-      </div>
 
-      <div className="grid gap-6 md:gap-8 lg:grid-cols-3">
-        {/* Main content */}
-        <div className="space-y-6 lg:col-span-2">
-          {/* Video */}
-          {lesson.wistiaVideoId && (
-            <Card>
-              <CardContent className="p-0">
-                <WistiaPlayer videoId={lesson.wistiaVideoId} />
-              </CardContent>
-            </Card>
-          )}
+        <div className="grid gap-6 md:gap-8 lg:grid-cols-3">
+          {/* Main content */}
+          <div className="space-y-6 lg:col-span-2">
+            {/* Video */}
+            {lesson.wistiaVideoId && (
+              <Card>
+                <CardContent className="p-0">
+                  <WistiaPlayer videoId={lesson.wistiaVideoId} />
+                </CardContent>
+              </Card>
+            )}
 
-          {/* Content */}
-          {lesson.content && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Lesson Content</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="prose max-w-none">
-                  {lesson.content.split("\n").map((paragraph, i) => (
-                    <p key={i}>{paragraph}</p>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+            {/* Content */}
+            {lesson.content && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Lesson Content</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="prose max-w-none">
+                    {lesson.content.split("\n").map((paragraph, i) => (
+                      <p key={i}>{paragraph}</p>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
-          {/* Mark as complete */}
-          <Card>
-            <CardContent className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-muted-foreground text-sm sm:text-base">
-                {progress?.completed
-                  ? "You have completed this lesson"
-                  : "Mark this lesson as complete to continue"}
-              </p>
-              <MarkCompleteButton
-                lessonId={lessonId}
-                userId={session.user.id}
-                isCompleted={!!progress?.completed}
-              />
-            </CardContent>
-          </Card>
+            {/* Mark as complete */}
+            <LessonCompletionCard />
 
-          {/* Navigation */}
+            {/* Navigation */}
           <div className="flex justify-between">
             {prevLesson ? (
               <Button variant="outline" asChild>
@@ -252,5 +242,6 @@ export default async function LessonPage({ params }: LessonPageProps) {
         </div>
       </div>
     </div>
+    </CompletionProvider>
   );
 }
