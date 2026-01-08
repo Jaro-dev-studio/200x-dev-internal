@@ -437,11 +437,11 @@ const testimonials = [
 const faqData = [
   {
     q: "Do I need to be an expert developer?",
-    a: "No, but you should be comfortable with Git and at least one programming language. This course is for intermediate users who already use AI tools but want to level up.",
+    a: "No, but you should be comfortable with Git and at least one programming language. This is an advanced course for software engineers - AI IDE experience is helpful but not required.",
   },
   {
     q: "What if I've never used Cursor?",
-    a: "You'll want basic familiarity. Download Cursor, play with it for a few hours first. The course assumes you know what Cursor is.",
+    a: "Perfect. We'll walk you through the complete setup from scratch. You don't need any prior Cursor experience - just solid software engineering fundamentals.",
   },
   {
     q: "Is this for a specific language or framework?",
