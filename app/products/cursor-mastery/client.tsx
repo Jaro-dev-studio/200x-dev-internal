@@ -649,7 +649,7 @@ export function CursorMasteryClient({
             transition={{ duration: 0.8, delay: 0.6 }}
             className="text-lg md:text-xl text-muted-foreground mb-6"
           >
-            The Advanced Cursor Course
+            The 2026 Advanced Cursor 2.0 Course
             </motion.p>
 
           {/* VSL Video */}
