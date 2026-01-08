@@ -14,6 +14,7 @@ import {
   LogOut,
   Menu,
   X,
+  Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -51,6 +52,11 @@ const navItems: NavItem[] = [
     label: "Users",
     href: "/admin/users",
     icon: <Users className="h-4 w-4" />,
+  },
+  {
+    label: "Newsletter",
+    href: "/admin/newsletter",
+    icon: <Mail className="h-4 w-4" />,
   },
 ];
 
