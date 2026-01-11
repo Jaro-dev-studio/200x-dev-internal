@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { LandingWistiaPlayer } from "@/components/landing-wistia-player";
 import {
   ArrowRight,
   Play,
@@ -30,6 +31,7 @@ interface CursorMasteryClientProps {
   priceInCents: number;
   hasPurchased: boolean;
   isLoggedIn: boolean;
+  vslVideoId?: string | null;
 }
 
 // Buy button component integrated with Stripe
@@ -365,7 +367,7 @@ const prerequisites = [
   "Built or contributed to production applications",
   "Mid-to-senior level engineering experience",
   "Familiarity with AI tools like ChatGPT, Claude, or Copilot",
-  "Understanding of prompting and context",
+  "Basic understanding of prompting and context",
 ];
 
 // Products data
@@ -466,6 +468,7 @@ export function CursorMasteryClient({
   priceInCents,
   hasPurchased,
   isLoggedIn,
+  vslVideoId,
 }: CursorMasteryClientProps) {
   // Hero scroll animation
   const heroRef = useRef<HTMLDivElement>(null);
@@ -653,33 +656,40 @@ export function CursorMasteryClient({
             </motion.p>
 
           {/* VSL Video */}
-            <motion.div
+          <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.8, ease: [0.33, 1, 0.68, 1] }}
             className="w-full max-w-3xl mx-auto mb-6"
           >
-            <div className="relative aspect-video bg-muted/50 border border-border overflow-hidden group cursor-pointer">
-              {/* Video placeholder gradient */}
-              <div className="absolute inset-0 bg-linear-to-br from-muted/80 via-background to-muted/60" />
-              
-              {/* Play button */}
-              <div className="absolute inset-0 flex items-center justify-center">
-            <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-20 h-20 md:w-24 md:h-24 bg-foreground text-background rounded-full flex items-center justify-center shadow-2xl group-hover:bg-accent group-hover:text-accent-foreground transition-colors"
-                >
-                  <Play className="w-8 h-8 md:w-10 md:h-10 ml-1" fill="currentColor" />
-            </motion.div>
+            {vslVideoId ? (
+              <LandingWistiaPlayer videoId={vslVideoId} />
+            ) : (
+              <div className="relative aspect-video bg-muted/50 border border-border overflow-hidden group cursor-pointer">
+                {/* Video placeholder gradient */}
+                <div className="absolute inset-0 bg-linear-to-br from-muted/80 via-background to-muted/60" />
+
+                {/* Play button */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-20 h-20 md:w-24 md:h-24 bg-foreground text-background rounded-full flex items-center justify-center shadow-2xl group-hover:bg-accent group-hover:text-accent-foreground transition-colors"
+                  >
+                    <Play
+                      className="w-8 h-8 md:w-10 md:h-10 ml-1"
+                      fill="currentColor"
+                    />
+                  </motion.div>
+                </div>
+
+                {/* Duration badge */}
+                <div className="absolute bottom-4 right-4 px-3 py-1 bg-background/80 backdrop-blur-sm text-xs text-muted-foreground">
+                  12:34
+                </div>
               </div>
-              
-              {/* Duration badge */}
-              <div className="absolute bottom-4 right-4 px-3 py-1 bg-background/80 backdrop-blur-sm text-xs text-muted-foreground">
-                12:34
-              </div>
-            </div>
-            
+            )}
+
             {/* Course label */}
             <motion.p
             initial={{ opacity: 0 }}
@@ -1407,7 +1417,7 @@ export function CursorMasteryClient({
               {/* Pyramid visualization */}
               <div className="relative w-full">
                 {/* Pyramid layers - stacked from bottom to top */}
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col-reverse items-center">
                   {/* Bottom layer - 99% of engineers */}
                   <motion.div
                     className="w-full h-16 bg-muted/30 border border-border flex items-center justify-center"
@@ -1518,7 +1528,7 @@ export function CursorMasteryClient({
             className="mt-16 text-center"
           >
             <p className="text-xl md:text-2xl font-medium font-sans mb-8">
-              The question isn&apos;t whether you can afford $999.
+              The question isn&apos;t whether you can afford it.
                   <br />
               <span className="text-muted-foreground">It&apos;s whether you can afford to be left behind.</span>
             </p>
@@ -1587,7 +1597,7 @@ export function CursorMasteryClient({
                 </div>
 
               <p className="text-muted-foreground leading-relaxed">
-                I manage a team of 40+ engineers at OpenAI, the largest AI company in the world. We spend millions of dollars a month on world-class engineers, and this course is required viewing for all of them.
+                I manage a team of 40+ engineers at OpenAI, the largest AI company in the world. We spend millions of dollars a month on world-class engineers, and this course is based on what I teach them.
               </p>
           </motion.div>
 
@@ -2163,7 +2173,7 @@ export function CursorMasteryClient({
             className="mt-16 text-center"
           >
             <p className="text-xl font-medium font-sans">
-            This is <span className="text-accent">top-echelon AI engineering</span>, not prompt hacking.
+            This is <span className="text-accent">top-echelon AI engineering</span>, not vibe-guessing.
             </p>
           </motion.div>
         </div>
@@ -2248,15 +2258,6 @@ export function CursorMasteryClient({
                 transition={{ delay: 0.8, duration: 0.5, type: "spring", stiffness: 200 }}
               >
                 $999
-              </motion.p>
-              <motion.p 
-                className="inline-block mt-4 px-4 py-1.5 bg-accent/20 text-accent text-sm font-medium"
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 1.1, duration: 0.4 }}
-              >
-                Save 99% Today
               </motion.p>
           </div>
             <CursorMasteryBuyButton

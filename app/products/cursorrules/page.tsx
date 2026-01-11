@@ -36,6 +36,7 @@ export default async function CursorrulesPage() {
       priceInCents={product.priceInCents}
       hasPurchased={hasPurchased}
       isLoggedIn={!!session?.user}
+      vslVideoId={product.vslVideoId}
     />
   );
 }

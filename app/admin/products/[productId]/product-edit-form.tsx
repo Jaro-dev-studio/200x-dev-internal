@@ -59,6 +59,13 @@ export function ProductEditForm({ product }: ProductEditFormProps) {
       />
 
       <Input
+        name="vslVideoId"
+        label="VSL Wistia Video ID"
+        defaultValue={product.vslVideoId || ""}
+        helperText="The Wistia video ID for the landing page hero."
+      />
+
+      <Input
         name="priceInCents"
         type="number"
         label="Price (in cents)"

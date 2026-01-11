@@ -39,6 +39,7 @@ model Course {
   title                     String
   description               String?  @db.Text
   thumbnail                 String?
+  vslVideoId                String?  // Wistia video ID for landing page VSL
   priceInCents              Int      @default(0)
   published                 Boolean  @default(false)
   requireSequentialProgress Boolean  @default(true) // Lock next lesson until current is completed
@@ -197,6 +198,7 @@ model DigitalProduct {
   id           String   @id @default(cuid())
   slug         String   @unique // URL-friendly identifier (e.g., "cursorrules")
   title        String
+  vslVideoId   String?  // Wistia video ID for landing page VSL
   description  String?  @db.Text
   thumbnail    String?
   priceInCents Int      @default(0)

@@ -10,6 +10,7 @@ import { z } from "zod";
 const courseSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
+  vslVideoId: z.string().optional(),
   priceInCents: z.coerce.number().min(0, "Price must be positive"),
   thumbnail: z.string().url().optional().or(z.literal("")),
   published: z.coerce.boolean().optional(),
@@ -49,8 +50,9 @@ export async function createCourse(
     const rawData = {
       title: formData.get("title"),
       description: formData.get("description"),
+      vslVideoId: formData.get("vslVideoId") || undefined,
       priceInCents: formData.get("priceInCents"),
-      thumbnail: formData.get("thumbnail"),
+      thumbnail: formData.get("thumbnail") || undefined,
     };
 
     const validatedData = courseSchema.safeParse(rawData);
@@ -62,6 +64,7 @@ export async function createCourse(
       data: {
         title: validatedData.data.title,
         description: validatedData.data.description || null,
+        vslVideoId: validatedData.data.vslVideoId || null,
         priceInCents: validatedData.data.priceInCents,
         thumbnail: validatedData.data.thumbnail || null,
       },
@@ -91,8 +94,9 @@ export async function updateCourse(
     const rawData = {
       title: formData.get("title"),
       description: formData.get("description"),
+      vslVideoId: formData.get("vslVideoId") || undefined,
       priceInCents: formData.get("priceInCents"),
-      thumbnail: formData.get("thumbnail"),
+      thumbnail: formData.get("thumbnail") || undefined,
       published: formData.get("published") === "on",
       requireSequentialProgress: formData.get("requireSequentialProgress") === "on",
     };
@@ -107,6 +111,7 @@ export async function updateCourse(
       data: {
         title: validatedData.data.title,
         description: validatedData.data.description || null,
+        vslVideoId: validatedData.data.vslVideoId || null,
         priceInCents: validatedData.data.priceInCents,
         thumbnail: validatedData.data.thumbnail || null,
         published: validatedData.data.published,

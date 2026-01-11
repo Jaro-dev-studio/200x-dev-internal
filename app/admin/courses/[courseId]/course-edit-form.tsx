@@ -51,6 +51,13 @@ export function CourseEditForm({ course }: CourseEditFormProps) {
       />
 
       <Input
+        name="vslVideoId"
+        label="VSL Wistia Video ID"
+        defaultValue={course.vslVideoId || ""}
+        helperText="The Wistia video ID for the landing page hero."
+      />
+
+      <Input
         name="priceInCents"
         type="number"
         label="Price (in cents)"

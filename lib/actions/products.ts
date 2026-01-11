@@ -11,6 +11,7 @@ import { put, del } from "@vercel/blob";
 const productSchema = z.object({
   slug: z.string().min(1, "Slug is required").regex(/^[a-z0-9-]+$/, "Slug must be lowercase with dashes only"),
   title: z.string().min(1, "Title is required"),
+  vslVideoId: z.string().optional(),
   description: z.string().optional(),
   thumbnail: z.string().url().optional().or(z.literal("")),
   priceInCents: z.coerce.number().min(0, "Price must be positive"),
@@ -47,10 +48,11 @@ export async function createProduct(
     const rawData = {
       slug: formData.get("slug"),
       title: formData.get("title"),
+      vslVideoId: formData.get("vslVideoId") || undefined,
       description: formData.get("description"),
-      thumbnail: formData.get("thumbnail"),
+      thumbnail: formData.get("thumbnail") || undefined,
       priceInCents: formData.get("priceInCents"),
-      fileUrl: formData.get("fileUrl"),
+      fileUrl: formData.get("fileUrl") || undefined,
       content: formData.get("content"),
     };
 
@@ -63,6 +65,7 @@ export async function createProduct(
       data: {
         slug: validatedData.data.slug,
         title: validatedData.data.title,
+        vslVideoId: validatedData.data.vslVideoId || null,
         description: validatedData.data.description || null,
         thumbnail: validatedData.data.thumbnail || null,
         priceInCents: validatedData.data.priceInCents,
@@ -95,11 +98,12 @@ export async function updateProduct(
     const rawData = {
       slug: formData.get("slug"),
       title: formData.get("title"),
+      vslVideoId: formData.get("vslVideoId") || undefined,
       description: formData.get("description"),
-      thumbnail: formData.get("thumbnail"),
+      thumbnail: formData.get("thumbnail") || undefined,
       priceInCents: formData.get("priceInCents"),
       published: formData.get("published") === "on",
-      fileUrl: formData.get("fileUrl"),
+      fileUrl: formData.get("fileUrl") || undefined,
       content: formData.get("content"),
     };
 
@@ -113,6 +117,7 @@ export async function updateProduct(
       data: {
         slug: validatedData.data.slug,
         title: validatedData.data.title,
+        vslVideoId: validatedData.data.vslVideoId || null,
         description: validatedData.data.description || null,
         thumbnail: validatedData.data.thumbnail || null,
         priceInCents: validatedData.data.priceInCents,

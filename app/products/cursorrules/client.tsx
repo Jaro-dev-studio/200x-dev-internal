@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { LandingWistiaPlayer } from "@/components/landing-wistia-player";
 import {
   ArrowRight,
   Play,
@@ -32,6 +33,7 @@ interface CursorrrulesClientProps {
   priceInCents: number;
   hasPurchased: boolean;
   isLoggedIn: boolean;
+  vslVideoId?: string | null;
 }
 
 // FAQ Item component
@@ -426,6 +428,7 @@ export function CursorrrulesClient({
   priceInCents,
   hasPurchased,
   isLoggedIn,
+  vslVideoId,
 }: CursorrrulesClientProps) {
   // Hero scroll animation
   const heroRef = useRef<HTMLDivElement>(null);
@@ -623,29 +626,33 @@ export function CursorrrulesClient({
             transition={{ duration: 0.8, delay: 0.8, ease: [0.33, 1, 0.68, 1] }}
             className="w-full max-w-3xl mx-auto mb-6"
           >
-            <div className="relative aspect-video bg-muted/50 border border-border overflow-hidden group cursor-pointer">
-              {/* Video placeholder gradient */}
-              <div className="absolute inset-0 bg-linear-to-br from-muted/80 via-background to-muted/60" />
+            {vslVideoId ? (
+              <LandingWistiaPlayer videoId={vslVideoId} />
+            ) : (
+              <div className="relative aspect-video bg-muted/50 border border-border overflow-hidden group cursor-pointer">
+                {/* Video placeholder gradient */}
+                <div className="absolute inset-0 bg-linear-to-br from-muted/80 via-background to-muted/60" />
 
-              {/* Play button */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-20 h-20 md:w-24 md:h-24 bg-foreground text-background rounded-full flex items-center justify-center shadow-2xl group-hover:bg-accent group-hover:text-accent-foreground transition-colors"
-                >
-                  <Play
-                    className="w-8 h-8 md:w-10 md:h-10 ml-1"
-                    fill="currentColor"
-                  />
-                </motion.div>
-              </div>
+                {/* Play button */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-20 h-20 md:w-24 md:h-24 bg-foreground text-background rounded-full flex items-center justify-center shadow-2xl group-hover:bg-accent group-hover:text-accent-foreground transition-colors"
+                  >
+                    <Play
+                      className="w-8 h-8 md:w-10 md:h-10 ml-1"
+                      fill="currentColor"
+                    />
+                  </motion.div>
+                </div>
 
-              {/* Duration badge */}
-              <div className="absolute bottom-4 right-4 px-3 py-1 bg-background/80 backdrop-blur-sm text-xs text-muted-foreground">
-                4:32
+                {/* Duration badge */}
+                <div className="absolute bottom-4 right-4 px-3 py-1 bg-background/80 backdrop-blur-sm text-xs text-muted-foreground">
+                  4:32
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Course label */}
             <motion.p

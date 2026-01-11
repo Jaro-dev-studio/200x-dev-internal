@@ -36,6 +36,7 @@ export default async function CursorMasteryPage() {
       priceInCents={course.priceInCents}
       hasPurchased={hasPurchased}
       isLoggedIn={!!session?.user}
+      vslVideoId={course.vslVideoId}
     />
   );
 }
