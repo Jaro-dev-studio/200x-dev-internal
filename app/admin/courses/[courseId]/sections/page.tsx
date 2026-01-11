@@ -40,10 +40,10 @@ export default async function SectionsPage({ params }: SectionsPageProps) {
     notFound();
   }
 
-  // Auto-fetch missing video durations
+  // Auto-fetch missing video durations (excluding hidden lessons)
   const lessonsNeedingDuration = course.sections
     .flatMap((s) => s.lessons)
-    .filter((l) => l.wistiaVideoId && !l.videoDurationSeconds);
+    .filter((l) => !l.isHidden && l.wistiaVideoId && !l.videoDurationSeconds);
 
   if (lessonsNeedingDuration.length > 0) {
     console.log(`[Sections] Fetching durations for ${lessonsNeedingDuration.length} lessons...`);
@@ -90,7 +90,9 @@ export default async function SectionsPage({ params }: SectionsPageProps) {
   const lessonsWithAttachments = allLessons.filter((l) => l._count.attachments > 0).length;
   const lessonsWithQuiz = allLessons.filter((l) => l.quiz).length;
 
-  const totalDurationSeconds = allLessons.reduce((acc, lesson) => acc + (lesson.videoDurationSeconds || 0), 0);
+  const totalDurationSeconds = allLessons
+    .filter((l) => !l.isHidden)
+    .reduce((acc, lesson) => acc + (lesson.videoDurationSeconds || 0), 0);
 
   const formatDuration = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
