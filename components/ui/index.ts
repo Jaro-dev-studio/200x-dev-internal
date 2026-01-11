@@ -27,3 +27,11 @@ export type { AvatarProps } from "./avatar";
 export { Skeleton, SkeletonText, SkeletonCard } from "./skeleton";
 
 export { RadioGroup, RadioGroupItem } from "./radio-group";
+export {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "./dialog";

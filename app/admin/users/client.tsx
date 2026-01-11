@@ -5,8 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BookOpen, Package, Mail, Calendar, Search, X } from "lucide-react";
+import { BookOpen, Package, Mail, Calendar, Search, X, Settings2 } from "lucide-react";
 import { SignInAsButton } from "./sign-in-as-button";
+import { ManageUserProductsModal } from "@/components/modals/manage-user-products-modal";
 
 interface User {
   id: string;
@@ -55,6 +56,7 @@ export function UsersClient({ users, courses, products }: UsersClientProps) {
   const [purchaseFilter, setPurchaseFilter] = useState<PurchaseFilter>("all");
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [managedUser, setManagedUser] = useState<User | null>(null);
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
@@ -267,7 +269,17 @@ export function UsersClient({ users, courses, products }: UsersClientProps) {
                     <Calendar className="h-3 w-3" />
                     Joined {user.createdAt.toLocaleDateString()}
                   </div>
-                  <SignInAsButton userId={user.id} />
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setManagedUser(user)}
+                    >
+                      <Settings2 className="h-4 w-4" />
+                      Manage Access
+                    </Button>
+                    <SignInAsButton userId={user.id} />
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -332,6 +344,16 @@ export function UsersClient({ users, courses, products }: UsersClientProps) {
             </Card>
           ))}
         </div>
+      )}
+
+      {managedUser && (
+        <ManageUserProductsModal
+          user={managedUser}
+          courses={courses}
+          products={products}
+          open={!!managedUser}
+          onOpenChange={(open) => !open && setManagedUser(null)}
+        />
       )}
     </div>
   );

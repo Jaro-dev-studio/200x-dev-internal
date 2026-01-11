@@ -49,7 +49,7 @@ export function WistiaPlayer({ videoId, showControls = true }: WistiaPlayerProps
         style={{ paddingBottom: "56.25%" }}
       >
         <div
-          className={`wistia_embed wistia_async_${videoId} seo=true videoFoam=true ${controlOptions}`}
+          className={`wistia_embed wistia_async_${videoId} seo=true videoFoam=true playerColor=C9A76C ${controlOptions}`}
           style={{ height: "100%", left: 0, position: "absolute", top: 0, width: "100%" }}
         />
       </div>

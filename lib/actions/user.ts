@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { isAdmin } from "@/lib/admin";
 import { hash, compare } from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -137,5 +138,137 @@ export async function updatePassword(
   } catch (error) {
     console.log("[User] Failed to update password:", error);
     return { success: false, error: "Failed to update password. Please try again." };
+  }
+}
+
+async function requireAdmin() {
+  const session = await auth();
+  if (!session?.user?.email || !isAdmin(session.user.email)) {
+    throw new Error("Unauthorized");
+  }
+  return session;
+}
+
+export async function grantProductAccess(
+  userId: string,
+  productId: string
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    console.log(`[User] Granting product access: user ${userId}, product ${productId}`);
+
+    const user = await db.user.findUnique({
+      where: { id: userId },
+      select: { email: true },
+    });
+
+    if (!user) {
+      return { success: false, error: "User not found" };
+    }
+
+    const stripeSessionId = `admin_grant_${userId}_${productId}_${Date.now()}`;
+
+    await db.productPurchase.create({
+      data: {
+        userId,
+        productId,
+        email: user.email,
+        stripeSessionId,
+        amountPaid: 0,
+      },
+    });
+
+    console.log("[User] Product access granted successfully");
+    revalidatePath("/admin/users");
+    return { success: true, message: "Product access granted" };
+  } catch (error) {
+    console.error("[User] Error granting product access:", error);
+    return { success: false, error: "Failed to grant product access" };
+  }
+}
+
+export async function revokeProductAccess(
+  userId: string,
+  productId: string
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    console.log(`[User] Revoking product access: user ${userId}, product ${productId}`);
+
+    await db.productPurchase.deleteMany({
+      where: {
+        userId,
+        productId,
+      },
+    });
+
+    console.log("[User] Product access revoked successfully");
+    revalidatePath("/admin/users");
+    return { success: true, message: "Product access revoked" };
+  } catch (error) {
+    console.error("[User] Error revoking product access:", error);
+    return { success: false, error: "Failed to revoke product access" };
+  }
+}
+
+export async function grantCourseAccess(
+  userId: string,
+  courseId: string
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    console.log(`[User] Granting course access: user ${userId}, course ${courseId}`);
+
+    const user = await db.user.findUnique({
+      where: { id: userId },
+      select: { email: true },
+    });
+
+    if (!user) {
+      return { success: false, error: "User not found" };
+    }
+
+    const stripeSessionId = `admin_grant_${userId}_${courseId}_${Date.now()}`;
+
+    await db.coursePurchase.create({
+      data: {
+        userId,
+        courseId,
+        email: user.email,
+        stripeSessionId,
+        amountPaid: 0,
+      },
+    });
+
+    console.log("[User] Course access granted successfully");
+    revalidatePath("/admin/users");
+    return { success: true, message: "Course access granted" };
+  } catch (error) {
+    console.error("[User] Error granting course access:", error);
+    return { success: false, error: "Failed to grant course access" };
+  }
+}
+
+export async function revokeCourseAccess(
+  userId: string,
+  courseId: string
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    console.log(`[User] Revoking course access: user ${userId}, course ${courseId}`);
+
+    await db.coursePurchase.deleteMany({
+      where: {
+        userId,
+        courseId,
+      },
+    });
+
+    console.log("[User] Course access revoked successfully");
+    revalidatePath("/admin/users");
+    return { success: true, message: "Course access revoked" };
+  } catch (error) {
+    console.error("[User] Error revoking course access:", error);
+    return { success: false, error: "Failed to revoke course access" };
   }
 }
