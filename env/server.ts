@@ -8,6 +8,7 @@ export const env = createEnv({
     ADMIN_PASS: z.string().min(1),
     STRIPE_SECRET_KEY: z.string().startsWith("sk_"),
     STRIPE_WEBHOOK_SECRET: z.string().startsWith("whsec_").optional(),
+    WISTIA_API_TOKEN: z.string().min(1),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -18,6 +19,7 @@ export const env = createEnv({
     ADMIN_PASS: process.env.ADMIN_PASS,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    WISTIA_API_TOKEN: process.env.WISTIA_API_TOKEN,
     NODE_ENV: process.env.NODE_ENV,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

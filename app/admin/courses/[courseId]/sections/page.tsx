@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/db";
+import { getWistiaVideoDuration } from "@/lib/wistia";
 
 export const dynamic = "force-dynamic";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, AlignLeft, Play, Paperclip, HelpCircle } from "lucide-react";
+import { ArrowLeft, AlignLeft, Play, Paperclip, HelpCircle, Clock } from "lucide-react";
 import { SectionManager } from "../section-manager";
 
 interface SectionsPageProps {
@@ -39,6 +40,48 @@ export default async function SectionsPage({ params }: SectionsPageProps) {
     notFound();
   }
 
+  // Auto-fetch missing video durations
+  const lessonsNeedingDuration = course.sections
+    .flatMap((s) => s.lessons)
+    .filter((l) => l.wistiaVideoId && !l.videoDurationSeconds);
+
+  if (lessonsNeedingDuration.length > 0) {
+    console.log(`[Sections] Fetching durations for ${lessonsNeedingDuration.length} lessons...`);
+    
+    const durationUpdates = await Promise.all(
+      lessonsNeedingDuration.map(async (lesson) => {
+        const duration = await getWistiaVideoDuration(lesson.wistiaVideoId!);
+        return { id: lesson.id, duration };
+      })
+    );
+
+    // Update lessons with fetched durations
+    await Promise.all(
+      durationUpdates
+        .filter((u) => u.duration !== null)
+        .map((u) =>
+          db.lesson.update({
+            where: { id: u.id },
+            data: { videoDurationSeconds: u.duration },
+          })
+        )
+    );
+
+    // Update the in-memory course data with the new durations
+    for (const update of durationUpdates) {
+      if (update.duration !== null) {
+        for (const section of course.sections) {
+          const lesson = section.lessons.find((l) => l.id === update.id);
+          if (lesson) {
+            lesson.videoDurationSeconds = update.duration;
+          }
+        }
+      }
+    }
+
+    console.log(`[Sections] Updated ${durationUpdates.filter((u) => u.duration !== null).length} lesson durations`);
+  }
+
   // Calculate lesson statistics
   const allLessons = course.sections.flatMap((s) => s.lessons);
   const totalLessons = allLessons.length;
@@ -46,6 +89,15 @@ export default async function SectionsPage({ params }: SectionsPageProps) {
   const lessonsWithVideo = allLessons.filter((l) => l.wistiaVideoId).length;
   const lessonsWithAttachments = allLessons.filter((l) => l._count.attachments > 0).length;
   const lessonsWithQuiz = allLessons.filter((l) => l.quiz).length;
+
+  const totalDurationSeconds = allLessons.reduce((acc, lesson) => acc + (lesson.videoDurationSeconds || 0), 0);
+
+  const formatDuration = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    return `${minutes}m`;
+  };
 
   const getPercentage = (count: number) => {
     if (totalLessons === 0) return 0;
@@ -81,6 +133,13 @@ export default async function SectionsPage({ params }: SectionsPageProps) {
               <span className="font-medium">{lessonsWithVideo}/{totalLessons}</span>
               <span className="text-muted-foreground">({getPercentage(lessonsWithVideo)}%)</span>
             </div>
+            {totalDurationSeconds > 0 && (
+              <div className="flex items-center gap-1.5 rounded-md border border-border px-2 py-1">
+                <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-muted-foreground">Duration:</span>
+                <span className="font-medium">{formatDuration(totalDurationSeconds)}</span>
+              </div>
+            )}
             <div className="flex items-center gap-1.5 rounded-md border border-border px-2 py-1">
               <Paperclip className="h-3.5 w-3.5 text-muted-foreground" />
               <span className="text-muted-foreground">Attachments:</span>

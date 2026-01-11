@@ -67,13 +67,15 @@ model Section {
 }
 
 model Lesson {
-  id            String   @id @default(cuid())
-  title         String
-  wistiaVideoId String?
-  content       String?  @db.Text
-  order         Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                   String   @id @default(cuid())
+  title                String
+  wistiaVideoId        String?
+  videoDurationSeconds Int? // Duration in seconds from Wistia
+  content              String?  @db.Text
+  order                Int      @default(0)
+  isHidden             Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 
   // Relations
   sectionId   String

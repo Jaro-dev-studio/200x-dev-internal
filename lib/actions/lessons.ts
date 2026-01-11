@@ -7,11 +7,13 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { put, del } from "@vercel/blob";
+import { getWistiaVideoDuration } from "@/lib/wistia";
 
 const lessonSchema = z.object({
   title: z.string().min(1, "Title is required"),
   wistiaVideoId: z.string().optional(),
   content: z.string().optional(),
+  isHidden: z.boolean().optional(),
   sectionId: z.string().min(1),
 });
 
@@ -96,6 +98,7 @@ export async function updateLesson(
       title: formData.get("title"),
       wistiaVideoId: formData.get("wistiaVideoId"),
       content: formData.get("content"),
+      isHidden: formData.get("isHidden") === "on",
       sectionId: "", // Not needed for update validation
     };
 
@@ -106,12 +109,35 @@ export async function updateLesson(
       return { success: false, error: validatedData.error.issues[0].message };
     }
 
+    // Fetch existing lesson to check if video ID changed or duration is missing
+    const existingLesson = await db.lesson.findUnique({
+      where: { id: lessonId },
+      select: { wistiaVideoId: true, videoDurationSeconds: true },
+    });
+
+    let videoDurationSeconds = undefined;
+    const hasVideoIdChanged = validatedData.data.wistiaVideoId !== existingLesson?.wistiaVideoId;
+    const isDurationMissing = existingLesson?.wistiaVideoId && (existingLesson?.videoDurationSeconds === null || existingLesson?.videoDurationSeconds === 0);
+
+    if (hasVideoIdChanged || isDurationMissing) {
+      if (validatedData.data.wistiaVideoId) {
+        console.log(`[Lessons] Fetching duration for video ID: ${validatedData.data.wistiaVideoId} because ${hasVideoIdChanged ? 'ID changed' : 'duration missing'}...`);
+        videoDurationSeconds = await getWistiaVideoDuration(validatedData.data.wistiaVideoId);
+        console.log(`[Lessons] Fetched duration: ${videoDurationSeconds}s`);
+      } else {
+        console.log(`[Lessons] Clearing duration because video ID was removed`);
+        videoDurationSeconds = null;
+      }
+    }
+
     const lesson = await db.lesson.update({
       where: { id: lessonId },
       data: {
         title: validatedData.data.title,
         wistiaVideoId: validatedData.data.wistiaVideoId || null,
+        videoDurationSeconds,
         content: validatedData.data.content || null,
+        isHidden: validatedData.data.isHidden ?? false,
       },
       include: { section: true },
     });

@@ -39,6 +39,7 @@ export default async function CourseLandingPage({
       sections: {
         include: {
           lessons: {
+            where: { isHidden: false },
             include: {
               quiz: true,
             },

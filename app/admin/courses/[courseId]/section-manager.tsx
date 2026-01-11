@@ -30,7 +30,7 @@ import { createLesson as createLessonAction, renameLesson, deleteLessonFromList,
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, ChevronDown, ChevronRight, FileText, Pencil, Check, X, GripVertical, Play, Paperclip, HelpCircle, AlignLeft } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronRight, FileText, Pencil, Check, X, GripVertical, Play, Paperclip, HelpCircle, AlignLeft, EyeOff } from "lucide-react";
 import type { Section, Lesson, Quiz } from "@prisma/client";
 
 interface LessonWithDetails extends Lesson {
@@ -175,6 +175,12 @@ function SortableLesson({
                 <Badge variant="default" className="gap-1 px-1.5 py-0.5 text-[10px]">
                   <HelpCircle className="h-2.5 w-2.5" />
                   Quiz
+                </Badge>
+              )}
+              {lesson.isHidden && (
+                <Badge variant="destructive" className="gap-1 px-1.5 py-0.5 text-[10px]">
+                  <EyeOff className="h-2.5 w-2.5" />
+                  Hidden
                 </Badge>
               )}
             </div>

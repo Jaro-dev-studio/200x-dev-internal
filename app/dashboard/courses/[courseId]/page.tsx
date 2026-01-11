@@ -47,6 +47,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
       sections: {
         include: {
           lessons: {
+            where: { isHidden: false },
             include: {
               quiz: true,
             },

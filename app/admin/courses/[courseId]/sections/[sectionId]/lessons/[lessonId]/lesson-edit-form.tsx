@@ -60,6 +60,19 @@ export function LessonEditForm({ lesson }: LessonEditFormProps) {
         helperText="This content appears below the video"
       />
 
+      <div className="flex items-center gap-3">
+        <input
+          type="checkbox"
+          id="isHidden"
+          name="isHidden"
+          defaultChecked={lesson.isHidden}
+          className="h-4 w-4 rounded border-border"
+        />
+        <label htmlFor="isHidden" className="text-sm">
+          Hide lesson (won&apos;t be visible to students)
+        </label>
+      </div>
+
       <div className="flex gap-4">
         <Button type="submit" variant="accent" isLoading={isPending}>
           Save Changes
