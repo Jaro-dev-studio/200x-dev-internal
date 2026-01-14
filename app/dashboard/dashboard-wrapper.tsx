@@ -31,7 +31,7 @@ const navItems: NavItem[] = [
     href: "/dashboard",
     icon: <BookOpen className="h-4 w-4" />,
     exact: true,
-    activePathPrefixes: ["/dashboard"],
+    activePathPrefixes: ["/dashboard/courses"],
   },
   {
     label: "My Products",
