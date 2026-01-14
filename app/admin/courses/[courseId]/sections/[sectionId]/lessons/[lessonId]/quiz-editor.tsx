@@ -8,15 +8,25 @@ import {
   createQuestion,
   updateQuestion,
   deleteQuestion,
+  generateQuizWithAI,
 } from "@/lib/actions/quizzes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/input";
-import { Plus, Trash2, Save, Loader2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Plus, Trash2, Save, Loader2, Sparkles } from "lucide-react";
 import type { Quiz, Question } from "@prisma/client";
 
 interface QuizEditorProps {
   lessonId: string;
+  wistiaVideoId: string | null;
   quiz:
     | (Quiz & {
         questions: Question[];
@@ -24,11 +34,16 @@ interface QuizEditorProps {
     | null;
 }
 
-export function QuizEditor({ lessonId, quiz: initialQuiz }: QuizEditorProps) {
+export function QuizEditor({ lessonId, wistiaVideoId, quiz: initialQuiz }: QuizEditorProps) {
   const [quiz, setQuiz] = useState(initialQuiz);
   const [isCreating, setIsCreating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // AI Generation state
+  const [isAIDialogOpen, setIsAIDialogOpen] = useState(false);
+  const [selectedQuestionCount, setSelectedQuestionCount] = useState(5);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const handleCreateQuiz = async () => {
     setIsCreating(true);
@@ -71,6 +86,38 @@ export function QuizEditor({ lessonId, quiz: initialQuiz }: QuizEditorProps) {
       setError(result.error || "Failed to update quiz");
     }
     setIsSaving(false);
+  };
+
+  const handleGenerateWithAI = async () => {
+    if (!quiz) return;
+    setIsGenerating(true);
+    setError(null);
+    
+    const result = await generateQuizWithAI(lessonId, quiz.id, selectedQuestionCount);
+    
+    if (result.success && result.questions) {
+      // Add new questions to the state with real database IDs
+      const newQuestions = result.questions.map((q, index) => ({
+        id: q.id,
+        quizId: quiz.id,
+        text: q.text,
+        options: q.options,
+        correctIndex: q.correctIndex,
+        order: quiz.questions.length + index,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }));
+      
+      setQuiz({
+        ...quiz,
+        questions: [...quiz.questions, ...newQuestions],
+      });
+      setIsAIDialogOpen(false);
+    } else {
+      setError(result.error || "Failed to generate questions");
+    }
+    
+    setIsGenerating(false);
   };
 
   if (!quiz) {
@@ -199,25 +246,96 @@ export function QuizEditor({ lessonId, quiz: initialQuiz }: QuizEditorProps) {
           </div>
         )}
 
-        <NewQuestionForm
-          quizId={quiz.id}
-          onCreated={(question) => {
-            setQuiz({
-              ...quiz,
-              questions: [
-                ...quiz.questions,
-                {
-                  ...question,
-                  quizId: quiz.id,
-                  order: quiz.questions.length,
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                },
-              ],
-            });
-          }}
-        />
+        <div className="flex flex-wrap gap-2">
+          <NewQuestionForm
+            quizId={quiz.id}
+            onCreated={(question) => {
+              setQuiz({
+                ...quiz,
+                questions: [
+                  ...quiz.questions,
+                  {
+                    ...question,
+                    quizId: quiz.id,
+                    order: quiz.questions.length,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                  },
+                ],
+              });
+            }}
+          />
+          
+          {wistiaVideoId && (
+            <Button
+              variant="outline"
+              onClick={() => setIsAIDialogOpen(true)}
+            >
+              <Sparkles className="h-4 w-4" />
+              Generate with AI
+            </Button>
+          )}
+        </div>
       </div>
+
+      {/* AI Generation Dialog */}
+      <Dialog open={isAIDialogOpen} onOpenChange={setIsAIDialogOpen}>
+        <DialogContent>
+          <DialogClose onClose={() => setIsAIDialogOpen(false)} />
+          <DialogHeader>
+            <DialogTitle>Generate Quiz with AI</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-muted-foreground">
+              Generate quiz questions based on the video transcript using AI.
+            </p>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Number of Questions</label>
+              <div className="flex gap-2">
+                {[3, 5, 10].map((count) => (
+                  <Button
+                    key={count}
+                    variant={selectedQuestionCount === count ? "accent" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedQuestionCount(count)}
+                  >
+                    {count}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button
+              variant="accent"
+              onClick={handleGenerateWithAI}
+              disabled={isGenerating}
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4" />
+                  Generate {selectedQuestionCount} Questions
+                </>
+              )}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setIsAIDialogOpen(false)}
+              disabled={isGenerating}
+            >
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

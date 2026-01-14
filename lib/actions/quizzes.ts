@@ -5,6 +5,9 @@ import { db } from "@/lib/db";
 import { isAdmin } from "@/lib/admin";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import OpenAI from "openai";
+import { env } from "@/env/server";
+import { getWistiaTranscript } from "@/lib/wistia";
 
 const questionSchema = z.object({
   text: z.string().min(1, "Question text is required"),
@@ -215,5 +218,201 @@ export async function deleteQuestion(questionId: string): Promise<ActionResult> 
   } catch (error) {
     console.error("[Questions] Error deleting question:", error);
     return { success: false, error: "Failed to delete question" };
+  }
+}
+
+// ============================================================================
+// AI QUIZ GENERATION
+// ============================================================================
+
+interface GeneratedQuestionInput {
+  text: string;
+  options: string[];
+  correctIndex: number;
+}
+
+interface GeneratedQuestion extends GeneratedQuestionInput {
+  id: string;
+}
+
+interface GenerateQuizResult extends ActionResult {
+  questions?: GeneratedQuestion[];
+}
+
+export async function generateQuizWithAI(
+  lessonId: string,
+  quizId: string,
+  questionCount: number
+): Promise<GenerateQuizResult> {
+  try {
+    await requireAdmin();
+    console.log("[AI Quiz] Starting AI quiz generation for lesson:", lessonId);
+    console.log("[AI Quiz] Requested question count:", questionCount);
+
+    // Get lesson with video ID
+    const lesson = await db.lesson.findUnique({
+      where: { id: lessonId },
+      include: { section: true },
+    });
+
+    if (!lesson) {
+      return { success: false, error: "Lesson not found" };
+    }
+
+    if (!lesson.wistiaVideoId) {
+      return { success: false, error: "This lesson does not have a video. Please add a video first." };
+    }
+
+    // Fetch transcript from Wistia
+    console.log("[AI Quiz] Fetching transcript from Wistia...");
+    const transcriptResult = await getWistiaTranscript(lesson.wistiaVideoId);
+    
+    if (transcriptResult.error || !transcriptResult.data) {
+      return { success: false, error: transcriptResult.error || "Failed to fetch transcript" };
+    }
+
+    const transcript = transcriptResult.data;
+    console.log("[AI Quiz] Transcript fetched successfully, length:", transcript.length);
+
+    // Initialize OpenAI client
+    const openai = new OpenAI({
+      apiKey: env.OPENAI_API_KEY,
+    });
+
+    // Generate quiz questions using OpenAI
+    console.log("[AI Quiz] Sending transcript to OpenAI for question generation...");
+    
+    const systemPrompt = `You are an expert educational content creator. Your task is to generate multiple-choice quiz questions based on video transcript content.
+
+Rules:
+- Create questions that test understanding of key concepts from the transcript
+- Each question must have exactly 4 options
+- Only one option should be correct
+- Options should be plausible but clearly distinguishable
+- Questions should be clear and unambiguous
+- Avoid questions about timestamps or video-specific references
+- Focus on educational content, concepts, and practical knowledge
+
+Output format: Return a JSON array of question objects with this exact structure:
+{
+  "questions": [
+    {
+      "text": "Question text here?",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correctIndex": 0
+    }
+  ]
+}
+
+The correctIndex is the 0-based index of the correct answer in the options array.`;
+
+    const userPrompt = `Based on the following video transcript, generate exactly ${questionCount} multiple-choice quiz questions to test the viewer's understanding:
+
+---
+${transcript}
+---
+
+Generate ${questionCount} questions in the specified JSON format.`;
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-5-mini",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.7,
+    });
+
+    const responseContent = completion.choices[0]?.message?.content;
+    
+    if (!responseContent) {
+      console.error("[AI Quiz] Empty response from OpenAI");
+      return { success: false, error: "Failed to generate questions - empty response from AI" };
+    }
+
+    console.log("[AI Quiz] Parsing OpenAI response...");
+    
+    let parsedResponse: { questions: GeneratedQuestion[] };
+    try {
+      parsedResponse = JSON.parse(responseContent);
+    } catch {
+      console.error("[AI Quiz] Failed to parse OpenAI response:", responseContent);
+      return { success: false, error: "Failed to parse AI response" };
+    }
+
+    if (!parsedResponse.questions || !Array.isArray(parsedResponse.questions)) {
+      console.error("[AI Quiz] Invalid response structure:", parsedResponse);
+      return { success: false, error: "Invalid response structure from AI" };
+    }
+
+    const generatedQuestions = parsedResponse.questions;
+    console.log("[AI Quiz] Generated", generatedQuestions.length, "questions");
+
+    // Validate and sanitize questions
+    const validatedQuestions: GeneratedQuestionInput[] = [];
+    for (const q of generatedQuestions) {
+      if (
+        typeof q.text === "string" &&
+        Array.isArray(q.options) &&
+        q.options.length === 4 &&
+        typeof q.correctIndex === "number" &&
+        q.correctIndex >= 0 &&
+        q.correctIndex < 4
+      ) {
+        validatedQuestions.push({
+          text: q.text,
+          options: q.options.map(String),
+          correctIndex: q.correctIndex,
+        });
+      }
+    }
+
+    if (validatedQuestions.length === 0) {
+      return { success: false, error: "No valid questions generated" };
+    }
+
+    console.log("[AI Quiz] Validated", validatedQuestions.length, "questions");
+
+    // Get current highest order
+    const lastQuestion = await db.question.findFirst({
+      where: { quizId },
+      orderBy: { order: "desc" },
+    });
+    let currentOrder = (lastQuestion?.order ?? -1) + 1;
+
+    // Create questions in database
+    console.log("[AI Quiz] Creating questions in database...");
+    
+    const createdQuestions = await db.$transaction(
+      validatedQuestions.map((q) =>
+        db.question.create({
+          data: {
+            quizId,
+            text: q.text,
+            options: q.options,
+            correctIndex: q.correctIndex,
+            order: currentOrder++,
+          },
+        })
+      )
+    );
+
+    console.log("[AI Quiz] Successfully created", createdQuestions.length, "questions");
+
+    revalidatePath(`/admin/courses/${lesson.section.courseId}`);
+
+    return {
+      success: true,
+      questions: createdQuestions.map((q) => ({
+        id: q.id,
+        text: q.text,
+        options: q.options as string[],
+        correctIndex: q.correctIndex,
+      })),
+    };
+  } catch (error) {
+    console.error("[AI Quiz] Error generating quiz:", error);
+    return { success: false, error: "Failed to generate quiz questions" };
   }
 }

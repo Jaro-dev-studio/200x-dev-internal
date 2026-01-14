@@ -101,7 +101,7 @@ export default async function LessonEditPage({ params }: LessonEditPageProps) {
             <CardTitle>Quiz</CardTitle>
           </CardHeader>
           <CardContent>
-            <QuizEditor lessonId={lesson.id} quiz={lesson.quiz} />
+            <QuizEditor lessonId={lesson.id} wistiaVideoId={lesson.wistiaVideoId} quiz={lesson.quiz} />
           </CardContent>
         </Card>
       </div>
