@@ -55,6 +55,7 @@ model Section {
   id        String   @id @default(cuid())
   title     String
   order     Int      @default(0)
+  isHidden  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

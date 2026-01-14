@@ -52,6 +52,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
           course: {
             include: {
               sections: {
+                where: { isHidden: false },
                 include: {
                   lessons: {
                     where: { isHidden: false },
@@ -75,7 +76,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
     },
   });
 
-  if (!lesson || lesson.section.courseId !== courseId || lesson.isHidden) {
+  if (!lesson || lesson.section.courseId !== courseId || lesson.isHidden || lesson.section.isHidden) {
     notFound();
   }
 

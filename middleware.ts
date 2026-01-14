@@ -19,6 +19,7 @@ const publicPrefixes = [
   "/api/auth",
   "/api/webhooks",
   "/api/stripe/checkout", // Allow guest checkout
+  "/api/mcp", // MCP server endpoint
   "/products/", // Individual product preview pages
 ];
 

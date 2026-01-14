@@ -37,6 +37,7 @@ export default async function CourseLandingPage({
     where: { id: courseId, published: true },
     include: {
       sections: {
+        where: { isHidden: false },
         include: {
           lessons: {
             where: { isHidden: false },

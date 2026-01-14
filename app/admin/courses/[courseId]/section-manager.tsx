@@ -24,13 +24,14 @@ import {
   deleteSection,
   renameSection,
   reorderSections,
+  toggleSectionVisibility,
   type ActionResult,
 } from "@/lib/actions/courses";
 import { createLesson as createLessonAction, renameLesson, deleteLessonFromList, reorderLessons } from "@/lib/actions/lessons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, ChevronDown, ChevronRight, FileText, Pencil, Check, X, GripVertical, Play, Paperclip, HelpCircle, AlignLeft, EyeOff } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronRight, FileText, Pencil, Check, X, GripVertical, Play, Paperclip, HelpCircle, AlignLeft, EyeOff, Eye } from "lucide-react";
 import type { Section, Lesson, Quiz } from "@prisma/client";
 
 interface LessonWithDetails extends Lesson {
@@ -371,20 +372,39 @@ function SortableSection({
               <span className="text-sm text-muted-foreground">
                 ({section.lessons.length} lessons)
               </span>
+              {section.isHidden && (
+                <Badge variant="destructive" className="gap-1 px-1.5 py-0.5 text-[10px]">
+                  <EyeOff className="h-2.5 w-2.5" />
+                  Hidden
+                </Badge>
+              )}
             </>
           )}
             </div>
         <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
           {!isEditing && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
-              onClick={onStartEdit}
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
+            <>
+              <form action={async () => { await toggleSectionVisibility(section.id); }}>
+                <Button
+                  type="submit"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                  title={section.isHidden ? "Show section" : "Hide section"}
+                >
+                  {section.isHidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                </Button>
+              </form>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                onClick={onStartEdit}
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+            </>
           )}
             <form
               action={async () => {

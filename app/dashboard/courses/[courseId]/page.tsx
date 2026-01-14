@@ -45,6 +45,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
     where: { id: courseId },
     include: {
       sections: {
+        where: { isHidden: false },
         include: {
           lessons: {
             where: { isHidden: false },

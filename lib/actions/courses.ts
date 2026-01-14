@@ -293,3 +293,33 @@ export async function renameSection(
     return { success: false, error: "Failed to rename section" };
   }
 }
+
+export async function toggleSectionVisibility(
+  sectionId: string
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    console.log("[Sections] Toggling section visibility:", sectionId);
+
+    const section = await db.section.findUnique({
+      where: { id: sectionId },
+    });
+
+    if (!section) {
+      return { success: false, error: "Section not found" };
+    }
+
+    const updatedSection = await db.section.update({
+      where: { id: sectionId },
+      data: { isHidden: !section.isHidden },
+    });
+
+    console.log("[Sections] Section visibility toggled to:", updatedSection.isHidden ? "hidden" : "visible");
+    revalidatePath(`/admin/courses/${section.courseId}`);
+    revalidatePath(`/admin/courses/${section.courseId}/sections`);
+    return { success: true };
+  } catch (error) {
+    console.error("[Sections] Error toggling section visibility:", error);
+    return { success: false, error: "Failed to toggle section visibility" };
+  }
+}
